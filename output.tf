@@ -23,8 +23,9 @@ output "private_subnet1_id" {
   value = module.vpc.private_subnet1_id
 }
 
-output "private_subnet2_id" {
-  value = module.vpc.private_subnet2_id
+
+output "rds_private_subnet2_id" {
+ value = module.vpc.private_subnet2_id 
 }
 
 /*output "public_alb_arn" {
