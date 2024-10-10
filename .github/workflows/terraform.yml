@@ -27,21 +27,25 @@ jobs:
         AWS_REGION: ap-south-1
 
     - name: Terraform Plan
-      run: terraform plan -out=tfplan
+      run: |
+        terraform plan -out=tfplan -input=false
+        echo "Terraform Plan completed"
       working-directory: ./
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         AWS_REGION: ap-south-1
+        TF_LOG: DEBUG
 
     - name: Save Terraform Plan
       run: echo "tfplan=$(base64 tfplan)" >> $GITHUB_ENV
       working-directory: ./
+
     - name: Upload Terraform Plan Artifact
       uses: actions/upload-artifact@v3
       with:
         name: tfplan
-        path: ./
+        path: ./tfplan
 
     - name: Terraform Apply
       if: github.event_name == 'push'
