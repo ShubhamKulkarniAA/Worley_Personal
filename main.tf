@@ -1,7 +1,6 @@
 module "vpc" {
   source = "./modules/vpc"
   region = var.region
-  log_destination = module.s3.bucket_name_vpc_arn
   vpc_cidr = var.vpc_cidr
   vpc_name = var.vpc_name
   internet_gateway_name = var.internet_gateway_name

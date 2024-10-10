@@ -45,11 +45,6 @@ variable private_rds_subnet2_cidr {
   type = string
 }
 
-
-variable "log_destination" {
-  type        = string
-}
-
 variable "region" {
   type = string
 }
