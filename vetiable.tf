@@ -1,15 +1,8 @@
-output "bucket_name" {
-  description = "The name of the S3 bucket"
-  value       = module.s3.bucket_name
-}
-
 output "vpc_arn" {
-  description = "The VPC ID"
   value = module.vpc.vpc_arn
 }
 
 output "vpc_id" {
-  description = "The VPC ID"
   value = module.vpc.vpc_id
 }
 
