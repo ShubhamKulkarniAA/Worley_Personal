@@ -1,56 +1,56 @@
-output "vpc_arn" {
-  value = module.vpc.vpc_arn
+variable vpc_cidr {
+  type = string
 }
 
-output "vpc_id" {
-  value = module.vpc.vpc_id
+variable vpc_name {
+  type = string
 }
 
-output "rds_private_subnet1_id" {
- value = module.vpc.rds_private_subnet1_id 
+variable internet_gateway_name {
+ type = string 
 }
 
-output "rds_private_subnet2_id" {
- value = module.vpc.rds_private_subnet2_id 
+
+variable public_subnet1_cidr {
+  type = string
 }
 
-output "bucket_name_vpc" {
-  value = module.s3.bucket_name_vpc
+variable availability_zone1 {
+  type = string
 }
 
-output "bucket_name_vpc_arn" {
-  value = module.s3.bucket_name_vpc_arn
+variable public_subnet2_cidr {
+  type = string
 }
 
-output "public_subnet1_id" {
-  value = module.vpc.public_subnet1_id
+variable availability_zone2 {
+  type = string
 }
 
-output "public_subnet2_id" {
-  value = module.vpc.public_subnet2_id
+
+variable private_subnet1_cidr {
+  type = string
 }
 
-output "private_subnet1_id" {
-  value = module.vpc.private_subnet1_id
+variable private_subnet2_cidr {
+  type = string
 }
 
-output "private_subnet2_id" {
-  value = module.vpc.private_subnet2_id
+
+variable private_rds_subnet1_cidr {
+  type = string
 }
 
-/*output "public_alb_arn" {
-  value = module.alb.public_alb_arn
+variable private_rds_subnet2_cidr {
+  type = string
 }
 
-output "Public_alb_tg_arn" {
-  value = module.alb.public_alb_tg_arn
-}
 
-output "private_alb_arn" {
-  value = module.alb.private_alb_arn
-}
-
-output "Private_alb_tg_arn" {
-  value = module.alb.private_alb_tg_arn
+/*variable "log_destination" {
+  description = "S3 bucket for storing VPC flow logs"
+  type        = string
 }*/
 
+variable "region" {
+  type = string
+}
