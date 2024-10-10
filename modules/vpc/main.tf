@@ -142,4 +142,3 @@ resource "aws_vpc_endpoint" "s3-vpc-endpoint" {
     Name = "worley-s3-vpc-endpoint"
   }
 }
-

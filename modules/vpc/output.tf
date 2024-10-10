@@ -26,10 +26,6 @@ output "private_subnet1_id" {
   value = aws_subnet.private_subnet1.id
 }
 
-output "public_subnet2_id" {
-  value = aws_subnet.private_subnet2.id
-}
-
 output "s3_vpc_endpoint_id" {
   value       = aws_vpc_endpoint.s3-vpc-endpoint.id
 }
