@@ -3,51 +3,59 @@ name: Terraform AWS Deployment
 on:
   push:
     branches:
-      - dev
+      -
 
 jobs:
   TerraformAWS:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v3
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-    - name: Install Terraform
-      uses: hashicorp/setup-terraform@v2
-      with:
-        terraform_version: 'latest'
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: "latest"
 
-    - name: Terraform Init
-      run: terraform init 
-      working-directory: ./
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION: ap-south-1
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ./
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ap-south-1
 
-    - name: Terraform Plan
-      run: terraform plan -out=tfplan
-      working-directory: ./
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION: ap-south-1
+      - name: Terraform Plan
+        run: |
+          terraform plan -out=tfplan -input=false
+          echo "Terraform Plan completed"
+        working-directory: ./
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ap-south-1
+          TF_LOG: DEBUG
 
-    - name: Save Terraform Plan
-      run: echo "tfplan=$(base64 tfplan)" >> $GITHUB_ENV
-      working-directory: ./
-    - name: Upload Terraform Plan Artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: tfplan
-        path: ./
+      - name: Upload Terraform Plan Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: tfplan
+          path: ./tfplan
 
-    - name: Terraform Apply
-      if: github.event_name == 'push'
-      run: terraform apply -auto-approve tfplan
-      working-directory: ./
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_REGION: ap-south-1
+      - name: Terraform Apply
+        if: github.event_name == 'push'
+        run: terraform apply -auto-approve ./tfplan
+        working-directory: ./
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ap-south-1
+
+      - name: Deploying Frontend Applications
+        run: kubectl apply -f worley-nc-angular.yml
+        working-directory: ../../modules/eks
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ap-south-1
