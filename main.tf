@@ -14,8 +14,8 @@ module "vpc" {
   availability_zone2 = var.availability_zone2
 }
 
-module "eks" {
-  source = "./modules/eks"
+module "alb" {
+  source = "./modules/alb"
   public_alb_name = var.public_alb_name
   private_alb_name = var.private_alb_name
   vpc_id = var.vpc_id
