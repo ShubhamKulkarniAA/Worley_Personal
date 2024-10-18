@@ -22,7 +22,6 @@ resource "aws_security_group" "public_alb_sg" {
   }
 }
 
-# Public Application Load Balancer (ALB)
 resource "aws_lb" "public_alb" {
   name               = var.public_alb_name
   internal           = false
