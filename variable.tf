@@ -46,7 +46,7 @@ variable "region" {
   type = string
 }
 
-variable "public_alb_name" {
+/*variable "public_alb_name" {
   type = string
 }
 
@@ -100,7 +100,7 @@ variable "private_subnets" {
 
 variable "public_subnets" {
   type = string
-}
+}*/
 
 # EKS Module Variables
 
