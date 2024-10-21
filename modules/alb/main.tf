@@ -76,14 +76,14 @@ resource "aws_security_group" "private_alb_sg" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = [var.public_eks_cidr, var.private_eks_cidr] 
+    cidr_blocks = [var.public_eks_cidr, var.private_eks_cidr]
   }
 
   egress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"] 
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   tags = {
@@ -183,6 +183,7 @@ resource "aws_lb" "private_alb" {
   subnets            = var.private_subnets
   security_groups    = [aws_security_group.private_alb_sg.id]
 }
+
 
 resource "aws_lb_listener" "public_alb_listener_http" {
   load_balancer_arn = aws_lb.public_alb.arn
