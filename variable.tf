@@ -109,12 +109,16 @@ variable "cluster_name" {
   type = string
 }
 
-variable "subnet_ids" {
+variable "public_eks_cidr" {
   description = "List of subnet IDs for the EKS cluster"
-  type = list(string)
-}
+  type = string
+  }
 
 variable "node_group_name" {
   description = "EKS Node Group name"
+  type = string
+}
+
+variable "subnet_ids" {
   type = string
 }
