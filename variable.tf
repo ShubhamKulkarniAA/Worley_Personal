@@ -1,47 +1,44 @@
-variable vpc_cidr {
+variable "vpc_cidr" {
   type = string
 }
 
-variable vpc_name {
+variable "vpc_name" {
   type = string
 }
 
-variable internet_gateway_name {
- type = string 
-}
-
-
-variable public_subnet1_cidr {
+variable "internet_gateway_name" {
   type = string
 }
 
-variable availability_zone1 {
+variable "public_subnet1_cidr" {
   type = string
 }
 
-variable public_subnet2_cidr {
+variable "availability_zone1" {
   type = string
 }
 
-variable availability_zone2 {
+variable "public_subnet2_cidr" {
   type = string
 }
 
-
-variable private_subnet1_cidr {
+variable "availability_zone2" {
   type = string
 }
 
-variable private_subnet2_cidr {
+variable "private_subnet1_cidr" {
   type = string
 }
 
-
-variable private_rds_subnet1_cidr {
+variable "private_subnet2_cidr" {
   type = string
 }
 
-variable private_rds_subnet2_cidr {
+variable "private_rds_subnet1_cidr" {
+  type = string
+}
+
+variable "private_rds_subnet2_cidr" {
   type = string
 }
 
@@ -52,12 +49,13 @@ variable "region" {
 variable "public_alb_name" {
   type = string
 }
+
 variable "private_alb_name" {
   type = string
 }
 
 variable "vpc_id" {
-  type        = string
+  type = string
 }
 
 variable "public_subnet1" {
@@ -65,7 +63,7 @@ variable "public_subnet1" {
 }
 
 variable "public_subnet2" {
-    type = string
+  type = string
 }
 
 variable "private_subnet1" {
@@ -73,33 +71,19 @@ variable "private_subnet1" {
 }
 
 variable "private_subnet2" {
-    type = string
+  type = string
 }
 
 variable "public_eks_cidr" {
-    type = string
+  type = string
 }
 
 variable "private_eks_cidr" {
-    type = string
+  type = string
 }
 
 variable "api_gateway_cidr" {
-    type = string
-  
-}
-
-variable "public_eks_cidr" {
-    type = string
-}
-
-variable "private_eks_cidr" {
-    type = string
-}
-
-variable "api_gateway_cidr" {
-    type = string
-  
+  type = string
 }
 
 variable "public_eks_name" {
@@ -107,7 +91,7 @@ variable "public_eks_name" {
 }
 
 variable "private_eks_name" {
-   type = string
+  type = string
 }
 
 variable "private_subnets" {
@@ -118,5 +102,19 @@ variable "public_subnets" {
   type = string
 }
 
+# EKS Module Variables
 
-# 
+variable "cluster_name" {
+  description = "EKS Cluster name"
+  type = string
+}
+
+variable "subnet_ids" {
+  description = "List of subnet IDs for the EKS cluster"
+  type = list(string)
+}
+
+variable "node_group_name" {
+  description = "EKS Node Group name"
+  type = string
+}
