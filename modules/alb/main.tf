@@ -81,7 +81,6 @@ resource "aws_security_group" "private_alb_sg" {
     to_port     = 80
     protocol    = "tcp"
     cidr_blocks = [var.public_eks_cidr, var.private_eks_cidr]
-    cidr_blocks = [var.public_eks_cidr, var.private_eks_cidr]
   }
 
   egress {
