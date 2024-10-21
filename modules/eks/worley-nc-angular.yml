@@ -1,3 +1,4 @@
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -13,7 +14,7 @@ data:
       <h1>Hello World!</h1>
     </body>
     </html>
- 
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -41,19 +42,18 @@ spec:
         - name: html
           configMap:
             name: app1-html
- 
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: app1-service
   annotations:
-    service.beta.kubernetes.io/aws-load-balancer-type: "alb" # Specify ALB
+    service.beta.kubernetes.io/aws-load-balancer-type: alb
 spec:
-  type: ClusterIP # Change to ClusterIP as we'll use Ingress
+  type: ClusterIP
   ports:
     - port: 80
       targetPort: 80
   selector:
     app: app1
- 
