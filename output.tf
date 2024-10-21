@@ -55,5 +55,5 @@ output "eks_cluster_endpoint" {
 }
 
 output "eks_cluster_ca_certificate" {
-  value = module.eks.eks_cluster_ca_certificate.data
+  value = module.eks.eks_cluster_ca_certificate[0].data
 }
