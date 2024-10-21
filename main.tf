@@ -14,15 +14,15 @@ module "vpc" {
   availability_zone2 = var.availability_zone2
 }
 
-module "alb" {
+/*module "alb" {
   source = "./modules/alb"
   public_alb_name = var.public_alb_name
   private_alb_name = var.private_alb_name
-  vpc_id = var.vpc_id
-  public_subnet1 = var.public_subnet1
-  public_subnet2 = var.public_subnet2
-  private_subnet1 = var.private_subnet1
-  private_subnet2 = var.private_subnet2
+  vpc_id = module.vpc.vpc_id
+  public_subnet1 = module.vpc.public_subnet1_id
+  public_subnet2 = module.vpc.public_subnet2_id
+  private_subnet1 = module.vpc.private_subnet1_id
+  private_subnet2 = module.vpc.private_subnet2_id
   public_eks_cidr = var.public_eks_cidr
   private_eks_cidr = var.private_eks_cidr
   api_gateway_cidr = var.api_gateway_cidr
@@ -30,8 +30,16 @@ module "alb" {
   public_subnets = var.public_subnets
   public_eks_name = var.public_eks_name
   private_eks_name = var.private_eks_name
- 
-} 
+}*/
 
- /* public_eks_cidr = 
-  private_eks_cidr = */
+module "eks" {
+  source = "./modules/eks"
+  cluster_name = var.cluster_name
+  subnet_ids = [
+    module.vpc.public_subnet1_id,
+    module.vpc.public_subnet2_id,
+    module.vpc.private_subnet1_id,
+    module.vpc.private_subnet2_id
+  ]
+  node_group_name = "${var.cluster_name}-node-group"
+}

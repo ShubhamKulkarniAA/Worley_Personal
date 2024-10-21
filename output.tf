@@ -4,11 +4,11 @@ output "vpc_id" {
 }
 
 output "rds_private_subnet1_id" {
- value = module.vpc.rds_private_subnet1_id 
+ value = module.vpc.rds_private_subnet1_id
 }
 
 output "rds_private_subnet2_id" {
- value = module.vpc.rds_private_subnet2_id 
+ value = module.vpc.rds_private_subnet2_id
 }
 
 output "public_subnet1_id" {
@@ -25,10 +25,10 @@ output "private_subnet1_id" {
 
 
 output "private_subnet2_id" {
- value = module.vpc.private_subnet2_id 
+ value = module.vpc.private_subnet2_id
 }
 
-output "public_alb_arn" {
+/*output "public_alb_arn" {
   value = module.alb.public_alb_arn
 }
 
@@ -42,4 +42,18 @@ output "private_alb_arn" {
 
 output "Private_alb_tg_arn" {
   value = module.alb.private_alb_tg_arn
+}*/
+
+#adding EKS modules
+
+output "eks_cluster_name" {
+  value = module.eks.eks_cluster_name
+}
+
+output "eks_cluster_endpoint" {
+  value = module.eks.eks_cluster_endpoint
+}
+
+output "eks_cluster_ca_certificate" {
+  value = module.eks.eks_cluster_ca_certificate
 }
