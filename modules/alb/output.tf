@@ -1,25 +1,15 @@
-# Variables
-variable "public_alb_name" {
-  type = string
+output "public_alb_arn" {
+  value = module.alb.public_alb_arn
 }
 
-variable "vpc_id" {
-  type = string
+output "Public_alb_tg_arn" {
+  value = module.alb.public_alb_tg_arn
 }
 
-variable "public_subnet1" {
-  type = string
+output "private_alb_arn" {
+  value = module.alb.private_alb_arn
 }
 
-variable "public_subnet2" {
-  type = string
-}
-
-variable "public_subnets" {
-  type = list(string)
-}
-
-variable "certificate_arn" {
-  description = "ARN of the SSL certificate in AWS Certificate Manager"
-  type        = string
+output "Private_alb_tg_arn" {
+  value = module.alb.private_alb_tg_arn
 }
