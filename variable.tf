@@ -47,14 +47,14 @@ variable "region" {
 }
 
 # ALB Variables
-variable "public_alb_name" {
+/*variable "public_alb_name" {
   type = string
 }
 
 variable "certificate_arn" {
   description = "ARN of the SSL certificate in AWS Certificate Manager"
   type        = string
-}
+}*/
 
 # EKS Module Variables
 

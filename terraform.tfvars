@@ -11,9 +11,9 @@ availability_zone1 = "ap-south-1a"
 availability_zone2 = "ap-south-1b"
 region = "ap-south-1"
 # ALB Veriables
-  public_alb_name = "worley-public-alb"
-  certificate_arn = "arn:aws:acm:ap-south-1:992382485993:certificate/d772b301-42bb-42d1-83d0-c489b90f8766"
-# New variables for EKS
+  /*public_alb_name = "worley-public-alb"
+  certificate_arn = "arn:aws:acm:ap-south-1:992382485993:certificate/d772b301-42bb-42d1-83d0-c489b90f8766"*/
+  # New variables for EKS
 /*cluster_name = "Worley-NC-eks"
 private_eks_name = "Worley-NC-eks-private"
   public_eks_cidr = "10.0.7.0/24"
