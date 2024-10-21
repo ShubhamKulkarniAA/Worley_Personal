@@ -104,15 +104,15 @@ variable "public_subnets" {
 
 # EKS Module Variables
 
+/*variable "public_eks_cidr" {
+  description = "List of subnet IDs for the EKS cluster"
+  type = string
+  }*/
+
 variable "cluster_name" {
   description = "EKS Cluster name"
   type = string
 }
-
-variable "public_eks_cidr" {
-  description = "List of subnet IDs for the EKS cluster"
-  type = string
-  }
 
 variable "node_group_name" {
   description = "EKS Node Group name"
@@ -120,5 +120,5 @@ variable "node_group_name" {
 }
 
 variable "subnet_ids" {
-  type = string
+  type = list(string)
 }

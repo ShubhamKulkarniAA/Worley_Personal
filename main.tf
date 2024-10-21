@@ -35,7 +35,6 @@ module "vpc" {
 module "eks" {
   source = "./modules/eks"
   cluster_name = var.cluster_name
-  vpc_id = module.vpc.vpc_id
   subnet_ids = [
     module.vpc.public_subnet1_id,
     module.vpc.public_subnet2_id,
@@ -43,5 +42,4 @@ module "eks" {
     module.vpc.private_subnet2_id
   ]
   node_group_name = "${var.cluster_name}-node-group"
-  region = var.region
 }
