@@ -115,10 +115,10 @@ variable "node_group_name" {
   type = string
 }
 
-variable "subnet_ids" {
+/*variable "subnet_ids" {
   description = "List of subnet IDs for the EKS cluster"
   type        = list(string)
-}
+}*/
 
 variable "ecr_repository_name" {
   description = "Name of the ECR repository"
