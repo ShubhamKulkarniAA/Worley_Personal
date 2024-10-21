@@ -12,3 +12,9 @@ variable "node_group_name" {
   description = "EKS Node Group name"
   type        = string
 }
+
+# New variable for ECR repository name
+variable "ecr_repository_name" {
+  description = "Name of the ECR repository"
+  type        = string
+}

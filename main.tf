@@ -32,6 +32,8 @@ module "vpc" {
   private_eks_name = var.private_eks_name
 }*/
 
+#EKS
+
 module "eks" {
   source = "./modules/eks"
   cluster_name = var.cluster_name
@@ -42,4 +44,5 @@ module "eks" {
     module.vpc.private_subnet2_id
   ]
   node_group_name = "${var.cluster_name}-node-group"
+  ecr_repository_name  = "${var.cluster_name}-app1"
 }

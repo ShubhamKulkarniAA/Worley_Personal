@@ -122,3 +122,8 @@ variable "node_group_name" {
 /*variable "subnet_ids" {
   type = list(string)
 }*/
+
+variable "ecr_repository_name" {
+  description = "Name of the ECR repository"
+  type        = string
+}
