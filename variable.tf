@@ -104,10 +104,6 @@ variable "public_subnets" {
 
 # EKS Module Variables
 
-/*variable "public_eks_cidr" {
-  description = "List of subnet IDs for the EKS cluster"
-  type = string
-  }*/
 
 variable "cluster_name" {
   description = "EKS Cluster name"
@@ -119,9 +115,10 @@ variable "node_group_name" {
   type = string
 }
 
-/*variable "subnet_ids" {
-  type = list(string)
-}*/
+variable "subnet_ids" {
+  description = "List of subnet IDs for the EKS cluster"
+  type        = list(string)
+}
 
 variable "ecr_repository_name" {
   description = "Name of the ECR repository"

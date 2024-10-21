@@ -10,14 +10,15 @@ private_rds_subnet2_cidr = "10.0.6.0/24"
 availability_zone1 = "ap-south-1a"
 availability_zone2 = "ap-south-1b"
 region = "ap-south-1"
+
 # ALB Veriables
 
 # New variables for EKS
-cluster_name = "Worley-NC-eks"
-node_group_name = "Worley-NC-eks-node-group"
+cluster_name = "Worley-NC-EKS"
+node_group_name = "Worley-NC-EKS-NG"
 /*private_eks_name = "Worley-NC-eks-private"
 public_eks_cidr = "10.0.8.0/24"
 private_eks_cidr = "10.0.9.0/24"*/
 
 # New variable for ECR
-ecr_repository_name = "Worley-NC-eks-app"
+ecr_repository_name = "Worley-NC-EKS-app"
