@@ -22,7 +22,7 @@ module "alb" {
   public_subnet1  = module.vpc.public_subnet1_id
   public_subnet2 = module.vpc.public_subnet2_id
   private_subnet1 = module.vpc.private_subnet1_id
-  private_subnet2 = module.vpc.private_subnet2_
+  private_subnet2 = module.vpc.private_subnet2_id
   certificate_arn = var.certificate_arn
   private_eks_cidr = var.private_eks_cidr
   public_eks_cidr = var.public_eks_cidr

@@ -1,5 +1,5 @@
 output "public_alb_arn" {
-  value = aws_lb.alb.arn
+  value = aws_lb.public_alb.arn
 }
 
 output "public_alb_tg_arn" {
