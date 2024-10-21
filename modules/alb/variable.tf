@@ -1,12 +1,10 @@
+# Variables
 variable "public_alb_name" {
-  type = string
-}
-variable "private_alb_name" {
   type = string
 }
 
 variable "vpc_id" {
-  type        = string
+  type = string
 }
 
 variable "public_subnet1" {
@@ -14,42 +12,14 @@ variable "public_subnet1" {
 }
 
 variable "public_subnet2" {
-    type = string
-}
-
-variable "private_subnet1" {
-  type = string
-}
-
-variable "private_subnet2" {
-    type = string
-}
-
-variable "public_eks_cidr" {
-    type = string
-}
-
-variable "private_eks_cidr" {
-    type = string
-}
-
-variable "api_gateway_cidr" {
-    type = string
-  
-}
-
-variable "public_eks_name" {
-  type = string
-}
-
-variable "private_eks_name" {
-   type = string
-}
-
-variable "private_subnets" {
   type = string
 }
 
 variable "public_subnets" {
-  type = string
+  type = list(string)
+}
+
+variable "certificate_arn" {
+  description = "ARN of the SSL certificate in AWS Certificate Manager"
+  type        = string
 }

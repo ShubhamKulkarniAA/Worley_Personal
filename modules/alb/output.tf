@@ -1,20 +1,25 @@
-output "public_alb_arn" {
-  value = aws_lb.alb.arn
+# Variables
+variable "public_alb_name" {
+  type = string
 }
 
-output "public_alb_tg_arn" {
-  value = aws_lb_target_group.public_alb_tg.arn
+variable "vpc_id" {
+  type = string
 }
 
-output "private_alb_arn" {
-  value = aws_lb.private_alb.arn
+variable "public_subnet1" {
+  type = string
 }
 
-output "private_alb_tg_arn" {
-  value = aws_lb_target_group.private_alb_tg.arn
+variable "public_subnet2" {
+  type = string
 }
 
+variable "public_subnets" {
+  type = list(string)
+}
 
-output "public_alb_dns_name" {
-  value = aws_lb.public_alb.dns_name
+variable "certificate_arn" {
+  description = "ARN of the SSL certificate in AWS Certificate Manager"
+  type        = string
 }
