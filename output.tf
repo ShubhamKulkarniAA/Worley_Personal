@@ -28,6 +28,7 @@ output "private_subnet2_id" {
  value = module.vpc.private_subnet2_id
 }
 
+#ALB
 output "public_alb_arn" {
   value = module.alb.public_alb_arn
 }

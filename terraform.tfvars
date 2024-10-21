@@ -12,6 +12,7 @@ availability_zone2 = "ap-south-1b"
 region = "ap-south-1"
 # ALB Veriables
   public_alb_name = "worley-public-alb"
+  certificate_arn = ""
 # New variables for EKS
 /*cluster_name = "Worley-NC-eks"
 private_eks_name = "Worley-NC-eks-private"
