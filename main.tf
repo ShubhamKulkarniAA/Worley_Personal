@@ -14,7 +14,7 @@ module "vpc" {
   availability_zone2 = var.availability_zone2
 }
 
-module "alb" {
+/*module "alb" {
   source = "./modules/alb"
   public_alb_name = var.public_alb_name
   private_alb_name = var.private_alb_name
@@ -30,18 +30,16 @@ module "alb" {
   public_subnets = var.public_subnets
   public_eks_name = var.public_eks_name
   private_eks_name = var.private_eks_name
-}
+}*/
 
 module "eks" {
   source = "./modules/eks"
-  cluster_name = var.public_eks_name
-  vpc_id = module.vpc.vpc_id
+  cluster_name = var.cluster_name
   subnet_ids = [
     module.vpc.public_subnet1_id,
     module.vpc.public_subnet2_id,
     module.vpc.private_subnet1_id,
     module.vpc.private_subnet2_id
   ]
-  node_group_name = "${var.public_eks_name}-node-group"
-  region = var.region
+  node_group_name = "${var.cluster_name}-node-group"
 }
