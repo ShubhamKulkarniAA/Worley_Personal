@@ -45,7 +45,7 @@ resource "aws_lb" "public_alb" {
 
 # Public ALB Target Group
 resource "aws_lb_target_group" "public_alb_tg" {
-  name        = "${var.public_alb_name}_tg"
+  name        = "${var.public_alb_name}-tg"
   port        = 80
   protocol    = "HTTP"
   vpc_id      = var.vpc_id
