@@ -7,5 +7,5 @@ output "eks_cluster_endpoint" {
 }
 
 output "eks_cluster_ca_certificate" {
-  value = aws_eks_cluster.cluster.certificate_authority
+ value = aws_eks_cluster.cluster.certificate_authority[0].data
 }

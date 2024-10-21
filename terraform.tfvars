@@ -17,4 +17,3 @@ cluster_name = "Worley-NC-eks"
 /*private_eks_name = "Worley-NC-eks-private"
 public_eks_cidr = "10.0.8.0/24"
 private_eks_cidr = "10.0.9.0/24"*/
-node_group_name = "${var.cluster_name}-node-group"
