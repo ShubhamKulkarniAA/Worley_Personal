@@ -104,7 +104,7 @@ variable "public_subnets" {
 
 # EKS Module Variables
 
-/*variable "public_eks_cidr" {
+/*variable "public_eks_cid" {
   description = "List of subnet IDs for the EKS cluster"
   type = string
   }*/
