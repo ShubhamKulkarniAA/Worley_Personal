@@ -46,7 +46,7 @@ variable "region" {
   type = string
 }
 
-variable "public_alb_name" {
+/*variable "public_alb_name" {
   type = string
 }
 
@@ -100,7 +100,7 @@ variable "private_subnets" {
 
 variable "public_subnets" {
   type = string
-}
+}*/
 
 # EKS Module Variables
 
@@ -109,12 +109,16 @@ variable "cluster_name" {
   type = string
 }
 
-variable "subnet_ids" {
+variable "public_eks_cidr" {
   description = "List of subnet IDs for the EKS cluster"
-  type = list(string)
-}
+  type = string
+  }
 
 variable "node_group_name" {
   description = "EKS Node Group name"
+  type = string
+}
+
+variable "subnet_ids" {
   type = string
 }
