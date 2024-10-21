@@ -120,7 +120,7 @@ variable "node_group_name" {
   type        = list(string)
 }*/
 
-variable "ecr_repository_name" {
+/*variable "ecr_repository_name" {
   description = "Name of the ECR repository"
   type        = string
-}
+}*/

@@ -14,7 +14,7 @@ variable "node_group_name" {
 }
 
 # New variable for ECR repository name
-variable "ecr_repository_name" {
+/*variable "ecr_repository_name" {
   description = "Name of the ECR repository"
   type        = string
-}
+}*/

@@ -55,6 +55,11 @@ resource "aws_iam_role_policy_attachment" "eks_cni_policy" {
   role       = aws_iam_role.eks_node_group_role.name
 }
 
+resource "aws_iam_role_policy_attachment" "eks_autoscaler_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_NodePolicy"
+  role       = aws_iam_role.eks_node_group_role.name
+}
+
 resource "aws_eks_node_group" "node_group" {
   cluster_name    = aws_eks_cluster.cluster.name
   node_group_name = var.node_group_name
@@ -67,11 +72,11 @@ resource "aws_eks_node_group" "node_group" {
     min_size     = 1
   }
 
-  instance_types = ["t2.micro"]
+  instance_types = ["t3.medium"]
   ami_type        = "AL2_x86_64"
   capacity_type   = "ON_DEMAND"
 }
 
-resource "aws_ecr_repository" "app1" {
+/*resource "aws_ecr_repository" "app1" {
   name = var.ecr_repository_name
-}
+}*/

@@ -21,4 +21,4 @@ public_eks_cidr = "10.0.8.0/24"
 private_eks_cidr = "10.0.9.0/24"*/
 
 # New variable for ECR
-ecr_repository_name = "Worley-NC-EKS-app"
+#ecr_repository_name = "Worley-NC-EKS-app"

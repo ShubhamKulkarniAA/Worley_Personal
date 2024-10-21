@@ -58,6 +58,6 @@ output "eks_cluster_ca_certificate" {
   value = module.eks.eks_cluster_ca_certificate
 }
 
-output "ecr_repository_url" {
+/*output "ecr_repository_url" {
  value = module.eks.ecr_repository_url
-}
+}*/
