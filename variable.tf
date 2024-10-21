@@ -50,10 +50,20 @@ variable "region" {
 variable "public_alb_name" {
   type = string
 }
-
+variable "private_alb_name" {
+  type = string
+}
 variable "certificate_arn" {
-  description = "ARN of the SSL certificate in AWS Certificate Manager"
-  type        = string
+  type = string
+}
+variable "private_eks_cidr" {
+    type = string
+}
+variable "public_eks_cidr" {
+    type = string
+}
+variable "api_gateway_cidr" {
+    type = string
 }
 
 # EKS Module Variables

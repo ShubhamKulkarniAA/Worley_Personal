@@ -17,11 +17,16 @@ module "vpc" {
 module "alb" {
   source = "./modules/alb"
   public_alb_name = var.public_alb_name
-  vpc_id = module.vpc.vpc_id
-  public_subnet1 = module.vpc.public_subnet1_id
+  private_alb_name = var.private_alb_name
+  vpc_id  = module.vpc.vpc_id  
+  public_subnet1  = module.vpc.public_subnet1_id
   public_subnet2 = module.vpc.public_subnet2_id
-  public_subnets = [module.vpc.public_subnet1_id, module.vpc.public_subnet2_id]
+  private_subnet1 = module.vpc.private_subnet1_id
+  private_subnet2 = module.vpc.private_subnet2_
   certificate_arn = var.certificate_arn
+  private_eks_cidr = var.private_eks_cidr
+  public_eks_cidr = var.public_eks_cidr
+  api_gateway_cidr = var.api_gateway_cidr
 }
 
 /*module "eks" {
