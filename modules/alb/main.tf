@@ -1,44 +1,47 @@
-# Public ALB Security Group
 resource "aws_security_group" "public_alb_sg" {
-  name   = "${var.public_alb_name}_sg"
-  vpc_id = var.vpc_id
+  name        = "${var.public_alb_name}-sg"
+  vpc_id      = var.vpc_id
 
   ingress {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"] # Allowing HTTP traffic from anywhere
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"] # Allowing all outbound traffic
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   tags = {
-    Name = "${var.public_alb_name}_sg"
+    Name = "${var.public_alb_name}-sg"
   }
 }
 
-# Public ALB
 resource "aws_lb" "public_alb" {
   name               = var.public_alb_name
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.public_alb_sg.id]
-  subnets            = var.public_subnets
+  subnets            = [var.public_subnet1, var.public_subnet2]
   enable_deletion_protection = false
-
   tags = {
     Name = var.public_alb_name
   }
 }
 
-# Public ALB Target Group
 resource "aws_lb_target_group" "public_alb_tg" {
-  name        = "${var.public_alb_name}_tg"
+  name        = "${var.public_alb_name}-tg"
   port        = 80
   protocol    = "HTTP"
   vpc_id      = var.vpc_id
@@ -50,31 +53,48 @@ resource "aws_lb_target_group" "public_alb_tg" {
     timeout             = 5
     healthy_threshold   = 3
     unhealthy_threshold = 3
-    matcher {
-      http_code = "200"
-    }
+    matcher             = "200"
   }
 
   tags = {
-    Name = "${var.public_alb_name}_tg"
+    Name = "${var.public_alb_name}-tg"
   }
 }
 
-# Public ALB Listener (HTTP)
 resource "aws_lb_listener" "public_alb_listener_http" {
   load_balancer_arn = aws_lb.public_alb.arn
   port              = 80
   protocol          = "HTTP"
+  default_action {
+    type             = "redirect"
+      redirect {
+      protocol = "HTTPS"
+      port     = "443"
+      status_code = "HTTP_301"
+      host     = "#{host}"
+      path     = "/#{path}"
+      query    = "#{query}" 
+      }
+  }
+}
+
+resource "aws_lb_listener" "public_alb_listener_https" {
+  load_balancer_arn = aws_lb.public_alb.arn
+  port              = 443
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = var.certificate_arn
+
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.public_alb_tg.arn
   }
 }
 
-# Private ALB Security Group
+
 resource "aws_security_group" "private_alb_sg" {
-  name   = "${var.private_alb_name}_sg"
-  vpc_id = var.vpc_id
+  name        = "${var.private_alb_name}-sg"
+  vpc_id      = var.vpc_id
 
   ingress {
     from_port   = 80
@@ -83,36 +103,37 @@ resource "aws_security_group" "private_alb_sg" {
     cidr_blocks = [var.public_eks_cidr, var.private_eks_cidr]
   }
 
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = [var.api_gateway_cidr, var.public_eks_cidr]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
-    cidr_blocks = ["0.0.0.0/0"]
   }
 
   tags = {
-    Name = "${var.private_alb_name}_sg"
+    Name = "${var.private_alb_name}-sg"
   }
 }
-
-# Private ALB
 resource "aws_lb" "private_alb" {
   name               = var.private_alb_name
   internal           = true
   load_balancer_type = "application"
   security_groups    = [aws_security_group.private_alb_sg.id]
-  subnets            = var.private_subnets
+  subnets            = [var.private_subnet1, var.private_subnet2] 
   enable_deletion_protection = false
-
   tags = {
     Name = var.private_alb_name
   }
 }
-
-# Private ALB Target Group
 resource "aws_lb_target_group" "private_alb_tg" {
-  name        = "${var.private_alb_name}_tg"
+  name        = "${var.private_alb_name}-tg"
   port        = 80
   protocol    = "HTTP"
   vpc_id      = var.vpc_id
@@ -124,54 +145,68 @@ resource "aws_lb_target_group" "private_alb_tg" {
     timeout             = 5
     healthy_threshold   = 3
     unhealthy_threshold = 3
-    matcher {
-      http_code = "200"
-    }
+    matcher             = "200"
   }
 
   tags = {
-    Name = "${var.private_alb_name}_tg"
+    Name = "${var.private_alb_name}-tg"
   }
 }
-
-# Private ALB Listener (HTTP)
-resource "aws_lb_listener" "private_alb_listener_http" {
+resource "aws_lb_listener" "private_alb_listener_https" {
   load_balancer_arn = aws_lb.private_alb.arn
-  port              = 80
-  protocol          = "HTTP"
+  port              = 443
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = var.certificate_arn 
+
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.private_alb_tg.arn
   }
 }
+resource "aws_api_gateway_vpc_link" "private_vpc_link" {
+  name = "private-alb-vpc-link"
+  target_arns = [
+    aws_lb.private_alb.arn
+  ]
+}
 
-# API Gateway for Private EKS
-resource "aws_api_gateway_rest_api" "private_api" {
-  name = "${var.private_eks_name}-api"
+resource "aws_api_gateway_rest_api" "api" {
+  name        = "Private-ALB-EKS-API"
+}
 
-  endpoint_configuration {
-    types = ["PRIVATE"]
+resource "aws_api_gateway_resource" "private_proxy" {
+  rest_api_id = aws_api_gateway_rest_api.api.id
+  parent_id   = aws_api_gateway_rest_api.api.root_resource_id
+  path_part   = "{proxy+}"
+}
+
+resource "aws_api_gateway_method" "private_proxy_method" {
+  rest_api_id   = aws_api_gateway_rest_api.api.id
+  resource_id   = aws_api_gateway_resource.private_proxy.id
+  http_method   = "ANY"
+  authorization = "NONE"
+
+  request_parameters = {
+    "method.request.path.proxy" = true
   }
 }
 
-resource "aws_api_gateway_resource" "eks_private_resource" {
-  rest_api_id = aws_api_gateway_rest_api.private_api.id
-  parent_id   = aws_api_gateway_rest_api.private_api.root_resource_id
-  path_part   = "private-eks"
+resource "aws_api_gateway_integration" "private_proxy_integration" {
+  rest_api_id = aws_api_gateway_rest_api.api.id
+  resource_id = aws_api_gateway_resource.private_proxy.id
+  http_method = aws_api_gateway_method.private_proxy_method.http_method
+  type        = "HTTP_PROXY"
+
+  integration_http_method = "ANY"
+  uri                     = "http://${aws_lb.private_alb.dns_name}/{proxy}"
+
+  request_parameters = {
+    "integration.request.path.proxy" = "method.request.path.proxy"
+  }
+
+  connection_type = "VPC_LINK"
+  connection_id   = aws_api_gateway_vpc_link.private_vpc_link.id
 }
 
-resource "aws_api_gateway_method" "eks_private_method" {
-  rest_api_id   = aws_api_gateway_rest_api.private_api.id
-  resource_id   = aws_api_gateway_resource.eks_private_resource.id
-  http_method   = "POST"
-  authorization = "NONE"
-}
 
-resource "aws_api_gateway_integration" "private_api_integration" {
-  rest_api_id             = aws_api_gateway_rest_api.private_api.id
-  resource_id             = aws_api_gateway_resource.eks_private_resource.id
-  http_method             = aws_api_gateway_method.eks_private_method.http_method
-  integration_http_method = "POST"
-  type                    = "HTTP_PROXY"
-  uri                     = "https://${aws_lb.private_alb.dns_name}/private-eks"
-}

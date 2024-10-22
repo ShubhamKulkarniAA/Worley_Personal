@@ -46,66 +46,29 @@ variable "region" {
   type = string
 }
 
-/*variable "public_alb_name" {
+# ALB Variables
+variable "public_alb_name" {
   type = string
 }
-
 variable "private_alb_name" {
   type = string
 }
-
-variable "vpc_id" {
+variable "certificate_arn" {
   type = string
 }
-
-variable "public_subnet1" {
-  type = string
-}
-
-variable "public_subnet2" {
-  type = string
-}
-
-variable "private_subnet1" {
-  type = string
-}
-
-variable "private_subnet2" {
-  type = string
-}
-
-variable "public_eks_cidr" {
-  type = string
-}
-
 variable "private_eks_cidr" {
-  type = string
+    type = string
 }
-
+variable "public_eks_cidr" {
+    type = string
+}
 variable "api_gateway_cidr" {
-  type = string
+    type = string
 }
-
-variable "public_eks_name" {
-  type = string
-}
-
-variable "private_eks_name" {
-  type = string
-}
-
-variable "private_subnets" {
-  type = string
-}
-
-variable "public_subnets" {
-  type = string
-}*/
-
 # EKS Module Variables
 
 
-variable "cluster_name" {
+/*variable "cluster_name" {
   description = "EKS Cluster name"
   type = string
 }
@@ -113,7 +76,7 @@ variable "cluster_name" {
 variable "node_group_name" {
   description = "EKS Node Group name"
   type = string
-}
+}*/
 
 /*variable "subnet_ids" {
   description = "List of subnet IDs for the EKS cluster"

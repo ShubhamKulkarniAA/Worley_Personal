@@ -3,7 +3,8 @@ name: Terraform AWS Deployment
 on:
   push:
     branches:
-      - main
+      - amey
+      - shubham
 
 jobs:
   TerraformAWS:
