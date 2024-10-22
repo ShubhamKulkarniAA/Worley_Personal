@@ -77,6 +77,6 @@ resource "aws_eks_node_group" "node_group" {
   capacity_type   = "ON_DEMAND"
 }
 
-/*resource "aws_ecr_repository" "app1" {
+/*resource "aws_ecr_repository" "app" {
   name = var.ecr_repository_name
 }*/
