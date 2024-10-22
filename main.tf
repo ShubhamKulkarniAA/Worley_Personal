@@ -27,9 +27,15 @@ module "alb" {
   private_eks_cidr = var.private_eks_cidr
   public_eks_cidr = var.public_eks_cidr
   api_gateway_cidr = var.api_gateway_cidr
-}
+  private_subnets = var.private_subnets
+  public_subnets = var.public_subnets
+  public_eks_name = var.public_eks_name
+  private_eks_name = var.private_eks_name
+}*/
 
-/*module "eks" {
+#EKS
+
+module "eks" {
   source = "./modules/eks"
   cluster_name = var.cluster_name
   subnet_ids = [
@@ -39,5 +45,5 @@ module "alb" {
     module.vpc.private_subnet2_id
   ]
   node_group_name = "${var.cluster_name}-node-group"
-  region = var.region
-}*/
+
+}

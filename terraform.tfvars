@@ -10,17 +10,15 @@ private_rds_subnet2_cidr = "10.0.6.0/24"
 availability_zone1 = "ap-south-1a"
 availability_zone2 = "ap-south-1b"
 region = "ap-south-1"
+
 # ALB Veriables
-public_alb_name = "worley-nc-public-alb"
-private_alb_name = "worley-nc-private-alb"
-certificate_arn = "arn:aws:acm:ap-south-1:992382485993:certificate/d772b301-42bb-42d1-83d0-c489b90f8766"
-private_eks_cidr = "10.0.7.0/24"
+
+# New variables for EKS
+cluster_name = "Worley-NC-EKS"
+node_group_name = "Worley-NC-EKS-NG"
+/*private_eks_name = "Worley-NC-eks-private"
 public_eks_cidr = "10.0.8.0/24"
-api_gateway_cidr = "10.0.9.0/24"
-  # New variables for EKS
-/*cluster_name = "Worley-NC-eks"
-private_eks_name = "Worley-NC-eks-private"
-  public_eks_cidr = "10.0.7.0/24"
-private_eks_cidr = "10.0.8.0/24"
-private_eks_cidr = "10.0.9.0/24"
-node_group_name = "worley-nc-eks-node"*/
+private_eks_cidr = "10.0.9.0/24"*/
+
+# New variable for ECR
+#ecr_repository_name = "Worley-NC-EKS-app"
