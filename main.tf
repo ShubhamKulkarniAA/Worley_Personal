@@ -27,11 +27,7 @@ module "alb" {
   private_eks_cidr = var.private_eks_cidr
   public_eks_cidr = var.public_eks_cidr
   api_gateway_cidr = var.api_gateway_cidr
-  private_subnets = var.private_subnets
-  public_subnets = var.public_subnets
-  public_eks_name = var.public_eks_name
-  private_eks_name = var.private_eks_name
-}*/
+}
 
 #EKS
 
