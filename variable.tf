@@ -121,6 +121,6 @@ variable "node_group_name" {
 }*/
 
 /*variable "ecr_repository_name" {
-  description = "Name of the ECR repository"
+  description = "Name of the ECR repositor"
   type        = string
 }*/
