@@ -35,7 +35,7 @@ module "alb" {
 
 #EKS
 
-module "eks" {
+/*module "eks" {
   source = "./modules/eks"
   cluster_name = var.cluster_name
   subnet_ids = [
@@ -46,4 +46,4 @@ module "eks" {
   ]
   node_group_name = "${var.cluster_name}-node-group"
 
-}
+}*/

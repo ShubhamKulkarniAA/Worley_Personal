@@ -100,14 +100,14 @@ resource "aws_security_group" "private_alb_sg" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = [var.public_eks_cidr, var.private_eks_cidr] # Restricting to the CIDR blocks of the public and private EKS clusters
+    cidr_blocks = [var.public_eks_cidr, var.private_eks_cidr]
   }
 
   ingress {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = [var.api_gateway_cidr, var.public_eks_cidr] # Allow API Gateway traffic and public EKS cluster traffic to access
+    cidr_blocks = [var.api_gateway_cidr, var.public_eks_cidr]
   }
 
   egress {

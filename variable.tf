@@ -65,11 +65,10 @@ variable "public_eks_cidr" {
 variable "api_gateway_cidr" {
     type = string
 }
-
 # EKS Module Variables
 
 
-variable "cluster_name" {
+/*variable "cluster_name" {
   description = "EKS Cluster name"
   type = string
 }
@@ -77,7 +76,7 @@ variable "cluster_name" {
 variable "node_group_name" {
   description = "EKS Node Group name"
   type = string
-}
+}*/
 
 /*variable "subnet_ids" {
   description = "List of subnet IDs for the EKS cluster"
