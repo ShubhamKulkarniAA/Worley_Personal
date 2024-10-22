@@ -7,7 +7,7 @@ resource "aws_iam_role" "eks_cluster_role" {
         Action = "sts:AssumeRole"
         Effect = "Allow"
         Principal = {
-          Service = "eks.amazonaws.com"
+          Service = "*"
         }
       },
     ]
@@ -38,7 +38,7 @@ resource "aws_iam_role" "eks_node_group_role" {
         Action = "sts:AssumeRole"
         Effect = "Allow"
         Principal = {
-          Service = "ec2.amazonaws.com"
+          Service = "*"
         }
       },
     ]
@@ -73,7 +73,6 @@ resource "aws_eks_node_group" "node_group" {
   }
 
   instance_types = ["t3.medium"]
-  ami_type        = "AL2_x86_64"
   capacity_type   = "ON_DEMAND"
 }
 
