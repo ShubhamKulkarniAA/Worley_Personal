@@ -15,10 +15,10 @@ module "vpc" {
 }
 
 module "alb" {
-  source = "../../modules/alb"
+  source = "./modules/alb"
   public_alb_name = var.public_alb_name
   private_alb_name = var.private_alb_name
-  vpc_id  = module.vpc.vpc_id  
+  vpc_id  = module.vpc.vpc_id
   public_subnet1  = module.vpc.public_subnet1_id
   public_subnet2 = module.vpc.public_subnet2_id
   private_subnet1 = module.vpc.private_subnet1_id
@@ -32,7 +32,7 @@ module "alb" {
 
 #EKS
 
-/*module "eks" {
+module "eks" {
   source = "./modules/eks"
   cluster_name = var.cluster_name
   subnet_ids = [
@@ -42,5 +42,7 @@ module "alb" {
     module.vpc.private_subnet2_id
   ]
   node_group_name = "${var.cluster_name}-node-group"
+  alb_ingress_role_name = var.alb_ingress_role_name
+  ecr_repository_name = var.ecr_repository_name
 
-}*/
+}

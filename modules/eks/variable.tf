@@ -13,8 +13,14 @@ variable "node_group_name" {
   type        = string
 }
 
+variable "alb_ingress_role_name" {
+  description = "IAM role name for the ALB Ingress Controller"
+  type        = string
+}
+
 # New variable for ECR repository name
-/*variable "ecr_repository_name" {
+
+variable "ecr_repository_name" {
   description = "Name of the ECR repository"
   type        = string
-}*/
+}
