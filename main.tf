@@ -44,6 +44,5 @@ module "eks" {
   node_group_name = "${var.cluster_name}-node-group"
   alb_ingress_role_name = var.alb_ingress_role_name
   ecr_repository_name = var.ecr_repository_name
-  ecr_policy_name = var.ecr_policy_name
 
 }

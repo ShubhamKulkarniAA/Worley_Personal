@@ -60,7 +60,6 @@ resource "aws_iam_role_policy_attachment" "nodes-AmazonEC2ContainerRegistryReadO
 }
 
 # IAM Policy for ECR
-
 resource "aws_iam_policy" "ecr_access_policy" {
   name        = "${var.cluster_name}-ecr-access-policy"
   description = "Policy for EKS Node Group to access ECR"
@@ -103,8 +102,7 @@ resource "aws_eks_node_group" "node_group" {
   capacity_type   = "ON_DEMAND"
 }
 
-# IAM policy for ALB ingress controller
-
+# IAM Policy for ALB ingress controller
 resource "aws_iam_policy" "alb_ingress_policy" {
   name        = "${var.cluster_name}-alb-ingress-policy"
   description = "Policy for ALB Ingress Controller"
@@ -133,7 +131,23 @@ resource "aws_iam_policy" "alb_ingress_policy" {
   })
 }
 
+# Attach ALB ingress role
+
+resource "aws_iam_role" "alb_ingress_role" {
+  name = var.alb_ingress_role_name
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = {
+        Service = "elasticloadbalancing.amazonaws.com"
+      }
+    }]
+  })
+}
+
 resource "aws_iam_role_policy_attachment" "alb_ingress_role_policy_attachment" {
-  role       = aws_iam_role.eks_node_group_role.name
+  role       = aws_iam_role.alb_ingress_role.name
   policy_arn = aws_iam_policy.alb_ingress_policy.arn
 }

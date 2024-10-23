@@ -12,6 +12,7 @@ availability_zone2 = "ap-south-1b"
 region = "ap-south-1"
 
 # ALB Veriables
+
 public_alb_name = "worley-nc-public-alb"
 private_alb_name = "worley-nc-private-alb"
 /*certificate_arn = ""*/
@@ -20,12 +21,11 @@ public_eks_cidr = "10.0.8.0/24"
 api_gateway_cidr = "10.0.9.0/24"
 private_nlb_name = "worley-nc-private-nlb"
 
-# New variables for EKS
+# New variables for EKS & ECR
 
 cluster_name = "Worley-NC-EKS"
 node_group_name = "Worley-NC-EKS-NG"
 
-
-# New variable for ECR
-
 ecr_repository_name = "demo-worley-nc-ui"
+
+alb_ingress_role_name = "Worley-NC-EKS-alb-ingress-role"
