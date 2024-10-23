@@ -15,7 +15,7 @@ module "vpc" {
 }
 
 module "alb" {
-  source = "../../modules/alb"
+  source = "./modules/alb"
   public_alb_name = var.public_alb_name
   private_alb_name = var.private_alb_name
   vpc_id  = module.vpc.vpc_id

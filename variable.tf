@@ -96,9 +96,3 @@ variable "ecr_repository_name" {
   description = "Name of the ECR repositor"
   type        = string
 }
-
-variable "ecr_policy_name" {
-  description = "Name for the ECR access policy"
-  type        = string
-  default     = "${var.cluster_name}-ecr-access-policy"
-}
