@@ -45,9 +45,6 @@ variable private_rds_subnet2_cidr {
   type = string
 }
 
-variable "subnet_ids" {
-  type = list(string)
-}
 
 variable "region" {
   type = string
