@@ -1,5 +1,13 @@
-FROM nginx:alpine
 
-COPY index.html /usr/share/nginx/html/index.html
+FROM node:14
 
-EXPOSE 80
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+
+EXPOSE 5000
+
+CMD ["node", "server.js"]
