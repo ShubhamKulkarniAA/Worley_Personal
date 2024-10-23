@@ -27,7 +27,6 @@ variable availability_zone2 {
   type = string
 }
 
-
 variable private_subnet1_cidr {
   type = string
 }
