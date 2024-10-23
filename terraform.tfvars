@@ -14,10 +14,12 @@ region = "ap-south-1"
 # ALB Veriables
 public_alb_name = "worley-nc-public-alb"
 private_alb_name = "worley-nc-private-alb"
-/*certificate_arn = "arn:aws:acm:ap-south-1:484907523966:certificate/7ad9509e-abf0-4aff-9897-0fb8378f41e7"*/
+/*certificate_arn = ""*/
 private_eks_cidr = "10.0.7.0/24"
 public_eks_cidr = "10.0.8.0/24"
 api_gateway_cidr = "10.0.9.0/24"
+private_nlb_name = "worley-nc-private-nlb"
+
 
 # New variables for EKS
 /*cluster_name = "Worley-NC-EKS"

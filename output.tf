@@ -45,7 +45,13 @@ output "private_alb_arn" {
 output "Private_alb_tg_arn" {
   value = module.alb.private_alb_tg_arn
 }
+output "private_nlb_arn" {
+  value = module.alb.private_nlb_arn
+}
 
+output "private_nlb_tg_arn" {
+  value = module.alb.private_nlb_tg_arn
+}
 #adding EKS modules
 
 /*output "eks_cluster_name" {
