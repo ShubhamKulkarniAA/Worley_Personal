@@ -9,9 +9,9 @@ variable "vpc_id" {
   type        = string
 }
 
-variable "certificate_arn" {
+/*variable "certificate_arn" {
   type = string
-}
+}*/
 
 variable "public_subnet1" {
   type = string
@@ -37,3 +37,7 @@ variable "public_eks_cidr" {
 variable "api_gateway_cidr" {
     type = string
 }
+variable "private_nlb_name" {
+  type = string
+}
+

@@ -53,9 +53,9 @@ variable "public_alb_name" {
 variable "private_alb_name" {
   type = string
 }
-variable "certificate_arn" {
+/*variable "certificate_arn" {
   type = string
-}
+}*/
 variable "private_eks_cidr" {
     type = string
 }
@@ -65,6 +65,10 @@ variable "public_eks_cidr" {
 variable "api_gateway_cidr" {
     type = string
 }
+variable "private_nlb_name" {
+  type = string
+}
+
 # EKS Module Variables
 
 

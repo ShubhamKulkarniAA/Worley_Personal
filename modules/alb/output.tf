@@ -17,3 +17,11 @@ output "private_alb_tg_arn" {
 output "public_alb_dns_name" {
   value = aws_lb.public_alb.dns_name
 }
+
+output "private_nlb_arn" {
+  value = aws_lb.private_nlb.arn
+}
+
+output "private_nlb_tg_arn" {
+  value = aws_lb_target_group.private_nlb_tg.arn
+}
