@@ -83,15 +83,13 @@ variable "node_group_name" {
 }
 
 variable "subnet_ids" {
-  type        = list(string)
+  type = list(string)
 }
 
 variable "alb_ingress_role_name" {
-  description = "IAM role name for the ALB Ingress Controller"
-  type        = string
+  type = string
 }
 
 variable "ecr_repository_name" {
-  description = "Name of the ECR repositor"
-  type        = string
+  type = string
 }
