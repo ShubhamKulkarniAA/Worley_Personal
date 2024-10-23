@@ -60,6 +60,7 @@ resource "aws_iam_role_policy_attachment" "nodes-AmazonEC2ContainerRegistryReadO
 }
 
 # IAM Policy for ECR
+
 resource "aws_iam_policy" "ecr_access_policy" {
   name        = "${var.cluster_name}-ecr-access-policy"
   description = "Policy for EKS Node Group to access ECR"
@@ -79,6 +80,13 @@ resource "aws_iam_policy" "ecr_access_policy" {
       }
     ]
   })
+}
+
+resource "aws_ecr_repository" "app1" {
+  name = "demo-worley-nc-ui"
+  tags = {
+    Name = "demo-worley-nc-ui"
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "ecr_access_role_attachment" {
