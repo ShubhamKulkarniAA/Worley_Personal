@@ -21,7 +21,7 @@ resource "aws_iam_role_policy_attachment" "eks_cluster_policy" {
 
 resource "aws_eks_cluster" "cluster" {
   name     = var.cluster_name
-  
+
   role_arn = aws_iam_role.eks_cluster_role.arn
   vpc_config {
     subnet_ids = var.subnet_ids
@@ -71,7 +71,7 @@ resource "aws_eks_node_group" "node_group" {
     min_size     = 1
   }
 
-  instance_types = ["t3.medium"]
+  instance_types = ["t2.micro"]
   capacity_type   = "ON_DEMAND"
 }
 
