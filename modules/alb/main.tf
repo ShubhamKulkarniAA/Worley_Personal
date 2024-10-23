@@ -174,4 +174,3 @@ resource "aws_api_gateway_integration" "private_proxy_integration" {
   connection_type = "VPC_LINK"
   connection_id   = aws_api_gateway_vpc_link.private_vpc_link.id
 }
-
