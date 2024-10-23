@@ -82,14 +82,13 @@ variable "node_group_name" {
   type = string
 }
 
-variable "subnet_ids" {
-  type = list(string)
-}
-
 variable "alb_ingress_role_name" {
   type = string
 }
 
 variable "ecr_repository_name" {
   type = string
+}
+variable "subnet_ids" {
+  type = list(string)
 }

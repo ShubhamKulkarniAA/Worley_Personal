@@ -27,6 +27,7 @@ variable availability_zone2 {
   type = string
 }
 
+
 variable private_subnet1_cidr {
   type = string
 }
@@ -42,6 +43,10 @@ variable private_rds_subnet1_cidr {
 
 variable private_rds_subnet2_cidr {
   type = string
+}
+
+variable "subnet_ids" {
+  type = list(string)
 }
 
 variable "region" {
