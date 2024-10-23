@@ -18,7 +18,7 @@ module "alb" {
   source = "./modules/alb"
   public_alb_name = var.public_alb_name
   private_alb_name = var.private_alb_name
-  vpc_id  = module.vpc.vpc_id  
+  vpc_id  = module.vpc.vpc_id
   public_subnet1  = module.vpc.public_subnet1_id
   public_subnet2 = module.vpc.public_subnet2_id
   private_subnet1 = module.vpc.private_subnet1_id
