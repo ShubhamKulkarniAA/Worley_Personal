@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - amey
+      - shubham
 
 jobs:
   TerraformAWS:
