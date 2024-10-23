@@ -21,11 +21,11 @@ api_gateway_cidr = "10.0.9.0/24"
 private_nlb_name = "worley-nc-private-nlb"
 
 # New variables for EKS
-/*cluster_name = "Worley-NC-EKS"
-node_group_name = "Worley-NC-EKS-NG"*/
-/*private_eks_name = "Worley-NC-eks-private"
-public_eks_cidr = "10.0.8.0/24"
-private_eks_cidr = "10.0.9.0/24"*/
+
+cluster_name = "Worley-NC-EKS"
+node_group_name = "Worley-NC-EKS-NG"
+
 
 # New variable for ECR
-#ecr_repository_name = "Worley-NC-EKS-app"
+
+ecr_repository_name = "demo-worley-nc-ui"

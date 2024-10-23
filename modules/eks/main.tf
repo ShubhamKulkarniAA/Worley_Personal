@@ -21,8 +21,8 @@ resource "aws_iam_role_policy_attachment" "eks_cluster_policy" {
 
 resource "aws_eks_cluster" "cluster" {
   name     = var.cluster_name
-
   role_arn = aws_iam_role.eks_cluster_role.arn
+
   vpc_config {
     subnet_ids = var.subnet_ids
   }
@@ -59,6 +59,34 @@ resource "aws_iam_role_policy_attachment" "nodes-AmazonEC2ContainerRegistryReadO
   role       = aws_iam_role.eks_node_group_role.name
 }
 
+# IAM Policy for ECR
+
+resource "aws_iam_policy" "ecr_access_policy" {
+  name        = "${var.cluster_name}-ecr-access-policy"
+  description = "Policy for EKS Node Group to access ECR"
+  policy      = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:CompleteLayerUpload",
+          "ecr:InitiateLayerUpload",
+          "ecr:PutImage",
+          "ecr:GetAuthorizationToken"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "ecr_access_role_attachment" {
+  role       = aws_iam_role.eks_node_group_role.name
+  policy_arn = aws_iam_policy.ecr_access_policy.arn
+}
+
 resource "aws_eks_node_group" "node_group" {
   cluster_name    = aws_eks_cluster.cluster.name
   node_group_name = var.node_group_name
@@ -75,6 +103,37 @@ resource "aws_eks_node_group" "node_group" {
   capacity_type   = "ON_DEMAND"
 }
 
-/*resource "aws_ecr_repository" "app" {
-  name = var.ecr_repository_name
-}*/
+# IAM policy for ALB ingress controller
+
+resource "aws_iam_policy" "alb_ingress_policy" {
+  name        = "${var.cluster_name}-alb-ingress-policy"
+  description = "Policy for ALB Ingress Controller"
+  policy      = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "elasticloadbalancing:*",
+          "ec2:Describe*",
+          "iam:ListServerCertificates",
+          "iam:GetServerCertificate",
+          "acm:ListCertificates",
+          "acm:DescribeCertificate",
+          "tag:GetResources",
+          "cloudwatch:DescribeAlarms",
+          "cloudwatch:GetMetricStatistics",
+          "cloudwatch:ListMetrics",
+          "cloudwatch:PutMetricData",
+          "autoscaling:*",
+        ]
+        Effect = "Allow"
+        Resource = "*"
+      },
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "alb_ingress_role_policy_attachment" {
+  role       = aws_iam_role.eks_node_group_role.name
+  policy_arn = aws_iam_policy.alb_ingress_policy.arn
+}

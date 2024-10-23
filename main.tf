@@ -32,7 +32,7 @@ module "alb" {
 
 #EKS
 
-/*module "eks" {
+module "eks" {
   source = "./modules/eks"
   cluster_name = var.cluster_name
   subnet_ids = [
@@ -42,5 +42,8 @@ module "alb" {
     module.vpc.private_subnet2_id
   ]
   node_group_name = "${var.cluster_name}-node-group"
+  alb_ingress_role_name = var.alb_ingress_role_name
+  ecr_repository_name = var.ecr_repository_name
+  ecr_policy_name = var.ecr_policy_name
 
-}*/
+}
