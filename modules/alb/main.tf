@@ -9,13 +9,6 @@ resource "aws_security_group" "public_alb_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
   egress {
     from_port   = 0
     to_port     = 0
@@ -66,31 +59,10 @@ resource "aws_lb_listener" "public_alb_listener_http" {
   port              = 80
   protocol          = "HTTP"
   default_action {
-    type             = "redirect"
-      redirect {
-      protocol = "HTTPS"
-      port     = "443"
-      status_code = "HTTP_301"
-      host     = "#{host}"
-      path     = "/#{path}"
-      query    = "#{query}" 
-      }
-  }
-}
-
-resource "aws_lb_listener" "public_alb_listener_https" {
-  load_balancer_arn = aws_lb.public_alb.arn
-  port              = 443
-  protocol          = "HTTPS"
-  ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn   = var.certificate_arn
-
-  default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.public_alb_tg.arn
   }
 }
-
 
 resource "aws_security_group" "private_alb_sg" {
   name        = "${var.private_alb_name}-sg"
@@ -101,13 +73,6 @@ resource "aws_security_group" "private_alb_sg" {
     to_port     = 80
     protocol    = "tcp"
     cidr_blocks = [var.public_eks_cidr, var.private_eks_cidr]
-  }
-
-  ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = [var.api_gateway_cidr, var.public_eks_cidr]
   }
 
   egress {
@@ -121,17 +86,19 @@ resource "aws_security_group" "private_alb_sg" {
     Name = "${var.private_alb_name}-sg"
   }
 }
+
 resource "aws_lb" "private_alb" {
   name               = var.private_alb_name
   internal           = true
   load_balancer_type = "application"
   security_groups    = [aws_security_group.private_alb_sg.id]
-  subnets            = [var.private_subnet1, var.private_subnet2] 
+  subnets            = [var.private_subnet1, var.private_subnet2]
   enable_deletion_protection = false
   tags = {
     Name = var.private_alb_name
   }
 }
+
 resource "aws_lb_target_group" "private_alb_tg" {
   name        = "${var.private_alb_name}-tg"
   port        = 80
@@ -152,18 +119,17 @@ resource "aws_lb_target_group" "private_alb_tg" {
     Name = "${var.private_alb_name}-tg"
   }
 }
-resource "aws_lb_listener" "private_alb_listener_https" {
-  load_balancer_arn = aws_lb.private_alb.arn
-  port              = 443
-  protocol          = "HTTPS"
-  ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn   = var.certificate_arn 
 
+resource "aws_lb_listener" "private_alb_listener_http" {
+  load_balancer_arn = aws_lb.private_alb.arn
+  port              = 80
+  protocol          = "HTTP"
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.private_alb_tg.arn
   }
 }
+
 resource "aws_api_gateway_vpc_link" "private_vpc_link" {
   name = "private-alb-vpc-link"
   target_arns = [
@@ -208,5 +174,4 @@ resource "aws_api_gateway_integration" "private_proxy_integration" {
   connection_type = "VPC_LINK"
   connection_id   = aws_api_gateway_vpc_link.private_vpc_link.id
 }
-
 
