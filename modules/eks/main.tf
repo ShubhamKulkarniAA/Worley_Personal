@@ -83,9 +83,9 @@ resource "aws_iam_policy" "ecr_access_policy" {
 }
 
 resource "aws_ecr_repository" "app1" {
-  name = "demo-worley-nc-ui"
+  name = "demo-worley-nc"
   tags = {
-    Name = "demo-worley-nc-ui"
+    Name = "demo-worley-nc"
   }
 }
 
@@ -106,7 +106,7 @@ resource "aws_eks_node_group" "node_group" {
     min_size     = 1
   }
 
-  instance_types = ["t2.micro"]
+  instance_types = ["t3.medium"]
   capacity_type   = "ON_DEMAND"
 }
 
