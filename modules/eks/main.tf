@@ -95,7 +95,7 @@ resource "aws_iam_role_policy_attachment" "ecr_access_role_attachment" {
 }
 
 resource "aws_eks_node_group" "node_group" {
-  cluster_name    = aws_eks_cluster.cluster.name
+  cluster_name    = var.cluster_name
   node_group_name = var.node_group_name
   node_role_arn   = aws_iam_role.eks_node_group_role.arn
   subnet_ids      = var.subnet_ids
