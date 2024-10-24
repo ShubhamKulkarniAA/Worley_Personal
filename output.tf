@@ -66,7 +66,7 @@ output "eks_cluster_endpoint" {
 
 output "eks_cluster_ca_certificate" {
   description = "The CA certificate for the EKS cluster"
-  value       = module.eks.eks_cluster_ca_certificate_authority[0].data
+  value       = module.eks.eks_cluster_ca_certificate
 }
 
 /*output "ecr_repository_url" {
