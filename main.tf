@@ -23,22 +23,18 @@ module "alb" {
   public_subnet2 = module.vpc.public_subnet2_id
   private_subnet1 = module.vpc.private_subnet1_id
   private_subnet2 = module.vpc.private_subnet2_id
-  /*certificate_arn = var.certificate_arn*/
   private_eks_cidr = var.private_eks_cidr
   public_eks_cidr = var.public_eks_cidr
   api_gateway_cidr = var.api_gateway_cidr
   private_nlb_name = var.private_nlb_name
 }
 
-# EKS Module
 module "eks" {
   source = "./modules/eks"
   cluster_name = var.cluster_name
   subnet_ids = [
     module.vpc.public_subnet1_id,
-    module.vpc.public_subnet2_id,
-  # module.vpc.private_subnet1_id,
-  # module.vpc.private_subnet2_id
+    module.vpc.public_subnet2_id
   ]
   node_group_name = var.node_group_name
   alb_ingress_role_name = var.alb_ingress_role_name
