@@ -88,7 +88,7 @@ resource "aws_iam_policy" "ecr_access_policy" {
 }
 
 resource "aws_ecr_repository" "app1" {
-  name = "Demo-Worley-NC-ECR"
+  name = "demo-worley-nc-ecr"
   tags = {
     Name = "Demo-Worley-NC-Repository"
   }
