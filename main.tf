@@ -38,8 +38,6 @@ module "eks" {
     module.vpc.private_subnet1_id,
     module.vpc.private_subnet2_id
   ]
-  node_group_name = var.node_group_name
-  alb_security_groups = module.alb.alb_security_groups
-  ecr_repository_name = var.ecr_repository_name
+  node_group_name = "${var.cluster_name}-node-group"
 
 }

@@ -52,7 +52,8 @@ output "private_nlb_tg_arn" {
   value = module.alb.private_nlb_tg_arn
 }
 
-# EKS Outputs
+#adding EKS modules
+
 output "eks_cluster_name" {
   value = module.eks.eks_cluster_name
 }
@@ -65,6 +66,6 @@ output "eks_cluster_ca_certificate" {
   value = module.eks.eks_cluster_ca_certificate
 }
 
-output "ecr_repository_url" {
-  value = module.eks.ecr_repository_url
-}
+/*output "ecr_repository_url" {
+ value = module.eks.ecr_repository_url
+}*/

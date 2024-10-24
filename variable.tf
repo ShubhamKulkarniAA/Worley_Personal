@@ -77,14 +77,16 @@ variable "private_nlb_name" {
 }
 
 # EKS Module Variables
+
+
 variable "cluster_name" {
   description = "EKS Cluster name"
-  type        = string
+  type = string
 }
 
 variable "node_group_name" {
   description = "EKS Node Group name"
-  type        = string
+  type = string
 }
 
 /*variable "subnet_ids" {
@@ -92,12 +94,7 @@ variable "node_group_name" {
   type        = list(string)
 }*/
 
-variable "alb_ingress_role_name" {
-  description = "IAM role name for the ALB Ingress Controller"
+/*variable "ecr_repository_name" {
+  description = "Name of the ECR repositor"
   type        = string
-}
-
-variable "ecr_repository_name" {
-  description = "Name of the ECR repository"
-  type        = string
-}
+}*/

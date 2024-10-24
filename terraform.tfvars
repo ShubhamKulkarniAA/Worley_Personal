@@ -21,7 +21,5 @@ api_gateway_cidr         = "10.0.9.0/24"
 private_nlb_name         = "worley-nc-private-nlb"
 
 # EKS & ECR
-cluster_name             = "Worley-NC-EKS"
-node_group_name          = "Worley-NC-EKS-NG"
-ecr_repository_name      = "demo-worley-nc"
-alb_ingress_role_name    = "Worley-NC-EKS-alb-ingress-role"
+cluster_name = "Worley-NC-EKS"
+node_group_name = "Worley-NC-EKS-NG"
