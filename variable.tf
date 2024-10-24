@@ -47,7 +47,7 @@ variable "region" {
 }
 
 # ALB Variables
-variable "public_alb_name" {
+/*variable "public_alb_name" {
   type = string
 }
 
@@ -56,9 +56,9 @@ variable "private_alb_name" {
 }
 
 # Uncomment and update as needed for SSL certificates
-/* variable "certificate_arn" {
+ variable "certificate_arn" {
   type = string
-} */
+}
 
 variable "private_eks_cidr" {
   type = string
@@ -74,7 +74,7 @@ variable "api_gateway_cidr" {
 
 variable "private_nlb_name" {
   type = string
-}
+}*/
 
 # EKS Module Variables
 
@@ -88,11 +88,6 @@ variable "node_group_name" {
   description = "EKS Node Group name"
   type = string
 }
-
-/*variable "subnet_ids" {
-  description = "List of subnet IDs for the EKS cluster"
-  type        = list(string)
-}*/
 
 /*variable "ecr_repository_name" {
   description = "Name of the ECR repositor"

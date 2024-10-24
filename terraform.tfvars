@@ -12,13 +12,13 @@ availability_zone2       = "ap-south-1b"
 region                    = "ap-south-1"
 
 # ALB Variables
-public_alb_name          = "worley-nc-public-alb"
+/*public_alb_name          = "worley-nc-public-alb"
 private_alb_name         = "worley-nc-private-alb"
 # certificate_arn = ""  # Uncomment and set if using SSL certificates
 private_eks_cidr         = "10.0.7.0/24"
 public_eks_cidr          = "10.0.8.0/24"
 api_gateway_cidr         = "10.0.9.0/24"
-private_nlb_name         = "worley-nc-private-nlb"
+private_nlb_name         = "worley-nc-private-nlb"*/
 
 # EKS & ECR
 cluster_name = "Worley-NC-EKS"

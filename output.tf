@@ -28,7 +28,7 @@ output "private_subnet2_id" {
 }
 
 # ALB Outputs
-output "public_alb_arn" {
+/*output "public_alb_arn" {
   value = module.alb.public_alb_arn
 }
 
@@ -50,23 +50,20 @@ output "private_nlb_arn" {
 
 output "private_nlb_tg_arn" {
   value = module.alb.private_nlb_tg_arn
-}
+}*/
 
 #adding EKS modules
 
 output "eks_cluster_name" {
-  description = "The name of the EKS cluster"
-  value       = module.eks.eks_cluster_name
+  value = module.eks.eks_cluster_name
 }
 
 output "eks_cluster_endpoint" {
-  description = "The endpoint of the EKS cluster"
-  value       = module.eks.eks_cluster_endpoint
+  value = module.eks.eks_cluster_endpoint
 }
 
 output "eks_cluster_ca_certificate" {
-  description = "The CA certificate for the EKS cluster"
-  value       = module.eks.eks_cluster_ca_certificate
+  value = module.eks.eks_cluster_ca_certificate
 }
 
 /*output "ecr_repository_url" {
