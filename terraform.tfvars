@@ -21,7 +21,7 @@ public_eks_cidr = "10.0.8.0/24"
 api_gateway_cidr = "10.0.9.0/24"
 private_nlb_name = "worley-nc-private-nlb"
 
-# New variables for EKS & ECR
+# EKS & ECR
 
 cluster_name = "Worley-NC-EKS"
 node_group_name = "Worley-NC-EKS-NG"
