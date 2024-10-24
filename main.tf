@@ -41,7 +41,7 @@ module "eks" {
     module.vpc.private_subnet1_id,
     module.vpc.private_subnet2_id
   ]
-  node_group_name = "${var.cluster_name}-node-group"
+  node_group_name = var.node_group_name
   alb_ingress_role_name = var.alb_ingress_role_name
   ecr_repository_name = var.ecr_repository_name
 }
