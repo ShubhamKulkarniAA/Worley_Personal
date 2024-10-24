@@ -18,8 +18,6 @@ variable "alb_ingress_role_name" {
   type        = string
 }
 
-# New variable for ECR repository name
-
 variable "ecr_repository_name" {
   description = "Name of the ECR repository"
   type        = string
