@@ -63,6 +63,28 @@ resource "aws_iam_role_policy_attachment" "nodes-AmazonEC2ContainerRegistryReadO
   role       = aws_iam_role.node_group_role.name
 }
 
+resource "aws_eks_node_group" "node_group" {
+  cluster_name    = aws_eks_cluster.cluster.name
+  node_group_name = var.node_group_name
+  node_role_arn   = aws_iam_role.node_group_role.arn
+  subnet_ids      = var.subnet_ids
+
+  scaling_config {
+    desired_size = 1
+    max_size     = 2
+    min_size     = 1
+  }
+
+  instance_types = ["t3.small"]
+  capacity_type  = "ON_DEMAND"
+
+  depends_on = [
+    aws_iam_role_policy_attachment.nodes-AmazonEKSWorkerNodePolicy,
+    aws_iam_role_policy_attachment.nodes-AmazonEKS_CNI_Policy,
+    aws_iam_role_policy_attachment.nodes-AmazonEC2ContainerRegistryReadOnly,
+    aws_iam_role_policy_attachment.ecr_access_role_attachment,
+  ]
+}
 
 # IAM Policy for ECR
 
@@ -87,7 +109,7 @@ resource "aws_iam_policy" "ecr_access_policy" {
   })
 }
 
-resource "aws_ecr_repository" "app1" {
+resource "aws_ecr_repository" "app" {
   name = "demo-worley-nc-ecr"
   tags = {
     Name = "Demo-Worley-NC-Repository"
@@ -97,27 +119,4 @@ resource "aws_ecr_repository" "app1" {
 resource "aws_iam_role_policy_attachment" "ecr_access_role_attachment" {
   role       = aws_iam_role.node_group_role.name
   policy_arn = aws_iam_policy.ecr_access_policy.arn
-}
-
-resource "aws_eks_node_group" "node_group" {
-  cluster_name    = aws_eks_cluster.cluster.name
-  node_group_name = var.node_group_name
-  node_role_arn   = aws_iam_role.node_group_role.arn
-  subnet_ids      = var.subnet_ids
-
-  scaling_config {
-    desired_size = 1
-    max_size     = 2
-    min_size     = 1
-  }
-
-  instance_types = ["t3.small"]
-  capacity_type  = "ON_DEMAND"
-
-  depends_on = [
-    aws_iam_role_policy_attachment.nodes-AmazonEKSWorkerNodePolicy,
-    aws_iam_role_policy_attachment.nodes-AmazonEKS_CNI_Policy,
-    aws_iam_role_policy_attachment.nodes-AmazonEC2ContainerRegistryReadOnly,
-    aws_iam_role_policy_attachment.ecr_access_role_attachment,
-  ]
 }

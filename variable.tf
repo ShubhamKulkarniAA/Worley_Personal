@@ -50,42 +50,47 @@ variable "region" {
 variable "public_alb_name" {
   type = string
 }
+
 variable "private_alb_name" {
   type = string
 }
-/*variable "certificate_arn" {
+
+# Uncomment and update as needed for SSL certificates
+/* variable "certificate_arn" {
   type = string
-}*/
+} */
+
 variable "private_eks_cidr" {
-    type = string
+  type = string
 }
+
 variable "public_eks_cidr" {
-    type = string
+  type = string
 }
+
 variable "api_gateway_cidr" {
-    type = string
+  type = string
 }
+
 variable "private_nlb_name" {
   type = string
 }
 
 # EKS Module Variables
-
-
 variable "cluster_name" {
   description = "EKS Cluster name"
-  type = string
+  type        = string
 }
 
 variable "node_group_name" {
   description = "EKS Node Group name"
-  type = string
+  type        = string
 }
 
-/*variable "subnet_ids" {
+variable "subnet_ids" {
   description = "List of subnet IDs for the EKS cluster"
   type        = list(string)
-}*/
+}
 
 variable "alb_ingress_role_name" {
   description = "IAM role name for the ALB Ingress Controller"
@@ -93,6 +98,6 @@ variable "alb_ingress_role_name" {
 }
 
 variable "ecr_repository_name" {
-  description = "Name of the ECR repositor"
+  description = "Name of the ECR repository"
   type        = string
 }
