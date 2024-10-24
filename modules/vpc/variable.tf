@@ -46,7 +46,6 @@ variable "region" {
   type = string
 }
 
-# Add the missing variables here
 variable "cluster_name" {
   description = "EKS Cluster name"
   type        = string
