@@ -82,6 +82,11 @@ variable "node_group_name" {
   type = string
 }
 
+variable "subnet_ids" {
+  description = "List of subnet IDs for the EKS cluster"
+  type        = list(string)
+}
+
 variable "alb_ingress_role_name" {
   type = string
 }

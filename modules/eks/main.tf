@@ -24,40 +24,45 @@ resource "aws_eks_cluster" "cluster" {
   role_arn = aws_iam_role.eks_cluster_role.arn
 
   vpc_config {
-    subnet_ids = var.subnet_ids
+    subnet_ids              = var.subnet_ids
+    endpoint_public_access  = true
+    endpoint_private_access = false
   }
 
   depends_on = [aws_iam_role_policy_attachment.eks_cluster_policy]
 }
 
-resource "aws_iam_role" "eks_node_group_role" {
+resource "aws_iam_role" "node_group_role" {
   name = "${var.cluster_name}-node-group-role"
   assume_role_policy = jsonencode({
-    Statement = [{
-      Action = "sts:AssumeRole"
-      Effect = "Allow"
-      Principal = {
-        Service = "ec2.amazonaws.com"
-      }
-    }]
     Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      },
+    ]
   })
 }
 
 resource "aws_iam_role_policy_attachment" "nodes-AmazonEKSWorkerNodePolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-  role       = aws_iam_role.eks_node_group_role.name
+  role       = aws_iam_role.node_group_role.name
 }
 
 resource "aws_iam_role_policy_attachment" "nodes-AmazonEKS_CNI_Policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-  role       = aws_iam_role.eks_node_group_role.name
+  role       = aws_iam_role.node_group_role.name
 }
 
 resource "aws_iam_role_policy_attachment" "nodes-AmazonEC2ContainerRegistryReadOnly" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-  role       = aws_iam_role.eks_node_group_role.name
+  role       = aws_iam_role.node_group_role.name
 }
+
 
 # IAM Policy for ECR
 
@@ -83,21 +88,21 @@ resource "aws_iam_policy" "ecr_access_policy" {
 }
 
 resource "aws_ecr_repository" "app1" {
-  name = "demo-worley-nc"
+  name = "Demo-Worley-NC-ECR"
   tags = {
-    Name = "demo-worley-nc"
+    Name = "Demo-Worley-NC-Repository"
   }
 }
 
 resource "aws_iam_role_policy_attachment" "ecr_access_role_attachment" {
-  role       = aws_iam_role.eks_node_group_role.name
+  role       = aws_iam_role.node_group_role.name
   policy_arn = aws_iam_policy.ecr_access_policy.arn
 }
 
 resource "aws_eks_node_group" "node_group" {
   cluster_name    = var.cluster_name
   node_group_name = var.node_group_name
-  node_role_arn   = aws_iam_role.eks_node_group_role.arn
+  node_role_arn   = aws_iam_role.node_group_role.arn
   subnet_ids      = var.subnet_ids
 
   scaling_config {
@@ -106,56 +111,78 @@ resource "aws_eks_node_group" "node_group" {
     min_size     = 1
   }
 
-  instance_types = ["t3.medium"]
-  capacity_type   = "ON_DEMAND"
+  instance_types = ["t3.small"]
+  capacity_type  = "ON_DEMAND"
+
+  depends_on = [
+    aws_iam_role_policy_attachment.nodes-AmazonEKSWorkerNodePolicy,
+    aws_iam_role_policy_attachment.nodes-AmazonEKS_CNI_Policy,
+    aws_iam_role_policy_attachment.nodes-AmazonEC2ContainerRegistryReadOnly,
+    aws_iam_role_policy_attachment.ecr_access_role_attachment,  # Ensure ECR policy is attached
+  ]
 }
 
-# IAM Policy for ALB ingress controller
-resource "aws_iam_policy" "alb_ingress_policy" {
-  name        = "${var.cluster_name}-alb-ingress-policy"
-  description = "Policy for ALB Ingress Controller"
-  policy      = jsonencode({
+
+# Karpenter
+
+/*resource "aws_iam_role" "karpenter_controller_role" {
+  name = "${var.cluster_name}-karpenter-controller-role"
+  assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Action = [
-          "elasticloadbalancing:*",
-          "ec2:Describe*",
-          "iam:ListServerCertificates",
-          "iam:GetServerCertificate",
-          "acm:ListCertificates",
-          "acm:DescribeCertificate",
-          "tag:GetResources",
-          "cloudwatch:DescribeAlarms",
-          "cloudwatch:GetMetricStatistics",
-          "cloudwatch:ListMetrics",
-          "cloudwatch:PutMetricData",
-          "autoscaling:*",
-        ]
         Effect = "Allow"
-        Resource = "*"
-      },
+        Principal = {
+          Service = "karpenter.k8s.aws"
+        }
+        Action = "sts:AssumeRole"
+      }
     ]
   })
 }
 
-# Attach ALB ingress role
-
-resource "aws_iam_role" "alb_ingress_role" {
-  name = var.alb_ingress_role_name
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Action = "sts:AssumeRole"
-      Effect = "Allow"
-      Principal = {
-        Service = "elasticloadbalancing.amazonaws.com"
-      }
-    }]
-  })
+resource "aws_iam_role_policy_attachment" "karpenter_controller_policy_attachment" {
+  role       = aws_iam_role.karpenter_controller_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterAutoscalerPolicy"
 }
-
-resource "aws_iam_role_policy_attachment" "alb_ingress_role_policy_attachment" {
-  role       = aws_iam_role.alb_ingress_role.name
-  policy_arn = aws_iam_policy.alb_ingress_policy.arn
+resource "kubernetes_service_account" "karpenter_sa" {
+  metadata {
+    name      = "karpenter"
+    namespace = "karpenter"
+    annotations = {
+      "eks.amazonaws.com/role-arn" = aws_iam_role.karpenter_controller_role.arn
+    }
+  }
 }
+resource "helm_release" "karpenter" {
+  name       = "karpenter"
+  chart      = "karpenter"
+  repository = "https://charts.karpenter.sh"
+  namespace  = "karpenter"
+
+  values = [
+    <<EOF
+  controller:
+    clusterName: "${var.cluster_name}"
+    clusterEndpoint: "${aws_eks_cluster.cluster.endpoint}"
+    clusterCa: "${aws_eks_cluster.cluster.certificate_authority[0].data}"
+    nodeRole: "${aws_iam_role.eks_node_group_role.arn}"
+EOF
+  ]
+}
+resource "aws_eks_node_group" "node_group" {
+  cluster_name    = var.cluster_name
+  node_group_name = var.node_group_name
+  node_role_arn   = aws_iam_role.eks_node_group_role.arn
+  subnet_ids      = var.subnet_ids
+
+  scaling_config {
+    desired_size = 1
+    max_size     = 10
+    min_size     = 1
+  }
+
+  instance_types = ["t3.medium"]
+  capacity_type  = "ON_DEMAND"
+}
+*/

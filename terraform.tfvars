@@ -21,12 +21,10 @@ public_eks_cidr = "10.0.8.0/24"
 api_gateway_cidr = "10.0.9.0/24"
 private_nlb_name = "worley-nc-private-nlb"
 
-# New variables for EKS & ECR
+# EKS & ECR
 
 cluster_name = "Worley-NC-EKS"
 node_group_name = "Worley-NC-EKS-NG"
-
-ecr_repository_name = "demo-worley-nc"
-
+ecr_repository_name = "demo-worley-nc-ui"
 alb_ingress_role_name = "Worley-NC-EKS-alb-ingress-role"
 subnet_ids = ["subnet-09ad48ddb1f50fe67", "subnet-0a801c8a38dad1489", "subnet-0c89fa847a7b4e208", "subnet-00ec1f7b3778f96c9"]

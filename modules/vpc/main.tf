@@ -19,6 +19,7 @@ resource "aws_subnet" "public_subnet1" {
   map_public_ip_on_launch = true
   tags = {
     Name = "${var.vpc_name}-PublicSubnet1"
+    "kubernetes.io/cluster/${var.cluster_name}" = "owned"
   }
 }
 
@@ -29,6 +30,7 @@ resource "aws_subnet" "public_subnet2" {
   map_public_ip_on_launch = true
   tags = {
     Name = "${var.vpc_name}-PublicSubnet2"
+    "kubernetes.io/cluster/${var.cluster_name}" = "owned"
   }
 }
 
@@ -38,6 +40,7 @@ resource "aws_subnet" "private_subnet1" {
   availability_zone = var.availability_zone1
   tags = {
     Name = "${var.vpc_name}-PrivateSubnet1"
+     "kubernetes.io/cluster/${var.cluster_name}" = "owned"
   }
 }
 
@@ -47,6 +50,7 @@ resource "aws_subnet" "private_subnet2" {
   availability_zone = var.availability_zone2
   tags = {
     Name = "${var.vpc_name}-PrivateSubnet2"
+     "kubernetes.io/cluster/${var.cluster_name}" = "owned"
   }
 }
 
