@@ -37,8 +37,8 @@ module "eks" {
   subnet_ids = [
     module.vpc.public_subnet1_id,
     module.vpc.public_subnet2_id,
-    module.vpc.private_subnet1_id,
-    module.vpc.private_subnet2_id
+  # module.vpc.private_subnet1_id,
+  # module.vpc.private_subnet2_id
   ]
   node_group_name = var.node_group_name
   alb_ingress_role_name = var.alb_ingress_role_name
