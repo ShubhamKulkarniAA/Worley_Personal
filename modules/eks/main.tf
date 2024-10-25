@@ -65,20 +65,6 @@ resource "aws_iam_role_policy_attachment" "nodes-AmazonEC2ContainerRegistryReadO
   role       = aws_iam_role.eks_node_group_role.name
 }
 
-data "aws_iam_policy_document" "node_policy_document" {
-  statement {
-    actions = [
-      "eks:DescribeCluster",
-    ]
-    resources = ["*"]
-  }
-}
-
-resource "aws_iam_role_policy_attachment" "node_policy_attach" {
-  role       = aws_iam_role.eks_node_group_role.name
-  policy_arn = data.aws_iam_policy_document.node_policy_document.json
-}
-
 resource "aws_eks_node_group" "node_group" {
   cluster_name    = aws_eks_cluster.cluster.name
   node_group_name = var.node_group_name
