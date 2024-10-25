@@ -1,4 +1,4 @@
-resource "aws_iam_role" "cluster_role" {
+resource "aws_iam_role" "eks_cluster_role" {
   name = "${var.cluster_name}-cluster-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -34,7 +34,7 @@ resource "aws_eks_cluster" "cluster" {
   depends_on = [aws_iam_role_policy_attachment.eks_cluster_policy]
 }
 
-resource "aws_iam_role" "node_role" {
+resource "aws_iam_role" "eks_node_group_role" {
   name = "${var.cluster_name}-node-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -65,7 +65,7 @@ resource "aws_iam_role_policy_attachment" "nodes-AmazonEC2ContainerRegistryReadO
   role       = aws_iam_role.eks_node_group_role.name
 }
 
-resource "aws_eks_node_group" "nodes" {
+resource "aws_eks_node_group" "node_group" {
   cluster_name    = aws_eks_cluster.cluster.name
   node_group_name = var.node_group_name
   node_role_arn   = aws_iam_role.eks_node_group_role.arn
