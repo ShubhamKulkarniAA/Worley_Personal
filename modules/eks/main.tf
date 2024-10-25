@@ -24,10 +24,10 @@ resource "aws_eks_cluster" "cluster" {
   role_arn = aws_iam_role.eks_cluster_role.arn
   vpc_config {
     subnet_ids = [
-      var.private-ap-south-1a.id,
-      var.private-ap-south-1b.id,
-      var.public-ap-south-1a.id,
-      var.public-ap-south-1b.id
+      var.private_ap_south_1a,
+      var.private_ap_south_1b,
+      var.public_ap_south_1a,
+      var.public_ap_south_1b
     ]
   }
 
@@ -69,10 +69,7 @@ resource "aws_eks_node_group" "node_group" {
   cluster_name    = aws_eks_cluster.cluster.name
   node_group_name = var.node_group_name
   node_role_arn   = aws_iam_role.eks_node_group_role.arn
-  subnet_ids      = [
-      var.private-ap-south-1a.id,
-      var.private-ap-south-1b.id
-    ]
+  subnet_ids      = [var.private_ap_south_1a,var.private_ap_south_1b]
 
   scaling_config {
     desired_size = 1
