@@ -71,6 +71,10 @@ resource "aws_eks_node_group" "node_group" {
   node_role_arn   = aws_iam_role.eks_node_group_role.arn
   subnet_ids      = [var.public_subnet1,var.public_subnet2]
 
+  remote_access {
+    ec2_ssh_key = var.ssh_key_name  # Use the key pair name "EKS"
+  }
+
   scaling_config {
     desired_size = 1
     max_size     = 3
@@ -79,6 +83,9 @@ resource "aws_eks_node_group" "node_group" {
 
   instance_types = ["t3.medium"]
   capacity_type   = "ON_DEMAND"
+  ami_type      = "AL2_x86_64"
+
+  depends_on = [aws_eks_cluster.cluster]
 }
 
 

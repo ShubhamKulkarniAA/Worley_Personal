@@ -33,3 +33,7 @@ variable "node_group_name" {
   description = "Name of the ECR repository"
   type        = string
 }*/
+
+variable "ssh_key_name" {
+  default = "EKS"
+}
