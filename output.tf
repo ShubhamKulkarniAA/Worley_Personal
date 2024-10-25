@@ -28,7 +28,7 @@ output "private_subnet2_id" {
 }
 
 # ALB Outputs
-/*output "public_alb_arn" {
+output "public_alb_arn" {
   value = module.alb.public_alb_arn
 }
 
@@ -50,7 +50,7 @@ output "private_nlb_arn" {
 
 output "private_nlb_tg_arn" {
   value = module.alb.private_nlb_tg_arn
-}*/
+}
 
 #adding EKS modules
 

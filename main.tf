@@ -14,7 +14,7 @@ module "vpc" {
   availability_zone2 = var.availability_zone2
 }
 
-/*module "alb" {
+module "alb" {
   source = "./modules/alb"
   public_alb_name = var.public_alb_name
   private_alb_name = var.private_alb_name
@@ -27,7 +27,7 @@ module "vpc" {
   public_eks_cidr = var.public_eks_cidr
   api_gateway_cidr = var.api_gateway_cidr
   private_nlb_name = var.private_nlb_name
-}*/
+}
 
 module "eks" {
   source = "./modules/eks"

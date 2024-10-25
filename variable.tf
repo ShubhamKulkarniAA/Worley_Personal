@@ -47,7 +47,7 @@ variable "region" {
 }
 
 # ALB Variables
-/*variable "public_alb_name" {
+variable "public_alb_name" {
   type = string
 }
 
@@ -55,10 +55,10 @@ variable "private_alb_name" {
   type = string
 }
 
-# Uncomment and update as needed for SSL certificates
+/*
  variable "certificate_arn" {
   type = string
-}
+}*/
 
 variable "private_eks_cidr" {
   type = string
@@ -74,7 +74,7 @@ variable "api_gateway_cidr" {
 
 variable "private_nlb_name" {
   type = string
-}*/
+}
 
 # EKS Module Variables
 
