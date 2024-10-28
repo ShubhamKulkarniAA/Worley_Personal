@@ -22,7 +22,7 @@ jobs:
         run: rm -rf .terraform
 
       - name: Terraform Init
-        run: terraform init -upgrade -reconfigure
+        run: terraform init -upgrade -migrate
         working-directory: ./ # Point to your main Terraform directory
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
