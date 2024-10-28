@@ -84,3 +84,25 @@ resource "aws_eks_node_group" "node_group" {
 
   depends_on = [aws_eks_cluster.cluster]
 }
+
+
+resource "aws_launch_template" "eks_launch_template" {
+  name_prefix   = "${var.cluster_name}-launch-template-"
+  image_id      = "ami-0a87daabd88e93b1f"  # Replace with a valid EKS-optimized AMI
+  instance_type = "t3.medium"
+
+  user_data = base64encode(<<-EOF
+    #!/bin/bash
+    set -o xtrace
+    /etc/eks/bootstrap.sh ${var.cluster_name} --kubelet-extra-args '--node-labels=node.kubernetes.io/role=worker'
+  EOF
+  )
+
+  iam_instance_profile {
+    name = aws_iam_role.eks_node_group_role.name
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}

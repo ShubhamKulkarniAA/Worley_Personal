@@ -1,55 +1,19 @@
 variable "public_alb_name" {
-  type = string
-}
-variable "private_alb_name" {
-  type = string
+  description = "The name of the public ALB"
+  type        = string
 }
 
 variable "vpc_id" {
+  description = "The ID of the VPC where the ALB will be created"
   type        = string
 }
 
 variable "public_subnet1" {
-  type = string
+  description = "The ID of the first public subnet"
+  type        = string
 }
 
 variable "public_subnet2" {
-    type = string
-}
-
-variable "private_subnet1" {
-  type = string
-}
-
-variable "private_subnet2" {
-    type = string
-}
-
-variable "public_eks_cidr" {
-    type = string
-}
-
-variable "private_eks_cidr" {
-    type = string
-}
-
-variable "api_gateway_cidr" {
-    type = string
-
-}
-
-variable "public_eks_name" {
-  type = string
-}
-
-variable "private_eks_name" {
-   type = string
-}
-
-variable "private_subnets" {
-  type = string
-}
-
-variable "public_subnets" {
-  type = string
+  description = "The ID of the second public subnet"
+  type        = string
 }
