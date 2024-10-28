@@ -2,7 +2,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.0"
+      version = "~> 5.73.0"
     }
   }
 
@@ -15,11 +15,5 @@ terraform {
 
 provider "aws" {
   region = "ap-south-1"
-
-}
-
-resource "aws_api_gateway_rest_api" "public_api" {
-  name        = "example"
-  description = "Example API"
 
 }
