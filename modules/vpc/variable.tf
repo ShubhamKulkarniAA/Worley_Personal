@@ -45,3 +45,8 @@ variable "private_rds_subnet2_cidr" {
 variable "region" {
   type = string
 }
+
+variable "eks_cluster_sg_id" {
+  description = "The security group ID of the EKS cluster"
+  type        = string
+}

@@ -12,6 +12,8 @@ module "vpc" {
   private_rds_subnet2_cidr = var.private_rds_subnet2_cidr
   availability_zone1 = var.availability_zone1
   availability_zone2 = var.availability_zone2
+  eks_cluster_sg_id = module.eks.cluster_security_group_id
+
 }
 
 module "alb" {
