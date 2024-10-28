@@ -13,16 +13,6 @@ variable "public_subnet2" {
   type        = string
 }
 
-variable "private_subnet1" {
-  description = "ID of the public subnet in ap-south-1a"
-  type        = string
-}
-
-variable "private_subnet2" {
-  description = "ID of the public subnet in ap-south-1b"
-  type        = string
-}
-
 variable "node_group_name" {
   description = "EKS Node Group name"
   type        = string
