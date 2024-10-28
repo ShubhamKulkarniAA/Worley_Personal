@@ -41,3 +41,13 @@ module "eks" {
   node_group_name = "${var.cluster_name}-node-group"
 
 }
+
+module "ecr" {
+  source              = "./modules/ecr"
+  repository_name     = "demo-worley-nc-ecr"
+  image_tag_mutability = "MUTABLE"
+  tags                = {
+    Environment = var.environment
+    Project     = var.project_name
+  }
+}

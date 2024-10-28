@@ -86,9 +86,3 @@ resource "aws_eks_node_group" "node_group" {
 
   depends_on = [aws_eks_cluster.cluster]
 }
-
-
-
-/*resource "aws_ecr_repository" "app1" {
-  name = var.ecr_repository_name
-}*/

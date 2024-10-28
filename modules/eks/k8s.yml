@@ -18,7 +18,6 @@ spec:
           image: nginx:alpine
           ports:
             - containerPort: 80
-          # Use a simple command to serve "Hello World!"
           command: ["/bin/sh", "-c"]
           args:
             - echo 'HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nHello World!' | nc -l -p 80
