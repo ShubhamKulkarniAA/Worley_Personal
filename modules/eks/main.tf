@@ -83,10 +83,10 @@ resource "aws_eks_node_group" "node_group" {
 
   instance_types = ["t3.medium"]
   capacity_type   = "ON_DEMAND"
-  ami_type      = "AL2_x86_64"
 
   depends_on = [aws_eks_cluster.cluster]
 }
+
 
 
 /*resource "aws_ecr_repository" "app1" {
