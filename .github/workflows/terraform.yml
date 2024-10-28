@@ -16,7 +16,7 @@ jobs:
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v2
         with:
-          terraform_version: "1.5.0" # Use a specific version
+          terraform_version: "1.5.0"
 
       - name: Terraform Init
         run: terraform init -upgrade -reconfigure
@@ -42,10 +42,38 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ap-south-1
-          TF_LOG: DEBUG
+          TF_LOG: DEBUG # Enable debug logging for troubleshooting
 
       - name: Terraform Apply
         if: github.event_name == 'push'
         run: |
           terraform apply -auto-approve tfplan || echo "Terraform apply failed; review state and plan."
-        working-directory: ./ # Point to your main
+        working-directory: ./ # Point to your main Terraform directory
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ap-south-1
+
+      - name: Build Docker Image
+        run: |
+          docker build -t demo-worley-nc-ecr:latest .
+        working-directory: ./modules/eks # Adjust this to the path of your Dockerfile
+
+      - name: Authenticate to ECR
+        run: |
+          aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 484907523966.dkr.ecr.ap-south-1.amazonaws.com
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Tag Docker Image
+        run: |
+          docker tag demo-worley-nc-ecr:latest 484907523966.dkr.ecr.ap-south-1.amazonaws.com/demo-worley-nc-ecr:latest
+        working-directory: ./ # Ensure this points to the correct location
+
+      - name: Push Docker Image to ECR
+        run: |
+          docker push 484907523966.dkr.ecr.ap-south-1.amazonaws.com/demo-worley-nc-ecr:latest
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
