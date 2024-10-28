@@ -12,3 +12,11 @@ output "public_alb_security_group_id" {
   description = "The ID of the security group for the public ALB"
   value       = aws_security_group.public_alb_sg.id
 }
+
+output "public_alb_arn" {
+  value = aws_lb.public_alb.arn
+}
+
+output "public_alb_tg_arn" {
+  value = aws_lb_target_group.public_alb_tg.arn
+}

@@ -20,7 +20,16 @@ output "public_alb_tg_arn" {
   value = module.alb.public_alb_tg_arn
 }
 
+output "public_alb_arn" {
+  value = module.alb.public_alb_arn
+}
+
+output "public_alb_tg_arn" {
+  value = module.alb.public_alb_tg_arn
+}
+
 #adding EKS modules
+
 output "eks_cluster_name" {
   value = module.eks.eks_cluster_name
 }
