@@ -3,9 +3,9 @@ vpc_name                  = "Worley-NC"
 internet_gateway_name      = "Worley-NC-IG"
 public_subnet1_cidr      = "10.0.1.0/24"
 public_subnet2_cidr      = "10.0.2.0/24"
-availability_zone1       = "us-east-2a"
-availability_zone2       = "us-east-2b"
-region                    = "us-east-2"
+availability_zone1       = "ap-south-1a"
+availability_zone2       = "ap-south-1b"
+region                    = "ap-south-1"
 
 # ALB Variables
 public_alb_name          = "worley-nc-public-alb"

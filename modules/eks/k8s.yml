@@ -38,7 +38,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: 484907523966.dkr.ecr.us-east-2.amazonaws.com/demo-worley-nc-ui:latest
+          image: 484907523966.dkr.ecr.ap-south-1.amazonaws.com/demo-worley-nc-ui:latest
           ports:
             - containerPort: 5000
 

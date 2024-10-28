@@ -9,11 +9,11 @@ terraform {
   backend "s3" {
     bucket = "demo-terraform-be-worley-test"
     key    = "demo-terraform-be-worley-test/terraform.tfstate"
-    region = "us-east-2"
+    region = "ap-south-1"
   }
 }
 
 provider "aws" {
-  region = "us-east-2"
+  region = "ap-south-1"
 
 }
