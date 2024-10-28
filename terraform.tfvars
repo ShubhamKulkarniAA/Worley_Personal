@@ -13,7 +13,8 @@ region = "ap-south-1"
 
 # ALB Veriables
 public_alb_name          = "Worley-NC-Public-ALB"
-
+public_eks_cidr          = "10.0.8.0/24"
+api_gateway_cidr         = "10.0.9.0/24"
 
 # New variables for EKS
 cluster_name = "Worley-NC-EKS"
