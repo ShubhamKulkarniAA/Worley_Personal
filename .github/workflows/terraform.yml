@@ -18,6 +18,9 @@ jobs:
         with:
           terraform_version: "1.5.0"
 
+      - name: Remove Terraform Cache
+        run: rm -rf .terraform
+
       - name: Terraform Init
         run: terraform init -upgrade -reconfigure
         working-directory: ./ # Point to your main Terraform directory
@@ -47,6 +50,7 @@ jobs:
       - name: Terraform Apply
         if: github.event_name == 'push'
         run: |
+          export TF_LOG=DEBUG
           terraform apply -auto-approve tfplan || echo "Terraform apply failed; review state and plan."
         working-directory: ./ # Point to your main Terraform directory
         env:
