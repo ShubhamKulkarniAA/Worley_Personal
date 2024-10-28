@@ -3,21 +3,12 @@ variable "cluster_name" {
   type        = string
 }
 
-variable "public_subnet1" {
-  description = "ID of the private subnet in ap-south-1a"
-  type        = string
-}
-
-variable "public_subnet2" {
-  description = "ID of the private subnet in ap-south-1b"
-  type        = string
+variable "subnet_ids" {
+  description = "List of subnet IDs for the EKS cluster"
+  type        = list(string)
 }
 
 variable "node_group_name" {
   description = "EKS Node Group name"
   type        = string
-}
-
-variable "ssh_key_name" {
-  default = "EKS"
 }
