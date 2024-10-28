@@ -72,7 +72,7 @@ resource "aws_eks_node_group" "node_group" {
   subnet_ids      = [var.public_subnet1,var.public_subnet2]
 
   remote_access {
-    ec2_ssh_key = var.ssh_key_name  # Use the key pair name "EKS"
+    ec2_ssh_key = var.ssh_key_name  # Use the key par name "EKS"
   }
 
   scaling_config {
