@@ -47,12 +47,10 @@ variable "region" {
   type = string
 }
 
-
 # ALB Variables
 variable "public_alb_name" {
   type = string
 }
-
 
 # ECR Variables
 variable "repository_name" {
@@ -90,7 +88,6 @@ variable "lifecycle_policy" {
   }
 }
 
-
 # EKS Variables
 variable "cluster_name" {
   type = string
@@ -110,12 +107,4 @@ variable "max_size" {
 
 variable "min_size" {
   type = number
-}
-
-variable "cluster_role_arn" {
-  type = string
-}
-
-variable "node_role_arn" {
-  type = string
 }

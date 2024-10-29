@@ -33,9 +33,9 @@ module "ecr" {
 module "eks" {
   source = "./modules/eks"
   cluster_name = var.cluster_name
-  cluster_role_arn = var.cluster_role_arn
+  cluster_role_arn = aws_iam_role.eks_cluster_role.arn
   node_group_name = var.node_group_name
-  node_role_arn = var.node_role_arn
+  node_role_arn = aws_iam_role.eks_node_role.arn
   desired_size = var.desired_size
   max_size = var.max_size
   min_size = var.min_size
