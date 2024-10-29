@@ -94,7 +94,7 @@ jobs:
       - name: Deploy to EKS
         if: github.event_name == 'push'
         run: |
-          kubectl apply -f ./modules/eks/k8s.yml
+          kubectl apply -f ./modules/eks/k8s.yml --validate=false
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
