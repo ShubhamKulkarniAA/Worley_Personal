@@ -1,3 +1,4 @@
+#VPC Variable
 output "vpc_id" {
   description = "The VPC ID"
   value = module.vpc.vpc_id
@@ -27,6 +28,7 @@ output "private_subnet2_id" {
   value = module.vpc.private_subnet2_id
 }
 
+#ALB Variable
 output "public_alb_arn" {
   value = module.alb.public_alb_arn
 }
@@ -35,6 +37,7 @@ output "public_alb_tg_arn" {
   value = module.alb.public_alb_tg_arn
 }
 
+#ECR Variable
 output "repository_uri" {
   description = "URI of the ECR repository"
   value       = module.ecr.repository_uri
@@ -45,6 +48,7 @@ output "repository_name" {
   value       = module.ecr.repository_name
 }
 
+#EKS Variable
 output "eks_cluster_id" {
   description = "The ID of the EKS cluster"
   value       = module.eks.eks_cluster_id
@@ -58,9 +62,4 @@ output "eks_cluster_endpoint" {
 output "eks_cluster_certificate_authority" {
   description = "The certificate authority data for the EKS cluster"
   value       = module.eks.eks_cluster_certificate_authority
-}
-
-output "eks_node_group_arn" {
-  description = "The ARN of the EKS node group"
-  value       = module.eks.eks_node_group_arn
 }
