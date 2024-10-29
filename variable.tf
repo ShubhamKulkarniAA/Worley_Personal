@@ -70,24 +70,25 @@ variable "tags" {
 
 variable "lifecycle_policy" {
   description = "The lifecycle policy for the repository"
-  type        = map(any)
-  default     = {
+  type        = string
+  default     = jsonencode({
     rules = [
       {
         rulePriority = 1
-        selectionCriteria = {
-          tagStatus = "TAGGED"
+        description  = "Expire images older than 30 days"
+        selection = {
+          tagStatus     = "tagged"
           tagPrefixList = ["latest"]
+          countType     = "sinceImagePushed"
+          countUnit     = "days"
+          countNumber   = 30
         }
         action = {
           type = "expire"
         }
-        expiry = {
-          days = 30
-        }
       }
     ]
-  }
+  })
 }
 
 # EKS Variables
