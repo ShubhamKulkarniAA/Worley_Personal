@@ -69,7 +69,7 @@ kind: Service
 metadata:
   name: backend
 spec:
-  type: ClusterIP # Use ClusterIP since it's accessed through the Ingress
+  type: LoadBalancer
   ports:
     - port: 5000
       targetPort: 5000
