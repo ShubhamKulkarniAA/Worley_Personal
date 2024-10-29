@@ -17,10 +17,31 @@ spec:
           image: nginx:alpine
           ports:
             - containerPort: 80
-          command: ["/bin/sh", "-c"]
-          args:
-            - |
-              echo 'HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nHello World!' | nc -l -p 80
+          volumeMounts:
+            - name: frontend-html
+              mountPath: /usr/share/nginx/html
+      volumes:
+        - name: frontend-html
+          configMap:
+            name: frontend-html
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frontend-html
+data:
+  index.html: |
+    <html>
+    <head>
+        <title>Welcome</title>
+    </head>
+    <body>
+        <h1>Welcome to the Frontend!</h1>
+        <p>Hello from the Frontend!</p>
+    </body>
+    </html>
+
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -41,6 +62,7 @@ spec:
           image: 484907523966.dkr.ecr.ap-south-1.amazonaws.com/worley-nc-ecr-repo:latest
           ports:
             - containerPort: 5000
+
 ---
 apiVersion: v1
 kind: Service
@@ -53,6 +75,7 @@ spec:
       targetPort: 5000
   selector:
     app: backend
+
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
