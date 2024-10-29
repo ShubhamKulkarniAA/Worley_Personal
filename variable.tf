@@ -68,29 +68,6 @@ variable "tags" {
   default = {}
 }
 
-variable "lifecycle_policy" {
-  description = "The lifecycle policy for the repository"
-  type        = string
-  default     = jsonencode({
-    rules = [
-      {
-        rulePriority = 1
-        description  = "Expire images older than 30 days"
-        selection = {
-          tagStatus     = "tagged"
-          tagPrefixList = ["latest"]
-          countType     = "sinceImagePushed"
-          countUnit     = "days"
-          countNumber   = 30
-        }
-        action = {
-          type = "expire"
-        }
-      }
-    ]
-  })
-}
-
 # EKS Variables
 variable "cluster_name" {
   type = string

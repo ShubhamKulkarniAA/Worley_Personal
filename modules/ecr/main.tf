@@ -8,7 +8,28 @@ resource "aws_ecr_repository" "ecr_repo" {
   }
 }
 
+locals {
+  lifecycle_policy = jsonencode({
+    rules = [
+      {
+        rulePriority = 1
+        description  = "Expire images older than 30 days"
+        selection = {
+          tagStatus     = "tagged"
+          tagPrefixList = ["latest"]
+          countType     = "sinceImagePushed"
+          countUnit     = "days"
+          countNumber   = 30
+        }
+        action = {
+          type = "expire"
+        }
+      }
+    ]
+  })
+}
+
 resource "aws_ecr_lifecycle_policy" "ecr_repo" {
   repository = aws_ecr_repository.ecr_repo.name
-  policy     = jsonencode(var.lifecycle_policy)
+  policy     = local.lifecycle_policy
 }
