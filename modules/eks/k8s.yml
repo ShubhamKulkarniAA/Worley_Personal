@@ -18,13 +18,12 @@ spec:
           ports:
             - containerPort: 80
           volumeMounts:
-            - name: frontend-html
+            - name: html-content
               mountPath: /usr/share/nginx/html
       volumes:
-        - name: frontend-html
+        - name: html-content
           configMap:
             name: frontend-html
-
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -32,16 +31,19 @@ metadata:
   name: frontend-html
 data:
   index.html: |
-    <html>
+    <!DOCTYPE html>
+    <html lang="en">
     <head>
-        <title>Welcome</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Frontend</title>
     </head>
     <body>
         <h1>Welcome to the Frontend!</h1>
-        <p>Hello from the Frontend!</p>
+        <p>This is a simple frontend served by NGINX.</p>
+        <p>To access the backend, you can call <code>/api/message</code>.</p>
     </body>
     </html>
-
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -62,7 +64,18 @@ spec:
           image: 484907523966.dkr.ecr.ap-south-1.amazonaws.com/worley-nc-ecr-repo:latest
           ports:
             - containerPort: 5000
-
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: frontend
 ---
 apiVersion: v1
 kind: Service
@@ -75,7 +88,6 @@ spec:
       targetPort: 5000
   selector:
     app: backend
-
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -85,7 +97,6 @@ metadata:
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
 spec:
-  ingressClassName: alb
   rules:
     - http:
         paths:
