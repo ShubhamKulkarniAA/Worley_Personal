@@ -28,7 +28,7 @@ output "private_subnet2_id" {
   value = module.vpc.private_subnet2_id
 }
 
-/*
+
 #ALB Variable
 output "public_alb_arn" {
   value = module.alb.public_alb_arn
@@ -38,7 +38,7 @@ output "public_alb_tg_arn" {
   value = module.alb.public_alb_tg_arn
 }
 
-
+/*
 #ECR Variable
 output "repository_uri" {
   description = "URI of the ECR repository"
