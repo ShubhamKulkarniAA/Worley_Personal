@@ -67,10 +67,11 @@ variable "tags" {
   type = map(string)
   default = {}
 }
-/*
+
 variable "lifecycle_policy" {
-  type = map(any)
-  default = {
+  description = "The lifecycle policy for the repository"
+  type        = map(any)
+  default     = {
     rules = [
       {
         rulePriority = 1
@@ -88,7 +89,6 @@ variable "lifecycle_policy" {
     ]
   }
 }
-*/
 
 # EKS Variables
 variable "cluster_name" {

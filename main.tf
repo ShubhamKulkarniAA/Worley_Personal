@@ -27,7 +27,7 @@ module "ecr" {
   repository_name = var.repository_name
   image_tag_mutability = var.image_tag_mutability
   tags = var.tags
-  #lifecycle_policy = var.lifecycle_policy
+  lifecycle_policy = var.lifecycle_policy
 }
 
 module "eks" {
