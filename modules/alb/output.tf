@@ -1,3 +1,8 @@
+output "public_alb_target_group_arn" {
+  description = "The ARN of the public ALB target group"
+  value       = aws_lb_target_group.frontend_tg.arn  # Adjust this according to your needs
+}
+
 output "public_alb_dns_name" {
   description = "The DNS name of the public ALB"
   value       = aws_lb.public_alb.dns_name
