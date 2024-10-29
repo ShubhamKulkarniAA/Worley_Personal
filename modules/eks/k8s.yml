@@ -94,7 +94,7 @@ kind: Service
 metadata:
   name: frontend
   annotations:
-    service.beta.kubernetes.io/aws-load-balancer-type: "application" # Use ALB
+    service.beta.kubernetes.io/aws-load-balancer-type: "application"
 spec:
   type: LoadBalancer
   ports:
