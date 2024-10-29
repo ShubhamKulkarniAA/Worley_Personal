@@ -15,14 +15,14 @@ region = "ap-south-1"
 
 # ALB Variables
 public_alb_name = "Worley-NC-Public-ALB"
-/*
+
 # ECR Variables
 repository_name = "Worley-NC-ECR-Repo"
 image_tag_mutability = "MUTABLE"
 tags = {
   Environment = "Dev"
 }
-*/
+
 # EKS Variables
 cluster_name = "Worley-NC-EKS-Cluster"
 node_group_name = "Worley-NC-EKS-Node-Group"

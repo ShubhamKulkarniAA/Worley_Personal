@@ -15,7 +15,7 @@ variable "tags" {
   default     = {}
 }
 
-variable "lifecycle_policy" {
+/*variable "lifecycle_policy" {
   description = "The lifecycle policy for the repository"
   type        = map(any)
   default     = {
@@ -36,3 +36,4 @@ variable "lifecycle_policy" {
     ]
   }
 }
+*/

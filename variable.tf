@@ -52,7 +52,7 @@ variable "region" {
 variable "public_alb_name" {
   type = string
 }
-/*
+
 # ECR Variables
 variable "repository_name" {
   type = string
@@ -67,7 +67,7 @@ variable "tags" {
   type = map(string)
   default = {}
 }
-
+/*
 variable "lifecycle_policy" {
   type = map(any)
   default = {
