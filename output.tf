@@ -63,3 +63,11 @@ output "eks_cluster_certificate_authority" {
   description = "The certificate authority data for the EKS cluster"
   value       = module.eks.eks_cluster_certificate_authority
 }
+
+output "eks_cluster_role_arn" {
+  value = module.eks.cluster_role_arn
+}
+
+output "eks_node_role_arn" {
+  value = module.eks.node_role_arn
+}
