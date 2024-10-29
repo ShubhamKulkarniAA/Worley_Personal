@@ -32,3 +32,8 @@ variable "min_size" {
   description = "The minimum number of nodes in the EKS node group"
   type        = number
 }
+
+variable "subnet_ids" {
+  description = "The IDs of the subnets to use for the EKS cluster and node group"
+  type        = list(string)
+}
