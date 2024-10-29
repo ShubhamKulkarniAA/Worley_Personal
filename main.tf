@@ -17,31 +17,26 @@ module "vpc" {
 module "alb" {
   source = "./modules/alb"
   public_alb_name = var.public_alb_name
-  private_alb_name = var.private_alb_name
-  vpc_id  = module.vpc.vpc_id
-  public_subnet1  = module.vpc.public_subnet1_id
+  vpc_id = module.vpc.vpc_id
+  public_subnet1 = module.vpc.public_subnet1_id
   public_subnet2 = module.vpc.public_subnet2_id
-  private_subnet1 = module.vpc.private_subnet1_id
-  private_subnet2 = module.vpc.private_subnet2_id
-  /*certificate_arn = var.certificate_arn*/
-  private_eks_cidr = var.private_eks_cidr
-  public_eks_cidr = var.public_eks_cidr
-  api_gateway_cidr = var.api_gateway_cidr
-  private_nlb_name = var.private_nlb_name
 }
 
-#EKS
+module "ecr" {
+  source = "./modules/ecr"
+  repository_name = var.repository_name
+  image_tag_mutability = var.image_tag_mutability
+  tags = var.tags
+}
 
 module "eks" {
   source = "./modules/eks"
   cluster_name = var.cluster_name
-  subnet_ids = [
-    module.vpc.public_subnet1_id,
-    module.vpc.public_subnet2_id,
-    module.vpc.private_subnet1_id,
-    module.vpc.private_subnet2_id
-  ]
-  node_group_name = "${var.cluster_name}-node-group"
-  alb_ingress_role_name = var.alb_ingress_role_name
-  ecr_repository_name = var.ecr_repository_name
+  cluster_role_arn = module.eks.cluster_role_arn
+  node_role_arn = module.eks.node_role_arn
+  node_group_name = var.node_group_name
+  desired_size = var.desired_size
+  max_size = var.max_size
+  min_size = var.min_size
+  subnet_ids = [module.vpc.public_subnet1_id, module.vpc.public_subnet2_id]
 }

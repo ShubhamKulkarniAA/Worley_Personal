@@ -1,3 +1,4 @@
+# VPC Variables
 variable "vpc_cidr" {
   type = string
 }
@@ -46,53 +47,44 @@ variable "region" {
   type = string
 }
 
+
 # ALB Variables
 variable "public_alb_name" {
   type = string
 }
-variable "private_alb_name" {
-  type = string
-}
-/*variable "certificate_arn" {
-  type = string
-}*/
-variable "private_eks_cidr" {
-    type = string
-}
-variable "public_eks_cidr" {
-    type = string
-}
-variable "api_gateway_cidr" {
-    type = string
-}
-variable "private_nlb_name" {
+
+# ECR Variables
+variable "repository_name" {
   type = string
 }
 
-# EKS Module Variables
+variable "image_tag_mutability" {
+  type = string
+  default = "MUTABLE"
+}
 
+variable "tags" {
+  type = map(string)
+  default = {}
+}
 
+# EKS Variables
 variable "cluster_name" {
-  description = "EKS Cluster name"
   type = string
 }
 
 variable "node_group_name" {
-  description = "EKS Node Group name"
   type = string
 }
 
-variable "subnet_ids" {
-  description = "List of subnet IDs for the EKS cluster"
-  type        = list(string)
+variable "desired_size" {
+  type = number
 }
 
-variable "alb_ingress_role_name" {
-  description = "IAM role name for the ALB Ingress Controller"
-  type        = string
+variable "max_size" {
+  type = number
 }
 
-variable "ecr_repository_name" {
-  description = "Name of the ECR repositor"
-  type        = string
+variable "min_size" {
+  type = number
 }
