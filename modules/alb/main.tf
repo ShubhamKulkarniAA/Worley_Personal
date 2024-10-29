@@ -97,8 +97,9 @@ resource "aws_lb_listener_rule" "frontend_rule" {
   }
 
   condition {
-    field  = "path-pattern"
-    values = ["/"]  # Matches only the root path
+    path_pattern {
+      values = ["/"]  # Matches only the root path
+    }
   }
 }
 
@@ -112,8 +113,9 @@ resource "aws_lb_listener_rule" "backend_rule" {
   }
 
   condition {
-    field  = "path-pattern"
-    values = ["/api/*"]  # Matches all API requests
+    path_pattern {
+      values = ["/api/*"]  # Matches all API requests
+    }
   }
 }
 
