@@ -36,9 +36,19 @@ data:
     <html>
     <head>
         <title>Frontend</title>
+        <script>
+            async function fetchMessage() {
+                const response = await fetch('/api/message');
+                const data = await response.json();
+                document.getElementById('message').innerText = data.message;
+            }
+
+            window.onload = fetchMessage;  // Call the function when the page loads
+        </script>
     </head>
     <body>
         <h1>Welcome to the Frontend!</h1>
+        <p id="message">Loading message...</p>
     </body>
     </html>
 
