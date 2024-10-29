@@ -111,3 +111,11 @@ variable "max_size" {
 variable "min_size" {
   type = number
 }
+
+variable "cluster_role_arn" {
+  type = string
+}
+
+variable "node_role_arn" {
+  type = string
+}

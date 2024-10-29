@@ -34,6 +34,8 @@ module "eks" {
   source = "./modules/eks"
   cluster_name = var.cluster_name
   node_group_name = var.node_group_name
+  cluster_role_arn = var.cluster_role_arn
+  node_role_arn = var.node_role_arn
   desired_size = var.desired_size
   max_size = var.max_size
   min_size = var.min_size
