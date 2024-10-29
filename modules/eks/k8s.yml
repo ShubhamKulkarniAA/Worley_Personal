@@ -82,7 +82,7 @@ kind: Service
 metadata:
   name: frontend
 spec:
-  type: ClusterIP # Use ClusterIP since it's accessed through the Ingress
+  type: LoadBalancer
   ports:
     - port: 80
       targetPort: 80

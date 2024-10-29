@@ -71,4 +71,12 @@ jobs:
 
       - name: Deploy to EKS
         if: success()
-        run: kubectl apply -f ./modules/eks/k8s.yml --validate=false
+        run: kubectl apply -f ./modules/eks/k8s.yml
+
+      - name: Get Kubernetes Pods
+        if: success()
+        run: kubectl get pods --show-labels
+
+      - name: Get Kubernetes Services
+        if: success()
+        run: kubectl get svc
