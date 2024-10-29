@@ -21,7 +21,7 @@ module "alb" {
   public_subnet1 = module.vpc.public_subnet1_id
   public_subnet2 = module.vpc.public_subnet2_id
 }
-/*
+
 module "ecr" {
   source = "./modules/ecr"
   repository_name = var.repository_name
@@ -29,7 +29,7 @@ module "ecr" {
   tags = var.tags
   lifecycle_policy = var.lifecycle_policy
 }
-
+/*
 module "eks" {
   source = "./modules/eks"
   cluster_name = var.cluster_name

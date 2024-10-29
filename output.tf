@@ -38,7 +38,7 @@ output "public_alb_tg_arn" {
   value = module.alb.public_alb_tg_arn
 }
 
-/*
+
 #ECR Variable
 output "repository_uri" {
   description = "URI of the ECR repository"
@@ -49,7 +49,7 @@ output "repository_name" {
   description = "Name of the ECR repository"
   value       = module.ecr.repository_name
 }
-
+/*
 #EKS Variable
 output "eks_cluster_id" {
   description = "The ID of the EKS cluster"
