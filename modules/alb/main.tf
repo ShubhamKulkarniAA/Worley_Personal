@@ -43,7 +43,7 @@ resource "aws_lb_target_group" "frontend_tg" {
 
   health_check {
     interval            = 30
-    path                = "/"  # Adjust according to your frontend health check
+    path                = "/"
     timeout             = 5
     healthy_threshold   = 3
     unhealthy_threshold = 3
