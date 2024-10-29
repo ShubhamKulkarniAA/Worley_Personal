@@ -34,16 +34,16 @@ resource "aws_lb" "public_alb" {
   }
 }
 
-resource "aws_lb_target_group" "public_alb_tg" {
-  name        = "${var.public_alb_name}-tg"
-  port        = 80
+resource "aws_lb_target_group" "frontend_tg" {
+  name        = "${var.public_alb_name}-frontend-tg"
+  port        = 80  # Adjust according to your frontend port
   protocol    = "HTTP"
   vpc_id      = var.vpc_id
   target_type = "ip"
 
   health_check {
     interval            = 30
-    path                = "/"
+    path                = "/"  # Adjust according to your frontend health check
     timeout             = 5
     healthy_threshold   = 3
     unhealthy_threshold = 3
@@ -51,7 +51,28 @@ resource "aws_lb_target_group" "public_alb_tg" {
   }
 
   tags = {
-    Name = "${var.public_alb_name}-tg"
+    Name = "${var.public_alb_name}-frontend-tg"
+  }
+}
+
+resource "aws_lb_target_group" "backend_tg" {
+  name        = "${var.public_alb_name}-backend-tg"
+  port        = 5000  # Adjust according to your backend port
+  protocol    = "HTTP"
+  vpc_id      = var.vpc_id
+  target_type = "ip"
+
+  health_check {
+    interval            = 30
+    path                = "/api/health"  # Adjust according to your backend health endpoint
+    timeout             = 5
+    healthy_threshold   = 3
+    unhealthy_threshold = 3
+    matcher             = "200"
+  }
+
+  tags = {
+    Name = "${var.public_alb_name}-backend-tg"
   }
 }
 
@@ -59,9 +80,40 @@ resource "aws_lb_listener" "public_alb_listener_http" {
   load_balancer_arn = aws_lb.public_alb.arn
   port              = 80
   protocol          = "HTTP"
+
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.public_alb_tg.arn
+    target_group_arn = aws_lb_target_group.frontend_tg.arn  # Default to frontend
+  }
+}
+
+resource "aws_lb_listener_rule" "frontend_rule" {
+  listener_arn = aws_lb_listener.public_alb_listener_http.arn
+  priority      = 100
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.frontend_tg.arn
+  }
+
+  condition {
+    field  = "path-pattern"
+    values = ["/", "/index.html"]  # Adjust according to your frontend routes
+  }
+}
+
+resource "aws_lb_listener_rule" "backend_rule" {
+  listener_arn = aws_lb_listener.public_alb_listener_http.arn
+  priority      = 200
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.backend_tg.arn
+  }
+
+  condition {
+    field  = "path-pattern"
+    values = ["/api/*"]  # All API requests
   }
 }
 

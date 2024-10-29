@@ -2,12 +2,15 @@ const express = require("express");
 const app = express();
 const port = 5000;
 
+// Serve static files from the "public" directory
 app.use(express.static("public"));
 
+// API endpoint
 app.get("/api/message", (req, res) => {
   res.json({ message: "Hello from the Backend!" });
 });
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+// Listen on all interfaces
+app.listen(port, "0.0.0.0", () => {
+  console.log(`Server running at http://0.0.0.0:${port}`);
 });
