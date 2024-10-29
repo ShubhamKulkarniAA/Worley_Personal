@@ -14,6 +14,11 @@ app.get("/api/message", (req, res) => {
   res.json({ message: "Hello from the Backend!" });
 });
 
+// Health check endpoint
+app.get("/api/health", (req, res) => {
+  res.status(200).send("OK"); // Respond with a 200 status and a simple message
+});
+
 // Listen on all interfaces
 app.listen(port, "0.0.0.0", () => {
   console.log(`Server running at http://0.0.0.0:${port}`);
