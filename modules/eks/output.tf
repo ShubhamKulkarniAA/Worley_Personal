@@ -42,3 +42,13 @@ output "oidc_provider_url" {
   description = "The OIDC provider URL for the EKS cluster"
   value       = aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
 }
+
+output "eks_fargate_role_arn" {
+  description = "The ARN of the IAM role for Fargate"
+  value       = aws_iam_role.eks_fargate_role.arn
+}
+
+output "fargate_profile_name" {
+  description = "The name of the EKS Fargate profile"
+  value       = aws_eks_fargate_profile.my_fargate_profile.fargate_profile_name
+}

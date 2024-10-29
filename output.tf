@@ -90,3 +90,13 @@ output "oidc_provider_url" {
   description = "The OIDC provider URL for the EKS cluster"
   value       = module.eks.oidc_provider_url
 }
+
+output "eks_fargate_role_arn" {
+  description = "The ARN of the IAM role for Fargate"
+  value       = module.eks.eks_fargate_role_arn
+}
+
+output "fargate_profile_name" {
+  description = "The name of the EKS Fargate profile"
+  value       = module.eks.fargate_profile_name
+}

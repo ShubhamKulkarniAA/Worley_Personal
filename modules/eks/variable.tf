@@ -52,3 +52,8 @@ variable "service_account_name" {
   description = "Name of the service account to use"
   type        = string
 }
+
+variable "fargate_profile_name" {
+  description = "The name of the EKS Fargate profile"
+  type        = string
+}

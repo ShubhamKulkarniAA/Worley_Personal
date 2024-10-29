@@ -112,3 +112,39 @@ resource "aws_iam_role_policy_attachment" "eks_service_account_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_FargatePodExecutionRolePolicy"
   role       = aws_iam_role.eks_service_account_role.name
 }
+
+# Fargate Profile
+resource "aws_eks_fargate_profile" "my_fargate_profile" {
+  cluster_name           = aws_eks_cluster.eks_cluster.name
+  fargate_profile_name   = "${var.cluster_name}-fargate-profile"
+  pod_execution_role_arn = aws_iam_role.eks_fargate_role.arn
+
+  selector {
+    namespace = var.namespace
+  }
+
+  depends_on = [aws_eks_cluster.eks_cluster]
+}
+
+# IAM Role for Fargate
+resource "aws_iam_role" "eks_fargate_role" {
+  name = "eks-fargate-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action = "sts:AssumeRole",
+        Effect = "Allow",
+        Principal = {
+          Service = "eks-fargate-pod.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "fargate_policy_attachment" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy"
+  role       = aws_iam_role.eks_fargate_role.name
+}

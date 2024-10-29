@@ -31,3 +31,4 @@ min_size                = 1
 namespace               = "default"
 service_account_name    = "Worley-NC-Service-Account"
 oidc_provider_url       = ""
+fargate_profile_name    = "Worley-NC-Fargate-Profile"

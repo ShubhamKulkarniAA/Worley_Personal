@@ -103,3 +103,13 @@ variable "oidc_provider_url" {
   description = "The OIDC provider URL for the EKS cluster"
   type        = string
 }
+
+variable "eks_fargate_role_arn" {
+  description = "The ARN of the IAM role for Fargate"
+  type        = string
+}
+
+variable "fargate_profile_name" {
+  description = "The name of the EKS Fargate profile"
+  type        = string
+}
