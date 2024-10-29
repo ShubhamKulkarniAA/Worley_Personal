@@ -1,9 +1,9 @@
 output "vpc_id" {
-  value = aws_vpc.vpc.id 
+  value = aws_vpc.vpc.id
 }
 
 output "vpc_arn" {
-  value = aws_vpc.vpc.arn 
+  value = aws_vpc.vpc.arn
 }
 
 output "rds_private_subnet1_id" {
@@ -26,5 +26,5 @@ output "private_subnet1_id" {
 }
 
 output "private_subnet2_id" {
- value = aws_subnet.private_subnet2.id 
+ value = aws_subnet.private_subnet2.id
 }

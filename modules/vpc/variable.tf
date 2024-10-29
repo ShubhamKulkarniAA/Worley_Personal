@@ -7,7 +7,7 @@ variable vpc_name {
 }
 
 variable internet_gateway_name {
- type = string 
+ type = string
 }
 
 
@@ -26,6 +26,7 @@ variable public_subnet2_cidr {
 variable availability_zone2 {
   type = string
 }
+
 
 variable private_subnet1_cidr {
   type = string
