@@ -58,16 +58,17 @@ variable "repository_name" {
 }
 
 variable "image_tag_mutability" {
-  type = string
+  type    = string
   default = "MUTABLE"
 }
 
 variable "tags" {
-  type = map(string)
+  type    = map(string)
   default = {}
 }
 
 # EKS Variables
+
 variable "cluster_name" {
   type = string
 }
@@ -86,4 +87,19 @@ variable "max_size" {
 
 variable "min_size" {
   type = number
+}
+
+variable "namespace" {
+  description = "The Kubernetes namespace for the service account"
+  type        = string
+}
+
+variable "service_account_name" {
+  description = "The name of the service account"
+  type        = string
+}
+
+variable "oidc_provider_url" {
+  description = "The OIDC provider URL for the EKS cluster"
+  type        = string
 }

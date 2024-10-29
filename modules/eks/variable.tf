@@ -37,3 +37,23 @@ variable "subnet_ids" {
   description = "The IDs of the subnets to use for the EKS cluster and node group"
   type        = list(string)
 }
+
+variable "region" {
+  description = "The AWS region where the EKS cluster is located"
+  type        = string
+}
+
+variable "namespace" {
+  description = "Kubernetes namespace for the service account"
+  type        = string
+}
+
+variable "service_account_name" {
+  description = "Name of the service account to use"
+  type        = string
+}
+
+variable "oidc_provider_url" {
+  description = "The OIDC provider URL for the EKS cluster"
+  type        = string
+}

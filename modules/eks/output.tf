@@ -27,3 +27,13 @@ output "eks_node_group_arn" {
   description = "The ARN of the EKS node group"
   value       = aws_eks_node_group.eks_node_group.arn
 }
+
+output "eks_oidc_provider_arn" {
+  description = "The ARN of the IAM OIDC provider"
+  value       = aws_iam_openid_connect_provider.eks_oidc_provider.arn
+}
+
+output "eks_service_account_role_arn" {
+  description = "The ARN of the IAM role for the service account"
+  value       = aws_iam_role.eks_service_account_role.arn
+}
