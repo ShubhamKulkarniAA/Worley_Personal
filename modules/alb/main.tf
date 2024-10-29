@@ -36,10 +36,10 @@ resource "aws_lb" "public_alb" {
 
 resource "aws_lb_target_group" "frontend_tg" {
   name        = "${var.public_alb_name}-frontend-tg"
-  port        = 80  # Adjust according to your frontend port
+  port        = 80
   protocol    = "HTTP"
   vpc_id      = var.vpc_id
-  target_type = "ip"
+  target_type = "ip"  # Use "ip" to route to the IP addresses of the Kubernetes pods
 
   health_check {
     interval            = 30
@@ -57,14 +57,14 @@ resource "aws_lb_target_group" "frontend_tg" {
 
 resource "aws_lb_target_group" "backend_tg" {
   name        = "${var.public_alb_name}-backend-tg"
-  port        = 5000  # Adjust according to your backend port
+  port        = 5000
   protocol    = "HTTP"
   vpc_id      = var.vpc_id
-  target_type = "ip"
+  target_type = "ip"  # Use "ip" to route to the IP addresses of the Kubernetes pods
 
   health_check {
     interval            = 30
-    path                = "/api/health"  # Adjust according to your backend health endpoint
+    path                = "/api/health"
     timeout             = 5
     healthy_threshold   = 3
     unhealthy_threshold = 3
@@ -116,40 +116,5 @@ resource "aws_lb_listener_rule" "backend_rule" {
     path_pattern {
       values = ["/api/*"]  # Matches all API requests
     }
-  }
-}
-
-resource "aws_api_gateway_rest_api" "public_api" {
-  name = "Public-ALB-API"
-}
-
-resource "aws_api_gateway_resource" "public_proxy" {
-  rest_api_id = aws_api_gateway_rest_api.public_api.id
-  parent_id   = aws_api_gateway_rest_api.public_api.root_resource_id
-  path_part   = "{proxy+}"
-}
-
-resource "aws_api_gateway_method" "public_proxy_method" {
-  rest_api_id   = aws_api_gateway_rest_api.public_api.id
-  resource_id   = aws_api_gateway_resource.public_proxy.id
-  http_method   = "ANY"
-  authorization = "NONE"
-
-  request_parameters = {
-    "method.request.path.proxy" = true
-  }
-}
-
-resource "aws_api_gateway_integration" "public_proxy_integration" {
-  rest_api_id = aws_api_gateway_rest_api.public_api.id
-  resource_id = aws_api_gateway_resource.public_proxy.id
-  http_method = aws_api_gateway_method.public_proxy_method.http_method
-  type        = "HTTP_PROXY"
-
-  integration_http_method = "ANY"
-  uri                     = "http://${aws_lb.public_alb.dns_name}/{proxy}"
-
-  request_parameters = {
-    "integration.request.path.proxy" = "method.request.path.proxy"
   }
 }
