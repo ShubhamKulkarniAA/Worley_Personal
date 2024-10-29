@@ -52,8 +52,3 @@ variable "service_account_name" {
   description = "Name of the service account to use"
   type        = string
 }
-
-variable "oidc_provider_url" {
-  description = "The OIDC provider URL for the EKS cluster"
-  type        = string
-}

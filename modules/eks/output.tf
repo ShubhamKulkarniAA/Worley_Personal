@@ -37,3 +37,8 @@ output "eks_service_account_role_arn" {
   description = "The ARN of the IAM role for the service account"
   value       = aws_iam_role.eks_service_account_role.arn
 }
+
+output "oidc_provider_url" {
+  description = "The OIDC provider URL for the EKS cluster"
+  value       = aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
+}

@@ -42,5 +42,4 @@ module "eks" {
   subnet_ids            = [module.vpc.public_subnet1_id, module.vpc.public_subnet2_id]
   namespace             = var.namespace
   service_account_name  = var.service_account_name
-  oidc_provider_url     = var.oidc_provider_url
 }

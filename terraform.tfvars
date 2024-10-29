@@ -29,4 +29,5 @@ desired_size            = 1
 max_size                = 2
 min_size                = 1
 namespace               = "default"
-service_account_name    = "Worley-NC-Service-Account"  # Replace with your desired service account name
+service_account_name    = "Worley-NC-Service-Account"
+oidc_provider_url       = ""

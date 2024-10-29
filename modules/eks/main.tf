@@ -80,17 +80,9 @@ resource "aws_iam_role_policy_attachment" "eks_registry_policy" {
 
 # OIDC Provider for EKS
 resource "aws_iam_openid_connect_provider" "eks_oidc_provider" {
-  url = "https://oidc.eks.${var.region}.amazonaws.com/id/${aws_eks_cluster.eks_cluster.id}"
-
-  client_id_list = ["sts.amazonaws.com"]
-
-  thumbprint_list = [
-    data.aws_iam_server_certificate.eks_thumbprint.thumbprint,
-  ]
-}
-
-data "aws_iam_server_certificate" "eks_thumbprint" {
-  name = "eks-cluster-oidc-provider"
+  url               = "https://oidc.eks.${var.region}.amazonaws.com/id/${aws_eks_cluster.eks_cluster.id}"
+  client_id_list    = ["sts.amazonaws.com"]
+  thumbprint_list   = ["66C52A14DA1484B5A2AEC2E90E2EE44FB3030459"] # Use your thumbprint here
 }
 
 # IAM Role for Service Account
