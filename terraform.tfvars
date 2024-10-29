@@ -17,10 +17,10 @@ region = "ap-south-1"
 public_alb_name = "Worley-NC-Public-ALB"
 
 # ECR Variables
-repository_name = "Worley-NC-ECR-Repo"
+repository_name = "worley-nc-ecr-repo"
 image_tag_mutability = "MUTABLE"
 tags = {
-  Environment = "Dev"
+  Environment = "dev"
 }
 
 # EKS Variables
