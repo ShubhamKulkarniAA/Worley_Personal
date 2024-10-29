@@ -1,3 +1,4 @@
+#VPC Variables
 vpc_cidr = "10.0.0.0/16"
 vpc_name = "Worley-NC"
 internet_gateway_name = "Worley-NC-IG"
@@ -11,11 +12,19 @@ availability_zone1 = "ap-south-1a"
 availability_zone2 = "ap-south-1b"
 region = "ap-south-1"
 
-# ALB Veriables
-public_alb_name          = "Worley-NC-Public-ALB"
-public_eks_cidr          = "10.0.8.0/24"
-api_gateway_cidr         = "10.0.9.0/24"
+# ALB Variables
+public_alb_name = "Worley-NC-Public-ALB"
 
-# New variables for EKS
-cluster_name = "Worley-NC-EKS"
-node_group_name = "Worley-NC-EKS-NG"
+# ECR Variables
+repository_name = "Worley-NC-ECR-Repo"
+image_tag_mutability = "MUTABLE"
+tags = {
+  Environment = "Dev"
+}
+
+# EKS Variables
+cluster_name = "Worley-NC-EKS-Cluster"
+node_group_name = "Worley-NC-EKS-Node-Group"
+desired_size = 2
+max_size = 3
+min_size = 1

@@ -22,14 +22,21 @@ module "alb" {
   public_subnet2 = module.vpc.public_subnet2_id
 }
 
-#EKS
+module "ecr" {
+  source = "./modules/ecr"
+  repository_name = var.repository_name
+  image_tag_mutability = var.image_tag_mutability
+  tags = var.tags
+  lifecycle_policy = var.lifecycle_policy
+}
 
 module "eks" {
   source = "./modules/eks"
-
   cluster_name = var.cluster_name
-  public_subnet1 = module.vpc.public_subnet1_id
-  public_subnet2 = module.vpc.public_subnet2_id
-  node_group_name = "${var.cluster_name}-node-group"
-
+  cluster_role_arn = aws_iam_role.eks_cluster_role.arn
+  node_group_name = var.node_group_name
+  node_role_arn = aws_iam_role.eks_node_role.arn
+  desired_size = var.desired_size
+  max_size = var.max_size
+  min_size = var.min_size
 }

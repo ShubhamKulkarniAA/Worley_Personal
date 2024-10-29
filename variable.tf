@@ -1,5 +1,4 @@
-#VPC Variables
-
+# VPC Variables
 variable "vpc_cidr" {
   type = string
 }
@@ -48,28 +47,67 @@ variable "region" {
   type = string
 }
 
-# ALB Variables
 
+# ALB Variables
 variable "public_alb_name" {
   type = string
 }
 
-variable "public_eks_cidr" {
+
+# ECR Variables
+variable "repository_name" {
   type = string
 }
 
-variable "api_gateway_cidr" {
+variable "image_tag_mutability" {
   type = string
+  default = "MUTABLE"
 }
+
+variable "tags" {
+  type = map(string)
+  default = {}
+}
+
+variable "lifecycle_policy" {
+  type = map(any)
+  default = {
+    rules = [
+      {
+        rulePriority = 1
+        selectionCriteria = {
+          tagStatus = "TAGGED"
+          tagPrefixList = ["latest"]
+        }
+        action = {
+          type = "expire"
+        }
+        expiry = {
+          days = 30
+        }
+      }
+    ]
+  }
+}
+
 
 # EKS Variables
-
 variable "cluster_name" {
-  description = "EKS Cluster name"
   type = string
 }
 
 variable "node_group_name" {
-  description = "EKS Node Group name"
   type = string
+}
+
+variable "desired_size" {
+  type = number
+}
+
+variable "max_size" {
+  type = number
+}
+
+variable "min_size" {
+  type = number
 }

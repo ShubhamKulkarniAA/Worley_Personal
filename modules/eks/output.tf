@@ -1,15 +1,19 @@
-output "eks_cluster_name" {
-  value = aws_eks_cluster.cluster.name
+output "eks_cluster_id" {
+  description = "The ID of the EKS cluster"
+  value       = aws_eks_cluster.eks_cluster.id
 }
 
 output "eks_cluster_endpoint" {
-  value = aws_eks_cluster.cluster.endpoint
+  description = "The endpoint of the EKS cluster"
+  value       = aws_eks_cluster.eks_cluster.endpoint
 }
 
-output "eks_cluster_ca_certificate" {
-  value = aws_eks_cluster.cluster.certificate_authority[0].data
+output "eks_cluster_certificate_authority" {
+  description = "The certificate authority data for the EKS cluster"
+  value       = aws_eks_cluster.eks_cluster.certificate_authority[0].data
 }
 
-output "cluster_security_group_id" {
-  value = aws_eks_cluster.cluster.vpc_config[0].cluster_security_group_id
+output "eks_node_group_arn" {
+  description = "The ARN of the EKS node group"
+  value       = aws_eks_node_group.eks_node_group.arn
 }

@@ -1,23 +1,34 @@
 variable "cluster_name" {
-  description = "EKS Cluster name"
+  description = "The name of the EKS cluster"
   type        = string
 }
 
-variable "public_subnet1" {
-  description = "ID of the private subnet in ap-south-1a"
-  type        = string
-}
-
-variable "public_subnet2" {
-  description = "ID of the private subnet in ap-south-1b"
+variable "cluster_role_arn" {
+  description = "The ARN of the IAM role to use for the EKS cluster"
   type        = string
 }
 
 variable "node_group_name" {
-  description = "EKS Node Group name"
+  description = "The name of the EKS node group"
   type        = string
 }
 
-variable "ssh_key_name" {
-  default = "EKS"
+variable "node_role_arn" {
+  description = "The ARN of the IAM role to use for the EKS node group"
+  type        = string
+}
+
+variable "desired_size" {
+  description = "The desired number of nodes in the EKS node group"
+  type        = number
+}
+
+variable "max_size" {
+  description = "The maximum number of nodes in the EKS node group"
+  type        = number
+}
+
+variable "min_size" {
+  description = "The minimum number of nodes in the EKS node group"
+  type        = number
 }
