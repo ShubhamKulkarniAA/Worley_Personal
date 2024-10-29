@@ -20,7 +20,8 @@ spec:
             - containerPort: 80
           command: ["/bin/sh", "-c"]
           args:
-            - echo 'HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nHello World!' | nc -l -p 80
+            - |
+              echo 'HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nHello World!' | nc -l -p 80
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -38,7 +39,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: 484907523966.dkr.ecr.ap-south-1.amazonaws.com/demo-worley-nc-ui:latest
+          image: 484907523966.dkr.ecr.ap-south-1.amazonaws.com/worley-nc-ecr-repo:latest
           ports:
             - containerPort: 5000
 ---
