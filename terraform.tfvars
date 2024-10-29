@@ -12,8 +12,9 @@ availability_zone1 = "ap-south-1a"
 availability_zone2 = "ap-south-1b"
 region = "ap-south-1"
 
+/*
 # ALB Variables
-#public_alb_name = "Worley-NC-Public-ALB"
+public_alb_name = "Worley-NC-Public-ALB"
 
 # ECR Variables
 repository_name = "Worley-NC-ECR-Repo"
@@ -28,3 +29,4 @@ node_group_name = "Worley-NC-EKS-Node-Group"
 desired_size = 2
 max_size = 3
 min_size = 1
+*/

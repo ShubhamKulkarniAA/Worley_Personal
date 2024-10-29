@@ -20,7 +20,7 @@ module "vpc" {
   vpc_id = module.vpc.vpc_id
   public_subnet1 = module.vpc.public_subnet1_id
   public_subnet2 = module.vpc.public_subnet2_id
-}*/
+}
 
 module "ecr" {
   source = "./modules/ecr"
@@ -41,3 +41,4 @@ module "eks" {
   min_size = var.min_size
   subnet_ids = [module.vpc.public_subnet1_id, module.vpc.public_subnet2_id]
 }
+*/
