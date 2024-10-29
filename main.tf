@@ -43,5 +43,5 @@ module "eks" {
   namespace             = var.namespace
   service_account_name  = var.service_account_name
   fargate_profile_name  = var.fargate_profile_name
-  eks_fargate_role_arn  = module.eks_fargate_role_arn
+  eks_fargate_role_arn  = module.eks.eks_fargate_role_arn
 }
