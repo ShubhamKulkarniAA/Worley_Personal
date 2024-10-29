@@ -5,6 +5,11 @@ const port = 5000;
 // Serve static files from the "public" directory
 app.use(express.static("public"));
 
+// Root endpoint
+app.get("/", (req, res) => {
+  res.send("Welcome to the backend server!");
+});
+
 // API endpoint
 app.get("/api/message", (req, res) => {
   res.json({ message: "Hello from the Backend!" });
