@@ -6,7 +6,7 @@ COPY package*.json ./
 RUN npm install
 
 # Copy service.js from the eks module directory
-COPY ./modules/eks/service.js .
+COPY service.js .
 
 EXPOSE 5000
 
