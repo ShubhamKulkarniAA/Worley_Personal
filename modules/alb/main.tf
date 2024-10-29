@@ -97,8 +97,7 @@ resource "aws_lb_listener_rule" "frontend_rule" {
   }
 
   condition {
-    field  = "path-pattern"
-    values = ["/", "/index.html"]  # Adjust according to your frontend routes
+    values = ["*"]  # Adjust according to your frontend routes
   }
 }
 
@@ -112,8 +111,7 @@ resource "aws_lb_listener_rule" "backend_rule" {
   }
 
   condition {
-    field  = "path-pattern"
-    values = ["/api/*"]  # All API requests
+    path_pattern = ["/api/*"]  # All API requests
   }
 }
 
