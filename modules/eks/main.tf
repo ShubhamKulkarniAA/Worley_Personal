@@ -140,7 +140,7 @@ resource "aws_iam_role_policy_attachment" "eks_service_account_policy" {
   role       = aws_iam_role.eks_service_account_role.name
 }
 
-# Fargate Profil
+# Fargate Profile
 resource "aws_eks_fargate_profile" "my_fargate_profile" {
   cluster_name           = aws_eks_cluster.eks_cluster.name
   fargate_profile_name   = "${var.cluster_name}-fargate-profile"
