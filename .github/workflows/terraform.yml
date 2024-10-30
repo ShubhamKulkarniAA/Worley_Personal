@@ -7,7 +7,7 @@ on:
 
 jobs:
   TerraformAWS:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
