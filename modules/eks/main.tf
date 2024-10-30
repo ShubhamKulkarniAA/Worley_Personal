@@ -85,9 +85,9 @@ resource "aws_iam_openid_connect_provider" "eks_oidc_provider" {
   thumbprint_list   = ["66C52A14DA1484B5A2AEC2E90E2EE44FB3030459"] # Use your thumbprint here
 }
 
-# IAM Role for Service Account
-resource "aws_iam_role" "eks_service_account_role" {
-  name = "eks-service-account-role"
+# IAM Role for Fargate
+resource "aws_iam_role" "eks_fargate_role" {
+  name = "eks-fargate-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -96,18 +96,17 @@ resource "aws_iam_role" "eks_service_account_role" {
         Action = "sts:AssumeRole",
         Effect = "Allow",
         Principal = {
-          Federated = aws_iam_openid_connect_provider.eks_oidc_provider.arn
-        },
-        Condition = {
-          StringEquals = {
-            "${aws_iam_openid_connect_provider.eks_oidc_provider.url}:sub" = "system:serviceaccount:${var.namespace}:${var.service_account_name}"
-          }
+          Service = "eks-fargate-pods.amazonaws.com"
         }
       }
     ]
   })
 }
 
+resource "aws_iam_role_policy_attachment" "fargate_policy_attachment" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy"
+  role       = aws_iam_role.eks_fargate_role.name
+}
 resource "aws_iam_role_policy_attachment" "eks_service_account_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSFargatePodExecutionRolePolicy"
   role       = aws_iam_role.eks_service_account_role.name
