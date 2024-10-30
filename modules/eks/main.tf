@@ -145,6 +145,7 @@ resource "aws_eks_fargate_profile" "my_fargate_profile" {
   cluster_name           = aws_eks_cluster.eks_cluster.name
   fargate_profile_name   = "${var.cluster_name}-fargate-profile"
   pod_execution_role_arn = aws_iam_role.eks_fargate_role.arn
+  subnet_ids = var.subnet_ids
 
   selector {
     namespace = var.namespace
