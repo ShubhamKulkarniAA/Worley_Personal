@@ -29,6 +29,10 @@ desired_size            = 1
 max_size                = 2
 min_size                = 1
 namespace               = "default"
-service_account_name    = "Worley-NC-Service-Account"
+service_account_name    = "worley-nc-service-account"
 oidc_provider_url       = ""
 fargate_profile_name    = "Worley-NC-Fargate-Profile"
+
+# LBC Variables
+lbc_namespace           = "kube-system"
+lbc_service_account_name = "aws-load-balancer-controller"

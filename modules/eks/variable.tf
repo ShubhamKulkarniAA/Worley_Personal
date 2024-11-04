@@ -33,9 +33,24 @@ variable "min_size" {
   type        = number
 }
 
-variable "subnet_ids" {
-  description = "The IDs of the subnets to use for the EKS cluster and node group"
-  type        = list(string)
+variable "public_subnet1" {
+  description = "The ID of the first public subnet"
+  type        = string
+}
+
+variable "public_subnet2" {
+  description = "The ID of the second public subnet"
+  type        = string
+}
+
+variable "private_subnet1" {
+  description = "The ID of the first public subnet"
+  type        = string
+}
+
+variable "private_subnet2" {
+  description = "The ID of the second public subnet"
+  type        = string
 }
 
 variable "region" {

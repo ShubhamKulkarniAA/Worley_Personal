@@ -4,7 +4,7 @@ resource "aws_eks_cluster" "eks_cluster" {
   role_arn = aws_iam_role.eks_cluster_role.arn
 
   vpc_config {
-    subnet_ids = var.subnet_ids
+    subnet_ids = [var.public_subnet1, var.public_subnet2]
   }
 
   depends_on = [aws_iam_role_policy_attachment.eks_cluster_policy]
@@ -15,7 +15,7 @@ resource "aws_eks_node_group" "eks_node_group" {
   cluster_name    = aws_eks_cluster.eks_cluster.name
   node_group_name = var.node_group_name
   node_role_arn   = aws_iam_role.eks_node_role.arn
-  subnet_ids      = var.subnet_ids
+  subnet_ids      = [var.public_subnet1, var.public_subnet2]
 
   scaling_config {
     desired_size = var.desired_size
@@ -145,7 +145,7 @@ resource "aws_eks_fargate_profile" "my_fargate_profile" {
   cluster_name           = aws_eks_cluster.eks_cluster.name
   fargate_profile_name   = "${var.cluster_name}-fargate-profile"
   pod_execution_role_arn = aws_iam_role.eks_fargate_role.arn
-  subnet_ids = var.subnet_ids
+  subnet_ids = [var.private_subnet1, var.private_subnet2]
 
   selector {
     namespace = var.namespace

@@ -68,7 +68,6 @@ variable "tags" {
 }
 
 # EKS Variables
-
 variable "cluster_name" {
   type = string
 }
@@ -107,4 +106,17 @@ variable "oidc_provider_url" {
 variable "fargate_profile_name" {
   description = "The name of the EKS Fargate profile"
   type        = string
+}
+
+#LBC Variable
+variable "lbc_namespace" {
+  description = "The namespace where the Load Balancer Controller will be deployed"
+  type        = string
+  default     = "kube-system"
+}
+
+variable "lbc_service_account_name" {
+  description = "The name of the Service Account for the Load Balancer Controller"
+  type        = string
+  default     = "aws-load-balancer-controller"
 }

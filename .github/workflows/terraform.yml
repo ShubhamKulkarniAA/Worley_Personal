@@ -45,15 +45,15 @@ jobs:
         run: terraform apply -auto-approve tfplan
         working-directory: ${{ env.TERRAFORM_DIR }}
 
-      - name: Build Docker Image
-        if: success()
-        run: docker build -t worley-nc-ecr-repo .
-        working-directory: ./modules/eks
-
       - name: Authenticate to ECR
         if: success()
         run: |
           aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin 484907523966.dkr.ecr.ap-south-1.amazonaws.com
+
+      - name: Build Docker Image
+        if: success()
+        run: docker build -t worley-nc-ecr-repo .
+        working-directory: ./modules/eks
 
       - name: Tag Docker Image
         if: success()

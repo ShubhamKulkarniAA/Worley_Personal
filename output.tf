@@ -100,3 +100,14 @@ output "fargate_profile_name" {
   description = "The name of the EKS Fargate profile"
   value       = module.eks.fargate_profile_name
 }
+
+#LBC Output
+output "lbc_service_account_name" {
+  description = "The name of the Service Account for the Load Balancer Controller"
+  value       = module.lbc.lbc_service_account_name
+}
+
+output "lbc_iam_role_arn" {
+  description = "The ARN of the IAM role for the Load Balancer Controller"
+  value       = module.lbc.lbc_iam_role_arn
+}
