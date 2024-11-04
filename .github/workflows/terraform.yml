@@ -71,7 +71,7 @@ jobs:
 
       - name: Deploy AWS Load Balancer Controller
         if: success()
-        run: kubectl apply -f ./modules/lbc/aws-load-balancer-controller-deployment.yaml
+        run: kubectl apply -f ./modules/lbc/modules/lbc/lbc-deployment.yaml
 
       - name: Check AWS Load Balancer Controller Pods
         if: success()
