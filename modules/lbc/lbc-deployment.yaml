@@ -18,7 +18,7 @@ spec:
       serviceAccountName: aws-load-balancer-controller
       containers:
         - name: aws-load-balancer-controller
-          image: chainguard/aws-load-balancer-controller:v2.5.1
+          image: chainguard/aws-load-balancer-controller
           args:
             - --cluster-name=Worley-NC-EKS
             - --service-account=aws-load-balancer-controller
