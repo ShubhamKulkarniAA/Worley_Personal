@@ -69,9 +69,13 @@ jobs:
         if: success()
         run: aws eks update-kubeconfig --name Worley-NC-EKS-Cluster --region ${{ env.AWS_REGION }}
 
-      - name: Deploy AWS Load Balancer Controller
+      - name: Deploy LBC
         if: success()
-        run: kubectl apply -f ./modules/lbc/modules/lbc/lbc-deployment.yaml
+        run: kubectl apply -f ./modules/lbc/lbc-deployment.yaml
+
+      - name: Apply LBC Service Account
+        if: success()
+        run: kubectl apply -f ./modules/lbc/lbc-service-account.yaml
 
       - name: Check AWS Load Balancer Controller Pods
         if: success()
