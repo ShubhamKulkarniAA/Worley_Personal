@@ -110,7 +110,7 @@ variable "fargate_profile_name" {
 }
 
 #LBC Variable
-variable "lbc_namespace" {
+/*variable "lbc_namespace" {
   description = "The namespace where the Load Balancer Controller will be deployed"
   type        = string
   default     = "kube-system"
@@ -120,4 +120,4 @@ variable "lbc_service_account_name" {
   description = "The name of the Service Account for the Load Balancer Controller"
   type        = string
   default     = "aws-load-balancer-controller"
-}
+}*/

@@ -34,5 +34,6 @@ oidc_provider_url       = ""
 fargate_profile_name    = "Worley-NC-Fargate-Profile"
 
 # LBC Variables
-lbc_namespace           = "kube-system"
+/*lbc_namespace           = "kube-system"
 lbc_service_account_name = "aws-load-balancer-controller"
+*/
