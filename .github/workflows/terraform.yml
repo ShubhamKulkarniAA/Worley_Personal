@@ -51,25 +51,27 @@ jobs:
         run: |
           aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin 484907523966.dkr.ecr.ap-south-1.amazonaws.com
 
-      - name: Build and Push Docker Images for UI and API
-        if: success()
-        run: |
-          # Read the comma-separated list of repository names from the environment variable
-          IFS=',' read -ra REPOSITORY_NAMES <<< "${{ env.REPOSITORY_NAMES }}"
+          - name: Build and Push Docker Images for UI and API
+          if: success()
+          run: |
+            # Read the comma-separated list of repository names from the environment variable
+            IFS=',' read -ra REPOSITORY_NAMES <<< "${{ env.REPOSITORY_NAMES }}"
 
-          # Loop through the repository names
-          for repo in "${REPOSITORY_NAMES[@]}"; do
-            echo "Building and pushing Docker image for $repo repository"
+            # Loop through the repository names
+            for repo in "${REPOSITORY_NAMES[@]}"; do
+              echo "Building and pushing Docker image for $repo repository"
 
-            # Build Docker image
-            docker build -t ${repo}-ecr-repo .
+              # Build Docker image
+              docker build -t ${repo}-ecr-repo .
 
-            # Tag Docker image
-            docker tag ${repo}-ecr-repo:latest 484907523966.dkr.ecr.ap-south-1.amazonaws.com/$repo:latest
+              # Tag Docker image
+              docker tag ${repo}-ecr-repo:latest 484907523966.dkr.ecr.ap-south-1.amazonaws.com/$repo:latest
 
-            # Push Docker image to ECR
-            docker push 484907523966.dkr.ecr.ap-south-1.amazonaws.com/$repo:latest
-          done
+              # Push Docker image to ECR
+              docker push 484907523966.dkr.ecr.ap-south-1.amazonaws.com/$repo:latest
+            done
+          working-directory: ./modules/eks
+
         working-directory: ./modules/eks
 
       - name: Configure kubectl
