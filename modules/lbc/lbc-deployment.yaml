@@ -21,4 +21,3 @@ spec:
           image: chainguard/aws-load-balancer-controller
           args:
             - --cluster-name=Worley-NC-EKS
-            - --service-account=aws-load-balancer-controller
