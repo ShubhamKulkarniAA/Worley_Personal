@@ -10,6 +10,11 @@ resource "aws_eks_cluster" "eks_cluster" {
   depends_on = [aws_iam_role_policy_attachment.eks_cluster_policy]
 }
 
+# Data resource for EKS cluster (to fetch certificate authority details for OIDC provider)
+data "aws_eks_cluster" "eks_cluster" {
+  name = aws_eks_cluster.eks_cluster.name
+}
+
 # EKS Node Group
 resource "aws_eks_node_group" "eks_node_group" {
   cluster_name    = aws_eks_cluster.eks_cluster.name
@@ -90,7 +95,7 @@ resource "aws_iam_openid_connect_provider" "eks" {
   url             = aws_eks_cluster.eks_cluster.identity.0.oidc.0.issuer
 }
 
-
+# Karpenter controller assume role policy
 data "aws_iam_policy_document" "karpenter_controller_assume_role_policy" {
   statement {
     actions = ["sts:AssumeRoleWithWebIdentity"]
@@ -114,6 +119,7 @@ resource "aws_iam_role" "karpenter_controller" {
   name               = "karpenter-controller"
 }
 
+# Define the policy (Make sure this file exists or replace it with the correct policy in the inline JSON)
 resource "aws_iam_policy" "karpenter_controller" {
   policy = file("./controller-trust-policy.json")
   name   = "KarpenterController"
@@ -124,12 +130,30 @@ resource "aws_iam_role_policy_attachment" "aws_load_balancer_controller_attach" 
   policy_arn = aws_iam_policy.karpenter_controller.arn
 }
 
-resource "aws_iam_instance_profile" "karpenter" {
-  name = "KarpenterNodeInstanceProfile"
-  role = aws_iam_role.nodes.name
+# Define a role for Karpenter node instance profile
+resource "aws_iam_role" "karpenter_node_role" {
+  name = "karpenter-node-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action = "sts:AssumeRole",
+        Effect = "Allow",
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      }
+    ]
+  })
 }
 
+resource "aws_iam_instance_profile" "karpenter" {
+  name = "KarpenterNodeInstanceProfile"
+  role = aws_iam_role.karpenter_node_role.name
+}
 
+# Helm provider configuration
 provider "helm" {
   kubernetes {
     host                   = aws_eks_cluster.eks_cluster.endpoint
@@ -143,7 +167,7 @@ provider "helm" {
   }
 }
 
-
+# Deploy Karpenter using Helm
 resource "helm_release" "karpenter" {
   namespace        = "karpenter"
   create_namespace = true
