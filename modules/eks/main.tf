@@ -127,7 +127,7 @@ resource "aws_iam_instance_profile" "karpenter" {
   role = aws_iam_role.nodes.name
 }
 
-resource "azapi_resource" "" {
+resource "azapi_resource" "azapi" {
   type      = "@TODO"
   parent_id = "/subscriptions/$${var.subscriptionId}/resourceGroups/$${var.resourceGroupName}"
   name      = ""
