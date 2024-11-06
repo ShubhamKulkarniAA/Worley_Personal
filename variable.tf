@@ -53,8 +53,9 @@ variable "public_alb_name" {
 }
 
 # ECR Variables
-variable "repository_name" {
-  type = string
+variable "repository_names" {
+  type        = list(string)
+  description = "List of ECR repository names to be created (e.g., UI and API)"
 }
 
 variable "image_tag_mutability" {

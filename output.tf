@@ -50,14 +50,17 @@ output "public_alb_arn" {
 }
 
 # ECR Outputs
-output "repository_uri" {
-  description = "URI of the ECR repository"
-  value       = module.ecr.repository_uri
+output "repository_uris" {
+  description = "URIs of the ECR repositories"
+  value = {
+    for repo_name, repo in module.ecr.ecr_repo :
+    repo_name => repo.repository_url
+  }
 }
 
-output "repository_name" {
-  description = "Name of the ECR repository"
-  value       = module.ecr.repository_name
+output "repository_names" {
+  description = "Names of the ECR repositories"
+  value = [for repo_name in module.ecr.ecr_repo : repo_name]
 }
 
 # EKS Outputs

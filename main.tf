@@ -1,4 +1,4 @@
-module "vpc" {
+/*module "vpc" {
   source = "./modules/vpc"
   region                    = var.region
   vpc_cidr                  = var.vpc_cidr
@@ -21,14 +21,14 @@ module "alb" {
   public_subnet1         = module.vpc.public_subnet1_id
   public_subnet2         = module.vpc.public_subnet2_id
 }
-
+*/
 module "ecr" {
   source = "./modules/ecr"
-  repository_name        = var.repository_name
+  repository_names        = var.repository_names
   image_tag_mutability   = var.image_tag_mutability
   tags                   = var.tags
 }
-
+/*
 module "eks" {
   source                = "./modules/eks"
   region                = var.region
@@ -61,3 +61,4 @@ module "lbc" {
     kubernetes = kubernetes
   }
 }
+*/
