@@ -49,7 +49,7 @@ module "eks" {
   eks_fargate_role_arn  = module.eks.eks_fargate_role_arn
 }
 
-module "lbc" {
+/*module "lbc" {
   source                    = "./modules/lbc"
   cluster_name              = var.cluster_name
   namespace                 = var.namespace
@@ -60,4 +60,4 @@ module "lbc" {
   providers = {
     kubernetes = kubernetes
   }
-}
+}*/
