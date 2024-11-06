@@ -51,16 +51,23 @@ output "public_alb_arn" {
 
 # ECR Outputs
 output "repository_uris" {
-  description = "URIs of the ECR repositories"
-  value = {
-    for repo_name, repo in module.ecr.ecr_repo :
-    repo_name => repo.repository_url
-  }
+  description = "The repository URLs of the created ECR repositories"
+  value = [for repo in module.ecr.ecr_repo : repo.repository_url]
 }
 
 output "repository_names" {
-  description = "Names of the ECR repositories"
-  value = [for repo_name in module.ecr.ecr_repo : repo_name]
+  description = "The names of the created ECR repositories"
+  value = [for repo in module.ecr.ecr_repo : repo.name]
+}
+
+output "repository_arn" {
+  description = "The ARNs of the created ECR repositories"
+  value = [for repo in module.ecr.ecr_repo : repo.arn]
+}
+
+output "lifecycle_policy" {
+  description = "The lifecycle policies applied to the repositories"
+  value = [for repo in module.ecr.ecr_lifecycle : repo.policy]
 }
 
 # EKS Outputs
