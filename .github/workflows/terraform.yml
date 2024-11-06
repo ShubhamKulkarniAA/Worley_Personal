@@ -50,20 +50,23 @@ jobs:
         run: |
           aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin 484907523966.dkr.ecr.ap-south-1.amazonaws.com
 
-      - name: Build Docker Image
-        if: success()
-        run: docker build -t worley-nc-ecr-repo .
-        working-directory: ./modules/eks
-
-      - name: Tag Docker Image
+      # Loop to Build and Push Docker Images for both UI and API Repositories
+      - name: Build and Push Docker Images for UI and API
         if: success()
         run: |
-          docker tag worley-nc-ecr-repo:latest 484907523966.dkr.ecr.ap-south-1.amazonaws.com/worley-nc-ecr-repo:latest
-        working-directory: ./modules/eks
+          for repo in ui api; do
+            echo "Building and pushing Docker image for $repo repository"
 
-      - name: Push Docker Image to ECR
-        if: success()
-        run: docker push 484907523966.dkr.ecr.ap-south-1.amazonaws.com/worley-nc-ecr-repo:latest
+            # Build Docker image
+            docker build -t ${repo}-ecr-repo .
+
+            # Tag Docker image
+            docker tag ${repo}-ecr-repo:latest 484907523966.dkr.ecr.ap-south-1.amazonaws.com/$repo:latest
+
+            # Push Docker image to ECR
+            docker push 484907523966.dkr.ecr.ap-south-1.amazonaws.com/$repo:latest
+          done
+        working-directory: ./modules/eks
 
       - name: Configure kubectl
         if: success()
