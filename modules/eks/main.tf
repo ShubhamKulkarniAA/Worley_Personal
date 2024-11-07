@@ -120,6 +120,16 @@ resource "aws_iam_policy" "aws_load_balancer_controller_policy" {
   })
 }
 
+# Create the IAM service account for the AWS Load Balancer Controller
+
+resource "eks_service_account" "aws_load_balancer_controller_sa" {
+  cluster_name = aws_eks_cluster.eks_cluster.name
+  name         = "aws-load-balancer-controller"
+  namespace    = "kube-system"
+
+  role_arn     = aws_iam_role.aws_load_balancer_controller_role.arn
+}
+
 # IAM Role for AWS Load Balancer Controller
 resource "aws_iam_role" "aws_load_balancer_controller_role" {
   name = "aws-load-balancer-controller-role"
@@ -155,7 +165,7 @@ resource "helm_repository" "aws_load_balancer_controller_repo" {
   url  = "https://kubernetes-sigs.github.io/aws-load-balancer-controller"
 }
 
-# Helm release for AWS Load Balancer Controller
+# Helm repository for AWS Load Balancer Controller
 resource "helm_release" "aws_load_balancer_controller" {
   name       = "aws-load-balancer-controller"
   namespace  = "kube-system"
@@ -166,7 +176,7 @@ resource "helm_release" "aws_load_balancer_controller" {
   values = [
     <<EOF
     serviceAccount:
-      create: true
+      create: false
       name: aws-load-balancer-controller
     region: ${var.region}
     vpcId: ${var.vpc_id}
@@ -174,7 +184,10 @@ resource "helm_release" "aws_load_balancer_controller" {
     EOF
   ]
 
-  depends_on = [aws_iam_role_policy_attachment.aws_load_balancer_controller_policy_attachment]
+  depends_on = [
+    aws_iam_role_policy_attachment.aws_load_balancer_controller_policy_attachment,
+    eks_service_account.aws_load_balancer_controller_sa
+  ]
 }
 
 
