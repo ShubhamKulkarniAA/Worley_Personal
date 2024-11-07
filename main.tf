@@ -41,4 +41,7 @@ module "eks" {
   subnet_ids = [module.vpc.public_subnet1_id, module.vpc.public_subnet2_id]
   region = var.region
   vpc_id = module.vpc.vpc_id
+  cluster_certificate_authority_data = module.eks.eks_cluster_certificate_authority
+  cluster_oidc_id = module.eks.cluster_oidc_id
+  cluster_endpoint = module.eks.eks_cluster_endpoint
 }

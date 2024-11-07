@@ -41,3 +41,8 @@ output "aws_load_balancer_controller_service_account" {
   description = "The name of the ServiceAccount used by the AWS Load Balancer Controller"
   value       = "aws-load-balancer-controller"
 }
+
+output "cluster_oidc_id" {
+  description = "The OIDC ID for the EKS cluster"
+  value       = aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
+}
