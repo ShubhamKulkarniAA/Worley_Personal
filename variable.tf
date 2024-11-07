@@ -106,3 +106,13 @@ variable "alb_ingress_controller_service_account_name" {
   description = "The name of the Kubernetes service account for the ALB Ingress Controller"
   default     = "alb-ingress-controller"
 }
+
+variable "namespace" {
+  description = "The Kubernetes namespace for the ALB Ingress Controller"
+  type        = string
+}
+
+variable "ingress_class" {
+  description = "The ingress class for the ALB Ingress Controller"
+  type        = string
+}

@@ -39,4 +39,7 @@ module "eks" {
   max_size            = var.max_size
   min_size            = var.min_size
   subnet_ids          = [module.vpc.public_subnet1_id, module.vpc.public_subnet2_id]
+  namespace           = var.namespace
+  ingress_class       = var.ingress_class
+
 }

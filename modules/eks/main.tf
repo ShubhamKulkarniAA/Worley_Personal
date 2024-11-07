@@ -120,7 +120,7 @@ resource "kubernetes_service_account" "alb_ingress_controller" {
 # Helm Release for ALB Ingress Controller
 resource "helm_release" "alb_ingress_controller" {
   name       = "aws-alb-ingress-controller"
-  namespace  = var.namespace      # Use the namespace variable from input
+  namespace  = var.namespace
   repository = "https://aws.github.io/eks-charts"
   chart      = "alb-ingress-controller"
   version    = "1.1.8"
@@ -132,12 +132,12 @@ resource "helm_release" "alb_ingress_controller" {
 
   set {
     name  = "awsRegion"
-    value = var.region
+    value = data.aws_region.current.name
   }
 
   set {
     name  = "ingressClass"
-    value = var.ingress_class  # Use the ingress_class variable from input
+    value = var.ingress_class
   }
 
   set {
@@ -145,7 +145,6 @@ resource "helm_release" "alb_ingress_controller" {
     value = "true"
   }
 
-  # Use the service account with the IAM role
   set {
     name  = "serviceAccount.name"
     value = kubernetes_service_account.alb_ingress_controller.metadata[0].name
@@ -156,3 +155,5 @@ resource "helm_release" "alb_ingress_controller" {
     value = aws_iam_role.alb_ingress_controller.arn
   }
 }
+
+data "aws_region" "current" {}
