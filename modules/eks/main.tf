@@ -20,11 +20,11 @@ data "tls_certificate" "oidc_cert" {
   url = data.aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
 }
 
-# Create IAM OIDC Provider with Correct Fingerprint (fingerprint_sha1 is the correct attribute)
+# Create IAM OIDC Provider with Correct Fingerprint (using sha1)
 resource "aws_iam_openid_connect_provider" "eks_oidc_provider" {
   url             = data.aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
   client_id_list  = ["sts.amazonaws.com"]
-  thumbprint_list = [data.tls_certificate.oidc_cert.fingerprint_sha1]
+  thumbprint_list = [sha1(data.tls_certificate.oidc_cert.cert_pem)]  # SHA1 thumbprint of the PEM certificate
 
   depends_on = [aws_eks_cluster.eks_cluster]
 }
