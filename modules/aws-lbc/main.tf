@@ -52,16 +52,18 @@ resource "aws_iam_role_policy_attachment" "lbc_AmazonEC2FullAccess" {
   role       = aws_iam_role.lbc_role.name
 }
 
-# IAM OIDC Identity Provider for the EKS Cluster
-resource "aws_eks_cluster_identity" "eks_oidc_identity" {
-  cluster_name = var.cluster_name
+data "aws_eks_cluster" "eks" {
+  name = var.cluster_name
+}
+
+# Fetch OIDC certificate thumbprint dynamically from the EKS OIDC URL
+data "tls_certificate" "eks_cluster" {
+  url = data.aws_eks_cluster.eks.identity[0].oidc[0].issuer
 }
 
 resource "aws_iam_oidc_provider" "eks_oidc_provider" {
-  url = "https://oidc.eks.${var.region}.amazonaws.com/id/${module.eks.eks_cluster_id}"
+  url = data.aws_eks_cluster.eks.identity[0].oidc[0].issuer
 
   client_id_list = ["sts.amazonaws.com"]
-  thumbprint_list = [
-    "9e99a48a2f7b440c818a95f684327f88bdbcaec0" # OIDC certificate thumbprint
-  ]
+  thumbprint_list = [data.tls_certificate.eks_cluster.certificates[0].sha1_fingerprint]
 }
