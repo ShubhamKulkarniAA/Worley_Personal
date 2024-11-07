@@ -1,7 +1,7 @@
-# VPC Output
+#VPC Output
 output "vpc_id" {
   description = "The VPC ID"
-  value       = module.vpc.vpc_id
+  value = module.vpc.vpc_id
 }
 
 output "rds_private_subnet1_id" {
@@ -28,7 +28,8 @@ output "private_subnet2_id" {
   value = module.vpc.private_subnet2_id
 }
 
-# ALB Output
+
+#ALB Output
 output "public_alb_arn" {
   value = module.alb.public_alb_arn
 }
@@ -37,7 +38,8 @@ output "public_alb_tg_arn" {
   value = module.alb.public_alb_tg_arn
 }
 
-# ECR Output
+
+#ECR Output
 output "repository_uri" {
   description = "URI of the ECR repository"
   value       = module.ecr.repository_uri
@@ -48,7 +50,8 @@ output "repository_name" {
   value       = module.ecr.repository_name
 }
 
-# EKS Output
+
+#EKS Output
 output "eks_cluster_id" {
   description = "The ID of the EKS cluster"
   value       = module.eks.eks_cluster_id
@@ -72,20 +75,7 @@ output "eks_node_role_arn" {
   value = module.eks.node_role_arn
 }
 
-# AWS Load Balancer Controller Output
-
-output "aws_load_balancer_controller_role_arn" {
-  description = "The ARN of the IAM role for the AWS Load Balancer Controller"
-  value       = module.eks.aws_load_balancer_controller_role_arn
-}
-
-output "aws_load_balancer_controller_service_account" {
-  description = "The name of the ServiceAccount for the AWS Load Balancer Controller"
-  value       = "aws-load-balancer-controller"
-}
-
-# Add the OIDC ID output for the EKS cluster
-output "eks_cluster_oidc_id" {
-  description = "The OIDC ID for the EKS cluster"
-  value       = module.eks.cluster_oidc_id
+#AWS-LBC Output
+output "lbc_role_arn" {
+  value = module.aws_lbc.lbc_role_arn
 }

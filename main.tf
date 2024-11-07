@@ -39,7 +39,10 @@ module "eks" {
   max_size = var.max_size
   min_size = var.min_size
   subnet_ids = [module.vpc.public_subnet1_id, module.vpc.public_subnet2_id]
-  region = var.region
-  vpc_id = module.vpc.vpc_id
+}
 
+module "aws_lbc" {
+  source      = "./modules/aws-lbc"
+  region      = var.region
+  cluster_name = module.eks.cluster_name
 }

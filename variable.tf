@@ -47,6 +47,7 @@ variable "region" {
   type = string
 }
 
+
 # ALB Variables
 variable "public_alb_name" {
   type = string
@@ -86,4 +87,16 @@ variable "max_size" {
 
 variable "min_size" {
   type = number
+}
+
+#AWS-LBC Variables
+
+variable "cluster_name" {
+  description = "The name of the EKS cluster"
+  type        = string
+}
+
+variable "region" {
+  description = "AWS region"
+  type        = string
 }
