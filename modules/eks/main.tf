@@ -132,7 +132,6 @@ resource "kubernetes_service_account" "alb_ingress_controller" {
     }
   }
 }
-
 # Helm Release for ALB Ingress Controller
 resource "helm_release" "alb_ingress_controller" {
   name       = "aws-alb-ingress-controller"
