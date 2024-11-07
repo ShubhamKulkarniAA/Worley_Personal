@@ -12,17 +12,3 @@ terraform {
     region = "ap-southeast-1"
   }
 }
-
-provider "aws" {
-  region = var.region
-}
-
-provider "helm" {
-  kubernetes {
-    config_path = "~/.kube/config"
-  }
-}
-
-provider "eks" {
-  region = var.region
-}
