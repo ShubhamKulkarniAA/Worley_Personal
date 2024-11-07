@@ -88,9 +88,7 @@ variable "min_size" {
   type = number
 }
 
-# AWS Load Balancer Controller (ALB Ingress Controller) Variables
-
-variable "vpc_id" {
-  description = "The VPC ID where the EKS cluster and AWS Load Balancer Controller should be deployed"
+variable "cluster_oidc_id" {
+  description = "OIDC provider ID for the EKS cluster"
   type        = string
 }

@@ -18,7 +18,15 @@ terraform {
 }
 
 provider "aws" {
-  region = "ap-southeast-1"
+  region = var.region
+}
+
+data "aws_eks_cluster" "eks" {
+  name = module.eks.cluster_name
+}
+
+data "aws_eks_cluster_auth" "cluster" {
+  name = data.aws_eks_cluster.eks.name
 }
 
 provider "helm" {
@@ -28,3 +36,5 @@ provider "helm" {
     token                  = data.aws_eks_cluster_auth.cluster.token
   }
 }
+
+data "aws_caller_identity" "current" {}
