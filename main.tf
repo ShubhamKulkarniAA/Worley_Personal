@@ -30,15 +30,13 @@ module "ecr" {
 }
 
 module "eks" {
-   source         = "./modules/eks"
-   cluster_name     = var.cluster_name
-   cluster_role_arn = module.eks.cluster_role_arn
-   node_role_arn   = module.eks.node_role_arn
-   node_group_name = var.node_group_name
-   desired_size   = var.desired_size
-   max_size       = var.max_size
-   min_size       = var.min_size
-   subnet_ids     = [module.vpc.public_subnet1_id, module.vpc.public_subnet2_id]
-   ingress_class       = var.ingress_class
-   namespace           = var.namespace
+  source              = "./modules/eks"
+  cluster_name        = var.cluster_name
+  cluster_role_arn    = module.eks.cluster_role_arn
+  node_role_arn       = module.eks.node_role_arn
+  node_group_name     = var.node_group_name
+  desired_size        = var.desired_size
+  max_size            = var.max_size
+  min_size            = var.min_size
+  subnet_ids          = [module.vpc.public_subnet1_id, module.vpc.public_subnet2_id]
 }

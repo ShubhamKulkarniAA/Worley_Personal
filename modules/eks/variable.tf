@@ -38,8 +38,12 @@ variable "subnet_ids" {
   type        = list(string)
 }
 
-# Ingress class for ALB Ingress Controller
+variable "namespace" {
+  description = "The Kubernetes namespace for the ALB Ingress Controller"
+  type        = string
+}
+
 variable "ingress_class" {
-  description = "Ingress class for ALB Ingress Controller"
+  description = "The ingress class for the ALB Ingress Controller"
   type        = string
 }

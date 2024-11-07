@@ -89,11 +89,6 @@ variable "min_size" {
   type = number
 }
 
-variable "namespace" {
-  description = "The Kubernetes namespace for the ALB Ingress Controller"
-  type        = string
-}
-
 variable "oidc_provider_url" {
   description = "The OIDC provider URL for the EKS cluster"
   type        = string
@@ -110,9 +105,4 @@ variable "alb_ingress_controller_service_account_name" {
   type        = string
   description = "The name of the Kubernetes service account for the ALB Ingress Controller"
   default     = "alb-ingress-controller"
-}
-
-variable "ingress_class" {
-  type        = string
-  description = "The ingress class to be used by the ALB Ingress Controller"
 }
