@@ -19,12 +19,12 @@ terraform {
 
 # Fetch the EKS Cluster details
 data "aws_eks_cluster" "cluster" {
-  name = var.cluster_name
+  name = aws_eks_cluster.cluster.name
 }
 
 # Fetch the EKS Cluster Authentication Token
 data "aws_eks_cluster_auth" "cluster" {
-  name = var.cluster_name
+  name = aws_eks_cluster.cluster.name
 }
 
 # Kubernetes provider configuration
