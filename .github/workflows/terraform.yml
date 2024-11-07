@@ -41,6 +41,11 @@ jobs:
         run: terraform validate
         working-directory: ${{ env.TERRAFORM_DIR }}
 
+      # Step to Destroy Infrastructure First
+      - name: Terraform Destroy (Remove existing resources)
+        run: terraform destroy -auto-approve
+        working-directory: ${{ env.TERRAFORM_DIR }}
+
       - name: Terraform Plan
         run: |
           terraform plan -out=tfplan -input=false
