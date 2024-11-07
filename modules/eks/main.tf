@@ -131,11 +131,11 @@ resource "aws_iam_role" "aws_load_balancer_controller_role" {
         Action = "sts:AssumeRoleWithWebIdentity",
         Effect = "Allow",
         Principal = {
-          Federated = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/oidc.eks.${var.region}.amazonaws.com/id/${var.eks.cluster_oidc_id}"
+          Federated = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/oidc.eks.${var.region}.amazonaws.com/id/${module.eks.cluster_oidc_id}"
         },
         Condition = {
           StringEquals = {
-            "oidc.eks.${var.region}.amazonaws.com/id/${var.eks.cluster_oidc_id}:sub" = "system:serviceaccount:kube-system:aws-load-balancer-controller"
+            "oidc.eks.${var.region}.amazonaws.com/id/${module.eks.cluster_oidc_id}:sub" = "system:serviceaccount:kube-system:aws-load-balancer-controller"
           }
         }
       }
@@ -176,7 +176,7 @@ resource "aws_eks_identity_provider_config" "oidc" {
   cluster_name = aws_eks_cluster.eks_cluster.name
   oidc {
     identity_provider_config_name = "oidc-eks"
-    issuer_url                    = "https://oidc.eks.${var.region}.amazonaws.com/id/${var.eks.cluster_oidc_id}"
+    issuer_url                    = "https://oidc.eks.${var.region}.amazonaws.com/id/${module.eks.cluster_oidc_id}"
     client_id                     = "sts.amazonaws.com"
   }
 }
