@@ -9,6 +9,11 @@ resource "aws_eks_cluster" "eks_cluster" {
   depends_on = [aws_iam_role_policy_attachment.eks_cluster_policy]
 }
 
+# Data Source to Fetch EKS Cluster Info
+data "aws_eks_cluster" "eks_cluster" {
+  name = aws_eks_cluster.eks_cluster.name
+}
+
 # Fetch the OIDC certificate for the URL of the EKS cluster
 data "tls_certificate" "oidc_cert" {
   url = data.aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
