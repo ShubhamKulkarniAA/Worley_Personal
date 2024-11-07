@@ -52,6 +52,7 @@ resource "aws_iam_role_policy_attachment" "lbc_AmazonEC2FullAccess" {
   role       = aws_iam_role.lbc_role.name
 }
 
+# Fetch EKS cluster details
 data "aws_eks_cluster" "eks" {
   name = var.cluster_name
 }
@@ -61,9 +62,12 @@ data "tls_certificate" "eks_cluster" {
   url = data.aws_eks_cluster.eks.identity[0].oidc[0].issuer
 }
 
-resource "aws_iam_oidc_provider" "eks_oidc_provider" {
+# Set up the OIDC identity provider for the EKS cluster using dynamic thumbprint
+resource "aws_iam_openid_connect_provider" "eks_oidc_provider" {
   url = data.aws_eks_cluster.eks.identity[0].oidc[0].issuer
 
   client_id_list = ["sts.amazonaws.com"]
-  thumbprint_list = [data.tls_certificate.eks_cluster.certificates[0].sha1_fingerprint]
+  thumbprint_list = [
+    data.tls_certificate.eks_cluster.certificates[0].sha1_fingerprint
+  ]
 }
