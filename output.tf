@@ -1,7 +1,7 @@
 # VPC Output
 output "vpc_id" {
   description = "The VPC ID"
-  value = module.vpc.vpc_id
+  value       = module.vpc.vpc_id
 }
 
 output "rds_private_subnet1_id" {
@@ -73,6 +73,7 @@ output "eks_node_role_arn" {
 }
 
 # AWS Load Balancer Controller Output
+
 output "aws_load_balancer_controller_role_arn" {
   description = "The ARN of the IAM role for the AWS Load Balancer Controller"
   value       = module.eks.aws_load_balancer_controller_role_arn
@@ -81,4 +82,10 @@ output "aws_load_balancer_controller_role_arn" {
 output "aws_load_balancer_controller_service_account" {
   description = "The name of the ServiceAccount for the AWS Load Balancer Controller"
   value       = "aws-load-balancer-controller"
+}
+
+# Add the OIDC ID output for the EKS cluster
+output "eks_cluster_oidc_id" {
+  description = "The OIDC ID for the EKS cluster"
+  value       = module.eks.cluster_oidc_id
 }

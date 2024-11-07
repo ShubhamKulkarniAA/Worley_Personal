@@ -42,6 +42,7 @@ output "aws_load_balancer_controller_service_account" {
   value       = "aws-load-balancer-controller"
 }
 
+# Output for the OIDC ID (Issuer) from the EKS cluster
 output "cluster_oidc_id" {
   description = "The OIDC ID for the EKS cluster"
   value       = aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer

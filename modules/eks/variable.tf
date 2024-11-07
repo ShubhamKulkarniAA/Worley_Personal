@@ -52,11 +52,6 @@ variable "vpc_id" {
   type        = string
 }
 
-variable "cluster_oidc_id" {
-  description = "The OIDC ID of the EKS cluster"
-  type        = string
-}
-
 variable "cluster_endpoint" {
   description = "The endpoint of the EKS cluster"
   type        = string

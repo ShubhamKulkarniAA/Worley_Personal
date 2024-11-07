@@ -32,6 +32,8 @@ module "ecr" {
 module "eks" {
   source = "./modules/eks"
   cluster_name = var.cluster_name
+  cluster_role_arn = module.eks.cluster_role_arn
+  node_role_arn = module.eks.node_role_arn
   node_group_name = var.node_group_name
   desired_size = var.desired_size
   max_size = var.max_size
@@ -39,9 +41,4 @@ module "eks" {
   subnet_ids = [module.vpc.public_subnet1_id, module.vpc.public_subnet2_id]
   region = var.region
   vpc_id = module.vpc.vpc_id
-  cluster_oidc_id = var.cluster_oidc_id
-  cluster_certificate_authority_data = module.eks_cluster_certificate_authority
-  node_role_arn = module.eks_node_role_arn
-  cluster_endpoint = module.eks.cluster_endpoint
-  cluster_role_arn = module.eks_cluster_role_arn
 }
