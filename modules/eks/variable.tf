@@ -51,3 +51,16 @@ variable "vpc_id" {
   description = "The VPC ID where the EKS cluster and AWS Load Balancer Controller should be deployed"
   type        = string
 }
+
+variable "namespace" {
+  description = "The namespace where the AWS Load Balancer Controller should be installed"
+  type        = string
+  default     = "kube-system"
+}
+
+# Service Account Name for the AWS Load Balancer Controller
+variable "service_account_name" {
+  description = "The service account name for the AWS Load Balancer Controller"
+  type        = string
+  default     = "aws-load-balancer-controller"
+}

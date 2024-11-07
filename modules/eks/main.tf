@@ -149,13 +149,19 @@ resource "aws_iam_role_policy_attachment" "aws_load_balancer_controller_policy_a
   role       = aws_iam_role.aws_load_balancer_controller_role.name
 }
 
+# Add Helm repository for AWS Load Balancer Controller
+resource "helm_repository" "aws_load_balancer_controller_repo" {
+  name = "aws-load-balancer-controller"
+  url  = "https://kubernetes-sigs.github.io/aws-load-balancer-controller"
+}
+
 # Helm release for AWS Load Balancer Controller
 resource "helm_release" "aws_load_balancer_controller" {
   name       = "aws-load-balancer-controller"
   namespace  = "kube-system"
-  chart      = "aws-load-balancer-controller"
+  chart      = "aws-load-balancer-controller/aws-load-balancer-controller"
   version    = "2.4.0"
-  repository = "https://aws.github.io/eks-charts"
+  repository = helm_repository.aws_load_balancer_controller_repo.url
 
   values = [
     <<EOF
@@ -172,11 +178,18 @@ resource "helm_release" "aws_load_balancer_controller" {
 }
 
 # OIDC Identity Provider for EKS
+resource "aws_iam_openid_connect_provider" "eks_cluster_oidc" {
+  client_id_list  = ["sts.amazonaws.com"]
+  thumbprint_list = [data.tls_certificate.eks_cluster.certificates[0].sha1_fingerprint]
+  url             = aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
+}
+
+# OIDC Identity Provider Config for EKS
 resource "aws_eks_identity_provider_config" "oidc" {
   cluster_name = aws_eks_cluster.eks_cluster.name
   oidc {
     identity_provider_config_name = "oidc-eks"
-    issuer_url                    = "https://oidc.eks.${var.region}.amazonaws.com/id/${aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer}"
+    issuer_url                    = aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
     client_id                     = "sts.amazonaws.com"
   }
 }
