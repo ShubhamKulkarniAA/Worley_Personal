@@ -7,14 +7,14 @@ terraform {
   }
 
   backend "s3" {
-    bucket = "demo-terraform-be-worley-test"
-    key    = "demo-terraform-be-worley-test/terraform.tfstate"
-    region = "ap-south-1"
+    bucket = "terraform-nc-bucket-test"
+    key    = "terraform-nc-bucket-test/terraform.tfstate"
+    region = var.region
   }
 }
 
 provider "aws" {
-  region = "ap-south-1"
+  region = var.region
 }
 
 provider "helm" {
