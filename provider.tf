@@ -2,21 +2,21 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 4.0"  # Adjust version as needed
+      version = "~> 4.0"
     }
     helm = {
       source  = "hashicorp/helm"
-      version = "~> 2.0"  # Adjust version as needed
+      version = "~> 2.0"
     }
   }
 }
 
 provider "aws" {
-  region  = var.region
+  region = var.region
 }
 
 provider "helm" {
   kubernetes {
-    config_path = "~/.kube/config"  # Path to your kubeconfig file
+    config_path = "~/.kube/config"
   }
 }
