@@ -37,13 +37,3 @@ variable "subnet_ids" {
   description = "The IDs of the subnets to use for the EKS cluster and node group"
   type        = list(string)
 }
-
-variable "namespace" {
-  description = "The Kubernetes namespace for the ALB Ingress Controller"
-  type        = string
-}
-
-variable "ingress_class" {
-  description = "The ingress class for the ALB Ingress Controller"
-  type        = string
-}

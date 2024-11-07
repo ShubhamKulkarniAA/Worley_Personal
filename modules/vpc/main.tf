@@ -107,27 +107,3 @@ resource "aws_route_table_association" "private_subnet2_route_table_association"
   subnet_id = aws_subnet.private_subnet2.id
   route_table_id = aws_route_table.private_route_table.id
 }
-
-# Elastic IP for NAT Gateway
-resource "aws_eip" "nat_eip" {
-  domain = "vpc"
-  tags = {
-    Name = "${var.vpc_name}-NATEIP"
-  }
-}
-
-# NAT Gateway
-resource "aws_nat_gateway" "nat_gateway" {
-  allocation_id = aws_eip.nat_eip.id
-  subnet_id    = aws_subnet.public_subnet1.id  # Choose a public subnet
-  tags = {
-    Name = "${var.vpc_name}-NATGateway"
-  }
-}
-
-# Route in the Private Route Table to use the NAT Gateway
-resource "aws_route" "private_nat_route" {
-  route_table_id         = aws_route_table.private_route_table.id
-  destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id         = aws_nat_gateway.nat_gateway.id
-}

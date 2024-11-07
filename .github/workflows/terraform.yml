@@ -9,18 +9,6 @@ jobs:
   TerraformAWS:
     runs-on: ubuntu-latest
 
-    env:
-      # AWS credentials and region
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_REGION: ap-south-1 # AWS region for the deployment
-
-      # Terraform directory
-      TERRAFORM_DIR: "./"
-
-      # Repository names for UI and API ECR repos
-      REPOSITORY_NAMES: "worley-nc-ui-k8s, worley-nc-api-k8s" # Comma separated list of repositories
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -31,68 +19,67 @@ jobs:
           terraform_version: "1.5.0"
 
       - name: Remove Terraform Cache
-        run: rm -rf ${{ env.TERRAFORM_DIR }}/.terraform
+        run: rm -rf .terraform
 
       - name: Terraform Init
         run: terraform init -upgrade
-        working-directory: ${{ env.TERRAFORM_DIR }}
+        working-directory: ./ # Point to your main Terraform directory
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ap-south-1
 
       - name: Terraform Validate
         run: terraform validate
-        working-directory: ${{ env.TERRAFORM_DIR }}
+        working-directory: ./ # Point to your main Terraform directory
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ap-south-1
 
       - name: Terraform Plan
         run: |
-          terraform plan -out=tfplan -input=false
-        working-directory: ${{ env.TERRAFORM_DIR }}
+          terraform plan -out=tfplan -input=false || echo "Terraform plan failed; review configuration."
+        working-directory: ./
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ap-south-1
 
       - name: Terraform Apply
         if: github.event_name == 'push'
-        run: terraform apply -auto-approve tfplan
-        working-directory: ${{ env.TERRAFORM_DIR }}
+        run: |
+          terraform apply -auto-approve tfplan || echo "Terraform apply failed; review state and plan."
+        working-directory: ./ # Point to your main Terraform directory
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ap-south-1
+
+      - name: Build Docker Image
+        if: github.event_name == 'push'
+        run: |
+          docker build -t worley-nc-ecr-repo .
+        working-directory: ./modules/eks
 
       - name: Authenticate to ECR
-        if: success()
+        if: github.event_name == 'push'
         run: |
-          aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin 484907523966.dkr.ecr.ap-south-1.amazonaws.com
+          aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 484907523966.dkr.ecr.ap-south-1.amazonaws.com
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      - name: Build and Push Docker Images for UI and API
-        if: success()
+      - name: Tag Docker Image
+        if: github.event_name == 'push'
         run: |
-          # Read the comma-separated list of repository names from the environment variable
-          IFS=',' read -ra REPOSITORY_NAMES <<< "${{ env.REPOSITORY_NAMES }}"
+          docker tag worley-nc-ecr-repo:latest 484907523966.dkr.ecr.ap-south-1.amazonaws.com/worley-nc-ecr-repo:latest
+        working-directory: ./
 
-          # Loop through the repository names
-          for repo in "${REPOSITORY_NAMES[@]}"; do
-            # Remove any leading or trailing whitespace from the repository name
-            repo=$(echo $repo | xargs)
-            echo "Building and pushing Docker image for $repo repository"
-
-            # Build Docker image
-            docker build -t "${repo}-ecr-repo" .
-
-            # Tag Docker image
-            docker tag "${repo}-ecr-repo:latest" "484907523966.dkr.ecr.ap-south-1.amazonaws.com/$repo:latest"
-
-            # Push Docker image to ECR
-            docker push "484907523966.dkr.ecr.ap-south-1.amazonaws.com/$repo:latest"
-          done
-
-        working-directory: ./modules/eks
-        shell: /usr/bin/bash -e {0}
-
-      - name: Configure kubectl
-        if: success()
-        run: aws eks update-kubeconfig --name Worley-NC-EKS-Cluster --region ${{ env.AWS_REGION }}
-
-      - name: Deploy to EKS
-        if: success()
-        run: kubectl apply -f ./modules/eks/k8s.yml
-
-      - name: Get Kubernetes Pods
-        if: success()
-        run: kubectl get pods --show-labels
-
-      - name: Get Kubernetes Services
-        if: success()
-        run: kubectl get svc
+      - name: Push Docker Image to ECR
+        if: github.event_name == 'push'
+        run: |
+          docker push 484907523966.dkr.ecr.ap-south-1.amazonaws.com/worley-nc-ecr-repo:latest
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

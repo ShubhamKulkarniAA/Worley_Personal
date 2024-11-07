@@ -1,7 +1,7 @@
-# VPC Outputs
+#VPC Output
 output "vpc_id" {
   description = "The VPC ID"
-  value       = module.vpc.vpc_id
+  value = module.vpc.vpc_id
 }
 
 output "rds_private_subnet1_id" {
@@ -28,49 +28,30 @@ output "private_subnet2_id" {
   value = module.vpc.private_subnet2_id
 }
 
-# ALB Outputs
-output "public_alb_dns_name" {
-  description = "The DNS name of the public ALB"
-  value       = module.alb.public_alb_dns_name
-}
 
-output "public_alb_target_group_arn" {
-  description = "The ARN of the public ALB target group"
-  value       = module.alb.public_alb_target_group_arn
-}
-
-output "public_alb_security_group_id" {
-  description = "The ID of the security group for the public ALB"
-  value       = module.alb.public_alb_security_group_id
-}
-
+#ALB Output
 output "public_alb_arn" {
-  description = "The ARN of the public ALB"
-  value       = module.alb.public_alb_arn
+  value = module.alb.public_alb_arn
 }
 
-# ECR Outputs
-output "repository_uris" {
-  description = "The repository URLs of the created ECR repositories"
-  value = module.ecr.repository_urls
+output "public_alb_tg_arn" {
+  value = module.alb.public_alb_tg_arn
 }
 
-output "repository_names" {
-  description = "The names of the created ECR repositories"
-  value = module.ecr.repository_names
+
+#ECR Output
+output "repository_uri" {
+  description = "URI of the ECR repository"
+  value       = module.ecr.repository_uri
 }
 
-output "repository_arn" {
-  description = "The ARNs of the created ECR repositories"
-  value = module.ecr.repository_arn
+output "repository_name" {
+  description = "Name of the ECR repository"
+  value       = module.ecr.repository_name
 }
 
-output "lifecycle_policy" {
-  description = "The lifecycle policies applied to the repositories"
-  value = module.ecr.lifecycle_policy
-}
 
-# EKS Outputs
+#EKS Output
 output "eks_cluster_id" {
   description = "The ID of the EKS cluster"
   value       = module.eks.eks_cluster_id
@@ -92,20 +73,4 @@ output "eks_cluster_role_arn" {
 
 output "eks_node_role_arn" {
   value = module.eks.node_role_arn
-}
-
-# output "oidc_provider_url" {
-#   description = "The OIDC provider URL for the EKS cluster"
-#   value       = module.eks.oidc_provider_url
-#}
-
-# ALB Ingress Controller Outputs
-output "alb_ingress_controller_sa_name" {
-  description = "The name of the ALB Ingress Controller Kubernetes service account"
-  value       = module.eks.alb_ingress_controller_sa_name
-}
-
-output "alb_ingress_controller_role_arn" {
-  description = "The ARN of the IAM role for ALB Ingress Controller"
-  value       = module.eks.alb_ingress_controller_role_arn
 }
