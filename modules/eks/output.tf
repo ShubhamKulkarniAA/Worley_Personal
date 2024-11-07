@@ -1,5 +1,15 @@
 # Outputs for the EKS Cluster and Node Group
 
+output "cluster_name" {
+  description = "The name of the EKS cluster"
+  value       = aws_eks_cluster.eks_cluster.name
+}
+
+output "cluster_oidc_id" {
+  description = "The OIDC ID for the EKS cluster"
+  value       = aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
+}
+
 output "cluster_role_arn" {
   description = "The ARN of the IAM role for the EKS cluster"
   value       = aws_iam_role.eks_cluster_role.arn

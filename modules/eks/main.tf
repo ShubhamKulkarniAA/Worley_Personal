@@ -1,4 +1,7 @@
+# Fetch AWS Account Information
+data "aws_caller_identity" "current" {}
 
+# EKS Cluster definition
 resource "aws_eks_cluster" "eks_cluster" {
   name     = var.cluster_name
   role_arn = var.cluster_role_arn
@@ -10,6 +13,7 @@ resource "aws_eks_cluster" "eks_cluster" {
   depends_on = [aws_iam_role_policy_attachment.eks_cluster_policy]
 }
 
+# EKS Node Group definition
 resource "aws_eks_node_group" "eks_node_group" {
   cluster_name    = aws_eks_cluster.eks_cluster.name
   node_group_name = var.node_group_name
@@ -43,6 +47,7 @@ resource "aws_iam_role" "eks_cluster_role" {
   })
 }
 
+# IAM Role Policy Attachment for EKS Cluster
 resource "aws_iam_role_policy_attachment" "eks_cluster_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
   role       = aws_iam_role.eks_cluster_role.name
@@ -66,6 +71,7 @@ resource "aws_iam_role" "eks_node_role" {
   })
 }
 
+# Attach the necessary policies to the Node Role
 resource "aws_iam_role_policy_attachment" "eks_node_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
   role       = aws_iam_role.eks_node_role.name
@@ -81,7 +87,7 @@ resource "aws_iam_role_policy_attachment" "eks_registry_policy" {
   role       = aws_iam_role.eks_node_role.name
 }
 
-# Create IAM policy for AWS Load Balancer Controller
+# IAM Policy for Load Balancer Controller
 resource "aws_iam_policy" "aws_load_balancer_controller_policy" {
   name        = "AWSLoadBalancerControllerPolicy"
   description = "Policy for the AWS Load Balancer Controller to interact with AWS resources"
@@ -143,20 +149,19 @@ resource "aws_iam_role_policy_attachment" "aws_load_balancer_controller_policy_a
   role       = aws_iam_role.aws_load_balancer_controller_role.name
 }
 
-# Install AWS Load Balancer Controller using Helm
-
+# Helm release for AWS Load Balancer Controller
 resource "helm_release" "aws_load_balancer_controller" {
   name       = "aws-load-balancer-controller"
   namespace  = "kube-system"
   chart      = "aws-load-balancer-controller"
-  version    = "2.4.0"  # Use the latest stable version
+  version    = "2.4.0"
   repository = "https://aws.github.io/eks-charts"
 
   values = [
     <<EOF
     serviceAccount:
-      create: true  # Ensures the ServiceAccount is created
-      name: aws-load-balancer-controller  # Name of the service account
+      create: true
+      name: aws-load-balancer-controller
     region: ${var.region}
     vpcId: ${var.vpc_id}
     clusterName: ${var.cluster_name}
@@ -166,7 +171,7 @@ resource "helm_release" "aws_load_balancer_controller" {
   depends_on = [aws_iam_role_policy_attachment.aws_load_balancer_controller_policy_attachment]
 }
 
-# OIDC Identity Provider for EKS (Optional for IRSA)
+# OIDC Identity Provider for EKS
 resource "aws_eks_identity_provider_config" "oidc" {
   cluster_name = aws_eks_cluster.eks_cluster.name
   oidc {
