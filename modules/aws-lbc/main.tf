@@ -77,37 +77,6 @@ resource "aws_iam_role_policy_attachment" "lbc_custom_policy_attachment" {
   role       = aws_iam_role.lbc_role.name
 }
 
-# Attach the AWS managed policies to the IAM role for Load Balancer Controller
-resource "aws_iam_role_policy_attachment" "lbc_AmazonEKSServicePolicy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
-  role       = aws_iam_role.lbc_role.name
-}
-
-resource "aws_iam_role_policy_attachment" "lbc_AmazonEC2ContainerRegistryReadOnly" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-  role       = aws_iam_role.lbc_role.name
-}
-
-resource "aws_iam_role_policy_attachment" "lbc_AmazonVPCFullAccess" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonVPCFullAccess"
-  role       = aws_iam_role.lbc_role.name
-}
-
-resource "aws_iam_role_policy_attachment" "lbc_AmazonElasticLoadBalancingFullAccess" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonElasticLoadBalancingFullAccess"
-  role       = aws_iam_role.lbc_role.name
-}
-
-resource "aws_iam_role_policy_attachment" "lbc_AmazonEKSClusterPolicy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
-  role       = aws_iam_role.lbc_role.name
-}
-
-resource "aws_iam_role_policy_attachment" "lbc_AmazonEC2FullAccess" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
-  role       = aws_iam_role.lbc_role.name
-}
-
 # Fetch EKS cluster details
 data "aws_eks_cluster" "eks" {
   name = var.cluster_name
