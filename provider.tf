@@ -18,17 +18,17 @@ terraform {
 }
 
 
-# Data source to get information about the existing EKS cluster
+# Fetch the EKS Cluster details after cluster creation
 data "aws_eks_cluster" "cluster" {
-  name = aws_eks_cluster.eks_cluster.name  # Reference to the EKS cluster declared elsewhere
+  name = var.cluster_name
 }
 
-# Data source to get the authentication token for the EKS cluster
+# Fetch the EKS Cluster Authentication Token after cluster creation
 data "aws_eks_cluster_auth" "cluster" {
-  name = aws_eks_cluster.eks_cluster.name  # Same here, referencing the existing cluster
+  name = var.cluster_name
 }
 
-# Kubernetes provider configuration using data from the existing EKS cluster
+# Kubernetes provider configuration
 provider "kubernetes" {
   host                   = data.aws_eks_cluster.cluster.endpoint
   token                  = data.aws_eks_cluster_auth.cluster.token
