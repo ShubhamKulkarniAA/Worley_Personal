@@ -16,12 +16,68 @@ resource "aws_iam_role" "lbc_role" {
   })
 }
 
-# Attach necessary policies to the IAM role for Load Balancer Controller
-resource "aws_iam_role_policy_attachment" "lbc_AmazonEKSLoadBalancerControllerPolicy" {
-  policy_arn = "arn:aws:iam::aws:policy/AWSLoadBalancerControllerPolicy"
+# Create a custom IAM policy for AWS Load Balancer Controller
+resource "aws_iam_policy" "lbc_custom_policy" {
+  name        = "AWSLoadBalancerControllerCustomPolicy"
+  description = "Custom policy for AWS Load Balancer Controller with additional permissions"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action = [
+          "elasticloadbalancing:CreateLoadBalancer",
+          "elasticloadbalancing:DeleteLoadBalancer",
+          "elasticloadbalancing:DescribeLoadBalancers",
+          "elasticloadbalancing:ModifyLoadBalancerAttributes",
+          "elasticloadbalancing:DescribeTargetGroups",
+          "elasticloadbalancing:DescribeListeners",
+          "elasticloadbalancing:CreateTargetGroup",
+          "elasticloadbalancing:ModifyTargetGroup",
+          "elasticloadbalancing:DeleteTargetGroup",
+          "elasticloadbalancing:RegisterTargets",
+          "elasticloadbalancing:DeregisterTargets"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+      {
+        Action = [
+          "ec2:DescribeSecurityGroups",
+          "ec2:DescribeSubnets",
+          "ec2:DescribeVpcs",
+          "ec2:DescribeNetworkInterfaces"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+      {
+        Action = [
+          "eks:DescribeCluster",
+          "eks:ListClusters"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+      {
+        Action = [
+          "iam:ListInstanceProfiles",
+          "iam:ListRoles"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+# Attach the custom IAM policy to the LBC role
+resource "aws_iam_role_policy_attachment" "lbc_custom_policy_attachment" {
+  policy_arn = aws_iam_policy.lbc_custom_policy.arn
   role       = aws_iam_role.lbc_role.name
 }
 
+# Attach the AWS managed policies to the IAM role for Load Balancer Controller
 resource "aws_iam_role_policy_attachment" "lbc_AmazonEKSServicePolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
   role       = aws_iam_role.lbc_role.name

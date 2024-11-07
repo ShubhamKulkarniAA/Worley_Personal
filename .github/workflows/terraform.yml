@@ -47,7 +47,7 @@ jobs:
           AWS_REGION: ap-southeast-1
 
       - name: Terraform Apply
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' && success()
         run: |
           terraform apply -auto-approve tfplan || echo "Terraform apply failed; review state and plan."
         working-directory: ./ # Point to your main Terraform directory
@@ -57,13 +57,13 @@ jobs:
           AWS_REGION: ap-southeast-1
 
       - name: Build Docker Image
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' && success()
         run: |
           docker build -t worley-nc-ecr-repo .
         working-directory: ./modules/eks
 
       - name: Authenticate to ECR
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' && success()
         run: |
           aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin 484907523966.dkr.ecr.ap-southeast-1.amazonaws.com
         env:
@@ -71,13 +71,13 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Tag Docker Image
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' && success()
         run: |
           docker tag worley-nc-ecr-repo:latest 484907523966.dkr.ecr.ap-southeast-1.amazonaws.com/worley-nc-ecr-repo:latest
         working-directory: ./
 
       - name: Push Docker Image to ECR
-        if: github.event_name == 'push'
+        if: github.event_name == 'push' && success()
         run: |
           docker push 484907523966.dkr.ecr.ap-southeast-1.amazonaws.com/worley-nc-ecr-repo:latest
         env:
