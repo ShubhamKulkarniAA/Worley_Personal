@@ -25,5 +25,5 @@ resource "helm_release" "aws_load_balancer_controller" {
     value = "true"
   }
 
-  depends_on = [aws_iam_role_policy_attachment.lbc_AmazonEKSLoadBalancerControllerPolicy]
+  depends_on = [aws_iam_role_policy_attachment.lbc_custom_policy_attachment]
 }
