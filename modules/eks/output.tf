@@ -51,3 +51,11 @@ output "vpc_id" {
   description = "The VPC ID where the EKS cluster is located"
   value       = aws_eks_cluster.eks_cluster.vpc_config[0].vpc_id
 }
+
+output "oidc_provider_url" {
+  value = aws_iam_openid_connect_provider.eks_oidc_provider.url
+}
+
+output "alb_ingress_controller_sa_name" {
+  value = kubernetes_service_account.alb_ingress_controller.metadata[0].name
+}
