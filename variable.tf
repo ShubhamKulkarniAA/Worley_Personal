@@ -94,30 +94,25 @@ variable "namespace" {
   type        = string
 }
 
-variable "service_account_name" {
-  description = "The name of the service account"
-  type        = string
-}
-
 variable "oidc_provider_url" {
   description = "The OIDC provider URL for the EKS cluster"
   type        = string
 }
 
-variable "fargate_profile_name" {
-  description = "The name of the EKS Fargate profile"
+# ALB Ingress Controller Variables
+variable "alb_ingress_controller_role_name" {
   type        = string
+  description = "The IAM role name for the ALB Ingress Controller"
+  default     = "alb-ingress-controller"
 }
 
-#LBC Variable
-/*variable "lbc_namespace" {
-  description = "The namespace where the Load Balancer Controller will be deployed"
+variable "alb_ingress_controller_service_account_name" {
   type        = string
-  default     = "kube-system"
+  description = "The name of the Kubernetes service account for the ALB Ingress Controller"
+  default     = "alb-ingress-controller"
 }
 
-variable "lbc_service_account_name" {
-  description = "The name of the Service Account for the Load Balancer Controller"
+variable "ingress_class" {
   type        = string
-  default     = "aws-load-balancer-controller"
-}*/
+  description = "The ingress class to be used by the ALB Ingress Controller"
+}

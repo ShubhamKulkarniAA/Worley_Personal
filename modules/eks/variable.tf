@@ -33,47 +33,13 @@ variable "min_size" {
   type        = number
 }
 
-variable "public_subnet1" {
-  description = "The ID of the first public subnet"
-  type        = string
+variable "subnet_ids" {
+  description = "The IDs of the subnets to use for the EKS cluster and node group"
+  type        = list(string)
 }
 
-variable "public_subnet2" {
-  description = "The ID of the second public subnet"
-  type        = string
-}
-
-variable "private_subnet1" {
-  description = "The ID of the first public subnet"
-  type        = string
-}
-
-variable "private_subnet2" {
-  description = "The ID of the second public subnet"
-  type        = string
-}
-
-variable "region" {
-  description = "The AWS region where the EKS cluster is located"
-  type        = string
-}
-
-variable "namespace" {
-  description = "Kubernetes namespace for the service account"
-  type        = string
-}
-
-variable "service_account_name" {
-  description = "Name of the service account to use"
-  type        = string
-}
-
-variable "fargate_profile_name" {
-  description = "The name of the EKS Fargate profile"
-  type        = string
-}
-
-variable "eks_fargate_role_arn" {
-  description = "The ARN of the IAM role for Fargate"
+# Ingress class for ALB Ingress Controller
+variable "ingress_class" {
+  description = "Ingress class for ALB Ingress Controller"
   type        = string
 }

@@ -26,14 +26,12 @@ tags                    = {
 cluster_name            = "Worley-NC-EKS-Cluster"
 node_group_name         = "Worley-NC-EKS-Node-Group"
 desired_size            = 1
-max_size                = 2
+max_size                = 1
 min_size                = 1
 namespace               = "default"
-service_account_name    = "worley-nc-service-account"
 oidc_provider_url       = ""
-fargate_profile_name    = "Worley-NC-Fargate-Profile"
 
-# LBC Variables
-/*lbc_namespace           = "kube-system"
-lbc_service_account_name = "aws-load-balancer-controller"
-*/
+# ALB Ingress Controller Variables
+alb_ingress_controller_role_name         = "alb-ingress-controller"
+alb_ingress_controller_service_account_name = "alb-ingress-controller"
+ingress_class                               = "alb"

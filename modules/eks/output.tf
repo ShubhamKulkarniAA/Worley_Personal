@@ -33,22 +33,20 @@ output "eks_oidc_provider_arn" {
   value       = aws_iam_openid_connect_provider.eks_oidc_provider.arn
 }
 
-output "eks_service_account_role_arn" {
-  description = "The ARN of the IAM role for the service account"
-  value       = aws_iam_role.eks_service_account_role.arn
+# Output the IAM role ARN for ALB Ingress Controller
+output "alb_ingress_controller_role_arn" {
+  description = "The ARN of the IAM role for the ALB Ingress Controller"
+  value       = aws_iam_role.alb_ingress_controller.arn
 }
 
-output "oidc_provider_url" {
-  description = "The OIDC provider URL for the EKS cluster"
-  value       = aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
+# Output the name of the ALB Ingress Controller Kubernetes service account
+output "alb_ingress_controller_service_account" {
+  description = "The name of the ALB Ingress Controller service account"
+  value       = kubernetes_service_account.alb_ingress_controller.metadata[0].name
 }
 
-output "eks_fargate_role_arn" {
-  description = "The ARN of the IAM role for Fargate"
-  value       = aws_iam_role.eks_fargate_role.arn
-}
-
-output "fargate_profile_name" {
-  description = "The name of the EKS Fargate profile"
-  value       = aws_eks_fargate_profile.my_fargate_profile.fargate_profile_name
+# Output the VPC ID where the EKS cluster resides
+output "vpc_id" {
+  description = "The VPC ID where the EKS cluster is located"
+  value       = data.aws_eks_cluster.eks_cluster.vpc_id
 }

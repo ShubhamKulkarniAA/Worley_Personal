@@ -24,40 +24,21 @@ module "alb" {
 
 module "ecr" {
   source = "./modules/ecr"
-  repository_names        = var.repository_names
+  repository_names       = var.repository_names
   image_tag_mutability   = var.image_tag_mutability
   tags                   = var.tags
 }
 
 module "eks" {
-  source                = "./modules/eks"
-  region                = var.region
-  cluster_name          = var.cluster_name
-  cluster_role_arn      = module.eks.cluster_role_arn
-  node_role_arn         = module.eks.node_role_arn
-  node_group_name       = var.node_group_name
-  desired_size          = var.desired_size
-  max_size              = var.max_size
-  min_size              = var.min_size
-  public_subnet1        = module.vpc.public_subnet1_id
-  public_subnet2        = module.vpc.public_subnet2_id
-  private_subnet1       = module.vpc.private_subnet1_id
-  private_subnet2       = module.vpc.private_subnet2_id
-  namespace             = var.namespace
-  service_account_name  = var.service_account_name
-  fargate_profile_name  = var.fargate_profile_name
-  eks_fargate_role_arn  = module.eks.eks_fargate_role_arn
+   source         = "./modules/eks"
+   cluster_name     = var.cluster_name
+   cluster_role_arn = module.eks.cluster_role_arn
+   node_role_arn   = module.eks.node_role_arn
+   node_group_name = var.node_group_name
+   desired_size   = var.desired_size
+   max_size       = var.max_size
+   min_size       = var.min_size
+   subnet_ids     = [module.vpc.public_subnet1_id, module.vpc.public_subnet2_id]
+   namespace      = var.namespace
+   alb_ingress_class     = var.ingress_class
 }
-
-/*module "lbc" {
-  source                    = "./modules/lbc"
-  cluster_name              = var.cluster_name
-  namespace                 = var.namespace
-  service_account_name      = var.service_account_name
-  lbc_iam_role_arn          = module.eks.eks_fargate_role_arn
-  lbc_namespace             = "kube-system"
-  lbc_service_account_name  = "aws-load-balancer-controller"
-  providers = {
-    kubernetes = kubernetes
-  }
-}*/

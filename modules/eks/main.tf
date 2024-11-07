@@ -1,10 +1,9 @@
-# EKS Cluster
 resource "aws_eks_cluster" "eks_cluster" {
   name     = var.cluster_name
-  role_arn = aws_iam_role.eks_cluster_role.arn
+  role_arn = var.cluster_role_arn
 
   vpc_config {
-    subnet_ids = [var.public_subnet1, var.public_subnet2]
+    subnet_ids = var.subnet_ids
   }
 
   depends_on = [aws_iam_role_policy_attachment.eks_cluster_policy]
@@ -15,12 +14,11 @@ data "aws_eks_cluster" "eks_cluster" {
   name = aws_eks_cluster.eks_cluster.name
 }
 
-# EKS Node Group
 resource "aws_eks_node_group" "eks_node_group" {
   cluster_name    = aws_eks_cluster.eks_cluster.name
   node_group_name = var.node_group_name
-  node_role_arn   = aws_iam_role.eks_node_role.arn
-  subnet_ids      = [var.public_subnet1, var.public_subnet2]
+  node_role_arn   = var.node_role_arn
+  subnet_ids      = var.subnet_ids
 
   scaling_config {
     desired_size = var.desired_size
@@ -31,7 +29,6 @@ resource "aws_eks_node_group" "eks_node_group" {
   depends_on = [aws_eks_cluster.eks_cluster]
 }
 
-# IAM Role for EKS Cluster
 resource "aws_iam_role" "eks_cluster_role" {
   name = "eks-cluster-role"
 
@@ -54,7 +51,6 @@ resource "aws_iam_role_policy_attachment" "eks_cluster_policy" {
   role       = aws_iam_role.eks_cluster_role.name
 }
 
-# IAM Role for EKS Node Group
 resource "aws_iam_role" "eks_node_role" {
   name = "eks-node-role"
 
@@ -87,52 +83,9 @@ resource "aws_iam_role_policy_attachment" "eks_registry_policy" {
   role       = aws_iam_role.eks_node_role.name
 }
 
-# EKS Karpenter
-
-resource "aws_iam_openid_connect_provider" "eks" {
-  client_id_list  = ["sts.amazonaws.com"]
-  thumbprint_list = [data.aws_eks_cluster.eks_cluster.certificate_authority.0.data]
-  url             = aws_eks_cluster.eks_cluster.identity.0.oidc.0.issuer
-}
-
-# Karpenter controller assume role policy
-data "aws_iam_policy_document" "karpenter_controller_assume_role_policy" {
-  statement {
-    actions = ["sts:AssumeRoleWithWebIdentity"]
-    effect  = "Allow"
-
-    condition {
-      test     = "StringEquals"
-      variable = "${replace(aws_iam_openid_connect_provider.eks.url, "https://", "")}:sub"
-      values   = ["system:serviceaccount:karpenter:karpenter"]
-    }
-
-    principals {
-      identifiers = [aws_iam_openid_connect_provider.eks.arn]
-      type        = "Federated"
-    }
-  }
-}
-
-resource "aws_iam_role" "karpenter_controller" {
-  assume_role_policy = data.aws_iam_policy_document.karpenter_controller_assume_role_policy.json
-  name               = "karpenter-controller"
-}
-
-# Define the policy (Make sure this file exists or replace it with the correct policy in the inline JSON)
-resource "aws_iam_policy" "karpenter_controller" {
-  policy = file("./controller-trust-policy.json")
-  name   = "KarpenterController"
-}
-
-resource "aws_iam_role_policy_attachment" "aws_load_balancer_controller_attach" {
-  role       = aws_iam_role.karpenter_controller.name
-  policy_arn = aws_iam_policy.karpenter_controller.arn
-}
-
-# Define a role for Karpenter node instance profile
-resource "aws_iam_role" "karpenter_node_role" {
-  name = "karpenter-node-role"
+# IAM Role for ALB Ingress Controller
+resource "aws_iam_role" "alb_ingress_controller" {
+  name = "alb-ingress-controller"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -141,60 +94,66 @@ resource "aws_iam_role" "karpenter_node_role" {
         Action = "sts:AssumeRole",
         Effect = "Allow",
         Principal = {
-          Service = "ec2.amazonaws.com"
+          Service = "eks.amazonaws.com"
         }
       }
     ]
   })
 }
 
-resource "aws_iam_instance_profile" "karpenter" {
-  name = "KarpenterNodeInstanceProfile"
-  role = aws_iam_role.karpenter_node_role.name
+# Attach the IAM policy for ALB Ingress Controller to the IAM role
+resource "aws_iam_role_policy_attachment" "alb_ingress_controller_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AWSALBIngressControllerPolicy"
+  role       = aws_iam_role.alb_ingress_controller.name
 }
 
-# Helm provider configuration
-provider "helm" {
-  kubernetes {
-    host                   = aws_eks_cluster.eks_cluster.endpoint
-    cluster_ca_certificate = base64decode(aws_eks_cluster.eks_cluster.certificate_authority[0].data)
-
-    exec {
-      api_version = "client.authentication.k8s.io/v1beta1"
-      args        = ["eks", "get-token", "--cluster-name", aws_eks_cluster.eks_cluster.name]
-      command     = "aws"
+# Create Kubernetes Service Account for ALB Ingress Controller
+resource "kubernetes_service_account" "alb_ingress_controller" {
+  metadata {
+    name      = "alb-ingress-controller"
+    namespace = "kube-system"
+    annotations = {
+      "eks.amazonaws.com/role-arn" = aws_iam_role.alb_ingress_controller.arn
     }
   }
 }
 
-# Deploy Karpenter using Helm
-resource "helm_release" "karpenter" {
-  namespace        = "karpenter"
-  create_namespace = true
-  name             = "karpenter"
-  repository       = "https://charts.karpenter.sh"
-  chart            = "karpenter"
-  version          = "v0.13.1"
-
-  set {
-    name  = "serviceAccount.annotations.eks\\.amazonaws\\.com/role-arn"
-    value = aws_iam_role.karpenter_controller.arn
-  }
+# Helm Release for ALB Ingress Controller
+resource "helm_release" "alb_ingress_controller" {
+  name       = "aws-alb-ingress-controller"
+  namespace  = "kube-system"
+  repository = "https://aws.github.io/eks-charts"
+  chart      = "alb-ingress-controller"
+  version    = "1.1.8"
 
   set {
     name  = "clusterName"
-    value = aws_eks_cluster.eks_cluster.name
+    value = var.cluster_name
   }
 
   set {
-    name  = "clusterEndpoint"
-    value = aws_eks_cluster.eks_cluster.endpoint
+    name  = "awsRegion"
+    value = var.region
   }
 
   set {
-    name  = "aws.defaultInstanceProfile"
-    value = aws_iam_instance_profile.karpenter.name
+    name  = "ingressClass"
+    value = var.ingress_class
   }
 
-  depends_on = [aws_eks_node_group.eks_node_group]
+  set {
+    name  = "autoDiscoverAwsVpcID"
+    value = "true"
+  }
+
+  # Use the service account with the IAM role
+  set {
+    name  = "serviceAccount.name"
+    value = kubernetes_service_account.alb_ingress_controller.metadata[0].name
+  }
+
+  set {
+    name  = "serviceAccount.annotations.eks.amazonaws.com/role-arn"
+    value = aws_iam_role.alb_ingress_controller.arn
+  }
 }

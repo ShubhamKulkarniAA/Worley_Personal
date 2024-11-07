@@ -1,3 +1,5 @@
+---
+# Frontend Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -26,6 +28,7 @@ spec:
             name: frontend-html
 
 ---
+# ConfigMap for Frontend HTML Content
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -53,6 +56,7 @@ data:
     </html>
 
 ---
+# Backend Deployment
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -74,14 +78,13 @@ spec:
             - containerPort: 5000
 
 ---
+# Backend Service (ALB Type)
 apiVersion: v1
 kind: Service
 metadata:
   name: backend
-  annotations:
-    service.beta.kubernetes.io/aws-load-balancer-type: "application" # Use ALB
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
     - port: 5000
       targetPort: 5000
@@ -89,14 +92,13 @@ spec:
     app: backend
 
 ---
+# Frontend Service (ALB Type)
 apiVersion: v1
 kind: Service
 metadata:
   name: frontend
-  annotations:
-    service.beta.kubernetes.io/aws-load-balancer-type: "application"
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
     - port: 80
       targetPort: 80
@@ -104,15 +106,16 @@ spec:
     app: frontend
 
 ---
+# Ingress Resource (ALB) with updated name (ui-k8s-ingress)
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: frontend-ingress
+  name: ui-ingress # Updated Ingress name
   annotations:
-    kubernetes.io/ingress.class: alb
-    alb.ingress.kubernetes.io/scheme: internet-facing
+    kubernetes.io/ingress.class: alb # Ensures ALB Ingress Controller is used
+    alb.ingress.kubernetes.io/scheme: internet-facing # Makes the ALB public
 spec:
-  ingressClassName: alb
+  ingressClassName: alb # Ensures ALB ingress class is applied
   rules:
     - http:
         paths:

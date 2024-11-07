@@ -87,13 +87,11 @@ output "eks_cluster_certificate_authority" {
 }
 
 output "eks_cluster_role_arn" {
-  description = "The ARN of the IAM role for the EKS cluster"
-  value       = module.eks.cluster_role_arn
+  value = module.eks.cluster_role_arn
 }
 
 output "eks_node_role_arn" {
-  description = "The ARN of the IAM role for the EKS node group"
-  value       = module.eks.node_role_arn
+  value = module.eks.node_role_arn
 }
 
 output "oidc_provider_url" {
@@ -101,24 +99,13 @@ output "oidc_provider_url" {
   value       = module.eks.oidc_provider_url
 }
 
-output "eks_fargate_role_arn" {
-  description = "The ARN of the IAM role for Fargate"
-  value       = module.eks.eks_fargate_role_arn
+# ALB Ingress Controller Outputs
+output "alb_ingress_controller_sa_name" {
+  description = "The name of the ALB Ingress Controller Kubernetes service account"
+  value       = module.eks.alb_ingress_controller_sa_name
 }
 
-output "fargate_profile_name" {
-  description = "The name of the EKS Fargate profile"
-  value       = module.eks.fargate_profile_name
+output "alb_ingress_controller_role_arn" {
+  description = "The ARN of the IAM role for ALB Ingress Controller"
+  value       = module.eks.alb_ingress_controller_role_arn
 }
-
-#LBC Output
-/*output "lbc_service_account_name" {
-  description = "The name of the Service Account for the Load Balancer Controller"
-  value       = module.lbc.lbc_service_account_name
-}
-
-output "lbc_iam_role_arn" {
-  description = "The ARN of the IAM role for the Load Balancer Controller"
-  value       = module.lbc.lbc_iam_role_arn
-}
-*/
