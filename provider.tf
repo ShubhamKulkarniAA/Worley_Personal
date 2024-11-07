@@ -7,7 +7,6 @@ terraform {
     kubernetes = {
       source  = "hashicorp/kubernetes"
       version = "~> 2.0"
-      config_path = "~/.kube/config"
     }
   }
 
@@ -16,4 +15,14 @@ terraform {
     key    = "demo-terraform-be-worley-test/terraform.tfstate"
     region = "ap-south-1"
   }
+}
+
+
+
+# Kubernetes provider configuration
+provider "kubernetes" {
+  config_path            = "~/.kube/config"
+  host                   = data.aws_eks_cluster.cluster.endpoint
+  token                  = data.aws_eks_cluster_auth.cluster.token
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority[0].data)
 }
