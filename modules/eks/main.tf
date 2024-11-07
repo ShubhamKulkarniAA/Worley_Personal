@@ -9,24 +9,25 @@ resource "aws_eks_cluster" "eks_cluster" {
   depends_on = [aws_iam_role_policy_attachment.eks_cluster_policy]
 }
 
-# Data Source to Fetch EKS Cluster Info
+# Fetch the EKS Cluster Details
 data "aws_eks_cluster" "eks_cluster" {
   name = aws_eks_cluster.eks_cluster.name
 }
 
-# Fetch the OIDC certificate for the URL of the EKS cluster
+# Fetch the OIDC Certificate to Get the Fingerprint
+
 data "tls_certificate" "oidc_cert" {
   url = data.aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
 }
 
+# Create IAM OIDC Provider with Correct Fingerprint
 resource "aws_iam_openid_connect_provider" "eks_oidc_provider" {
   url             = data.aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
   client_id_list  = ["sts.amazonaws.com"]
-  thumbprint_list = [data.tls_certificate.oidc_cert.cert_fingerprint]
+  thumbprint_list = [data.tls_certificate.oidc_cert.certificate_fingerprint]
 
   depends_on = [aws_eks_cluster.eks_cluster]
 }
-
 
 resource "aws_eks_node_group" "eks_node_group" {
   cluster_name    = aws_eks_cluster.eks_cluster.name
