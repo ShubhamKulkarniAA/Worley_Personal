@@ -94,10 +94,10 @@ output "eks_node_role_arn" {
   value = module.eks.node_role_arn
 }
 
-output "oidc_provider_url" {
-  description = "The OIDC provider URL for the EKS cluster"
-  value       = module.eks.oidc_provider_url
-}
+# output "oidc_provider_url" {
+#   description = "The OIDC provider URL for the EKS cluster"
+#   value       = module.eks.oidc_provider_url
+#}
 
 # ALB Ingress Controller Outputs
 output "alb_ingress_controller_sa_name" {

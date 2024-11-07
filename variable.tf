@@ -89,10 +89,10 @@ variable "min_size" {
   type = number
 }
 
-variable "oidc_provider_url" {
-  description = "The OIDC provider URL for the EKS cluster"
-  type        = string
-}
+# variable "oidc_provider_url" {
+#   description = "The OIDC provider URL for the EKS cluster"
+#   type        = string
+# }
 
 # ALB Ingress Controller Variables
 variable "alb_ingress_controller_role_name" {

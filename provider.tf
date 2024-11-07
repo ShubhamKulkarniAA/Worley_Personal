@@ -36,5 +36,5 @@ provider "kubernetes" {
 
 }
 
-provider "tls" {
-}
+# provider "tls" {
+# }

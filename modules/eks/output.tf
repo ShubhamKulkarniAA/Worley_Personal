@@ -29,11 +29,11 @@ output "eks_node_group_arn" {
 }
 
 
-# Output the IAM OIDC provider ARN if available
-output "eks_oidc_provider_arn" {
-  description = "The ARN of the IAM OIDC provider"
-  value       = aws_iam_openid_connect_provider.eks_oidc_provider.arn
-}
+# # Output the IAM OIDC provider ARN if available
+# output "eks_oidc_provider_arn" {
+#   description = "The ARN of the IAM OIDC provider"
+#   value       = aws_iam_openid_connect_provider.eks_oidc_provider.arn
+# }
 
 # Output the IAM role ARN for ALB Ingress Controller
 output "alb_ingress_controller_role_arn" {
@@ -54,10 +54,10 @@ output "vpc_id" {
 }
 
 # Output the OIDC provider URL dynamically fetched from the EKS cluster
-output "oidc_provider_url" {
-  description = "The OIDC provider URL for the EKS cluster"
-  value       = data.aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
-}
+# output "oidc_provider_url" {
+#   description = "The OIDC provider URL for the EKS cluster"
+#   value       = data.aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
+# }
 
 # Output the name of the ALB Ingress Controller Kubernetes service account
 output "alb_ingress_controller_sa_name" {

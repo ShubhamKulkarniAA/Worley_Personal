@@ -10,24 +10,24 @@ resource "aws_eks_cluster" "eks_cluster" {
   depends_on = [aws_iam_role_policy_attachment.eks_cluster_policy]
 }
 
-# Fetch the EKS Cluster Details
-data "aws_eks_cluster" "eks_cluster" {
-  name = aws_eks_cluster.eks_cluster.name
-}
+# # Fetch the EKS Cluster Details
+# data "aws_eks_cluster" "eks_cluster" {
+#   name = aws_eks_cluster.eks_cluster.name
+# }
 
-# Fetch the OIDC Certificate to Get the Fingerprint
-data "tls_certificate" "oidc_cert" {
-  url = data.aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
-}
+# # Fetch the OIDC Certificate to Get the Fingerprint
+# data "tls_certificate" "oidc_cert" {
+#   url = data.aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
+# }
 
-# Create IAM OIDC Provider with Correct Fingerprint (using sha1)
-resource "aws_iam_openid_connect_provider" "eks_oidc_provider" {
-  url             = data.aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
-  client_id_list  = ["sts.amazonaws.com"]
-  thumbprint_list = [sha1(data.tls_certificate.oidc_cert.cert_pem)]  # SHA1 thumbprint of the PEM certificate
+# # Create IAM OIDC Provider with Correct Fingerprint (using sha1)
+# resource "aws_iam_openid_connect_provider" "eks_oidc_provider" {
+#   url             = data.aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
+#   client_id_list  = ["sts.amazonaws.com"]
+#   thumbprint_list = [sha1(data.tls_certificate.oidc_cert.cert_pem)]  # SHA1 thumbprint of the PEM certificate
 
-  depends_on = [aws_eks_cluster.eks_cluster]
-}
+#   depends_on = [aws_eks_cluster.eks_cluster]
+# }
 
 # EKS Node Group
 resource "aws_eks_node_group" "eks_node_group" {
