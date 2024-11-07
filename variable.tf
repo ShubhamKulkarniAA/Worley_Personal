@@ -89,10 +89,6 @@ variable "min_size" {
 }
 
 # AWS Load Balancer Controller (ALB Ingress Controller) Variables
-variable "region" {
-  description = "The AWS region where the EKS cluster and resources are deployed"
-  type        = string
-}
 
 variable "vpc_id" {
   description = "The VPC ID where the EKS cluster and AWS Load Balancer Controller should be deployed"
