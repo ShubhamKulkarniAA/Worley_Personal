@@ -11,8 +11,8 @@ terraform {
   }
 
   backend "s3" {
-    bucket = "demo-terraform-be-worley-test"
-    key    = "demo-terraform-be-worley-test/terraform.tfstate"
+    bucket = "terraform-nc-bucket-test"
+    key    = "terraform-nc-bucket-test/terraform.tfstate"
     region = "ap-southeast-1"
   }
 }
