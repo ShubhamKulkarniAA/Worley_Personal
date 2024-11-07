@@ -17,15 +17,6 @@ terraform {
   }
 }
 
-# Fetch the EKS Cluster details after the cluster is created
-data "aws_eks_cluster" "cluster" {
-  name = aws_eks_cluster.eks_cluster.name  # Correct reference to the resource
-}
-
-# Fetch the EKS Cluster Authentication Token
-data "aws_eks_cluster_auth" "cluster" {
-  name = aws_eks_cluster.eks_cluster.name  # Correct reference to the resource
-}
 
 # Kubernetes provider configuration
 provider "kubernetes" {
