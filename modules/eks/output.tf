@@ -28,6 +28,7 @@ output "eks_node_group_arn" {
   value       = aws_eks_node_group.eks_node_group.arn
 }
 
+# Output the IAM OIDC provider ARN if available
 output "eks_oidc_provider_arn" {
   description = "The ARN of the IAM OIDC provider"
   value       = aws_iam_openid_connect_provider.eks_oidc_provider.arn
@@ -48,5 +49,5 @@ output "alb_ingress_controller_service_account" {
 # Output the VPC ID where the EKS cluster resides
 output "vpc_id" {
   description = "The VPC ID where the EKS cluster is located"
-  value       = data.aws_eks_cluster.eks_cluster.vpc_id
+  value       = aws_eks_cluster.eks_cluster.vpc_config[0].vpc_id
 }

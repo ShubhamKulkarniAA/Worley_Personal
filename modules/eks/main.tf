@@ -14,6 +14,15 @@ data "aws_eks_cluster" "eks_cluster" {
   name = aws_eks_cluster.eks_cluster.name
 }
 
+# Dynamically fetch OIDC issuer URL and use it in the IAM OIDC provider
+resource "aws_iam_openid_connect_provider" "eks_oidc_provider" {
+  url             = data.aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
+  client_id_list  = ["sts.amazonaws.com"]
+  thumbprint_list = [
+    data.aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer_thumbprint
+  ]
+}
+
 resource "aws_eks_node_group" "eks_node_group" {
   cluster_name    = aws_eks_cluster.eks_cluster.name
   node_group_name = var.node_group_name
