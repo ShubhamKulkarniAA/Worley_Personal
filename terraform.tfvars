@@ -1,4 +1,4 @@
-#VPC Variables
+# VPC Variables
 vpc_cidr = "10.0.0.0/16"
 vpc_name = "Worley-NC"
 internet_gateway_name = "Worley-NC-IG"
@@ -11,7 +11,6 @@ private_rds_subnet2_cidr = "10.0.6.0/24"
 availability_zone1 = "ap-southeast-1a"
 availability_zone2 = "ap-southeast-1b"
 region = "ap-southeast-1"
-
 
 # ALB Variables
 public_alb_name = "Worley-NC-Public-ALB"

@@ -47,7 +47,6 @@ variable "region" {
   type = string
 }
 
-
 # ALB Variables
 variable "public_alb_name" {
   type = string
@@ -87,4 +86,15 @@ variable "max_size" {
 
 variable "min_size" {
   type = number
+}
+
+# AWS Load Balancer Controller (ALB Ingress Controller) Variables
+variable "region" {
+  description = "The AWS region where the EKS cluster and resources are deployed"
+  type        = string
+}
+
+variable "vpc_id" {
+  description = "The VPC ID where the EKS cluster and AWS Load Balancer Controller should be deployed"
+  type        = string
 }

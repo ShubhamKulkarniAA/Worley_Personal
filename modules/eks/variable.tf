@@ -1,3 +1,5 @@
+# Variables for EKS Cluster and Node Group
+
 variable "cluster_name" {
   description = "The name of the EKS cluster"
   type        = string
@@ -36,4 +38,31 @@ variable "min_size" {
 variable "subnet_ids" {
   description = "The IDs of the subnets to use for the EKS cluster and node group"
   type        = list(string)
+}
+
+# Variables for the AWS Load Balancer Controller (ALB Ingress Controller)
+
+variable "region" {
+  description = "The AWS region where the EKS cluster and resources are deployed"
+  type        = string
+}
+
+variable "vpc_id" {
+  description = "The VPC ID where the EKS cluster and AWS Load Balancer Controller should be deployed"
+  type        = string
+}
+
+variable "cluster_oidc_id" {
+  description = "The OIDC ID of the EKS cluster"
+  type        = string
+}
+
+variable "cluster_endpoint" {
+  description = "The endpoint of the EKS cluster"
+  type        = string
+}
+
+variable "cluster_certificate_authority_data" {
+  description = "The certificate authority data for the EKS cluster"
+  type        = string
 }
