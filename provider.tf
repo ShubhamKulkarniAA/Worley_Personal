@@ -16,21 +16,3 @@ terraform {
     region = "ap-south-1"
   }
 }
-
-
-# Fetch the EKS Cluster details after cluster creation
-data "aws_eks_cluster" "cluster" {
-  name = var.cluster_name
-}
-
-# Fetch the EKS Cluster Authentication Token after cluster creation
-data "aws_eks_cluster_auth" "cluster" {
-  name = var.cluster_name
-}
-
-# Kubernetes provider configuration
-provider "kubernetes" {
-  host                   = data.aws_eks_cluster.cluster.endpoint
-  token                  = data.aws_eks_cluster_auth.cluster.token
-  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority[0].data)
-}
