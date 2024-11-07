@@ -83,7 +83,7 @@ resource "aws_iam_role_policy_attachment" "eks_registry_policy" {
   role       = aws_iam_role.eks_node_role.name
 }
 
-# IAM Role for ALB Ingress Controller
+# ALB Ingress Controller - IAM Role & Policy
 resource "aws_iam_role" "alb_ingress_controller" {
   name = "alb-ingress-controller"
 
@@ -101,17 +101,16 @@ resource "aws_iam_role" "alb_ingress_controller" {
   })
 }
 
-# Attach the IAM policy for ALB Ingress Controller to the IAM role
 resource "aws_iam_role_policy_attachment" "alb_ingress_controller_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AWSALBIngressControllerPolicy"
   role       = aws_iam_role.alb_ingress_controller.name
 }
 
-# Create Kubernetes Service Account for ALB Ingress Controller
+# Kubernetes Service Account for ALB Ingress Controller
 resource "kubernetes_service_account" "alb_ingress_controller" {
   metadata {
     name      = "alb-ingress-controller"
-    namespace = "kube-system"
+    namespace = var.namespace
     annotations = {
       "eks.amazonaws.com/role-arn" = aws_iam_role.alb_ingress_controller.arn
     }
@@ -121,7 +120,7 @@ resource "kubernetes_service_account" "alb_ingress_controller" {
 # Helm Release for ALB Ingress Controller
 resource "helm_release" "alb_ingress_controller" {
   name       = "aws-alb-ingress-controller"
-  namespace  = "kube-system"
+  namespace  = var.namespace      # Use the namespace variable from input
   repository = "https://aws.github.io/eks-charts"
   chart      = "alb-ingress-controller"
   version    = "1.1.8"
@@ -138,7 +137,7 @@ resource "helm_release" "alb_ingress_controller" {
 
   set {
     name  = "ingressClass"
-    value = var.ingress_class
+    value = var.ingress_class  # Use the ingress_class variable from input
   }
 
   set {

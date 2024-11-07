@@ -23,15 +23,10 @@ tags                    = {
 }
 
 # EKS Variables
-cluster_name            = "Worley-NC-EKS-Cluster"
-node_group_name         = "Worley-NC-EKS-Node-Group"
-desired_size            = 1
-max_size                = 1
-min_size                = 1
-namespace               = "default"
-oidc_provider_url       = ""
-
-# ALB Ingress Controller Variables
-alb_ingress_controller_role_name         = "alb-ingress-controller"
-alb_ingress_controller_service_account_name = "alb-ingress-controller"
-ingress_class                               = "alb"
+cluster_name              = "Worley-NC-EKS-Cluster"
+node_group_name           = "Worley-NC-EKS-Node-Group"
+desired_size              = 1
+max_size                  = 1
+min_size                  = 1
+namespace                 = "kube-system"
+ingress_class             = "alb"

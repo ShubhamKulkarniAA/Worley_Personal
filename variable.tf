@@ -90,7 +90,7 @@ variable "min_size" {
 }
 
 variable "namespace" {
-  description = "The Kubernetes namespace for the service account"
+  description = "The Kubernetes namespace for the ALB Ingress Controller"
   type        = string
 }
 
