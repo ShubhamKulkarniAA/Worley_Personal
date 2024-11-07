@@ -121,7 +121,6 @@ resource "aws_iam_policy" "aws_load_balancer_controller_policy" {
 }
 
 # Create the IAM service account for the AWS Load Balancer Controller
-
 resource "eks_service_account" "aws_load_balancer_controller_sa" {
   cluster_name = aws_eks_cluster.eks_cluster.name
   name         = "aws-load-balancer-controller"
@@ -190,11 +189,12 @@ resource "helm_release" "aws_load_balancer_controller" {
   ]
 }
 
-
+# Fetch the TLS certificate for OIDC provider verification
 data "tls_certificate" "eks_cluster" {
   url = aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
 }
 
+# Create the IAM OpenID Connect (OIDC) provider for the EKS Cluster
 resource "aws_iam_openid_connect_provider" "eks_cluster_OIDC" {
   client_id_list  = ["sts.amazonaws.com"]
   thumbprint_list = [data.tls_certificate.eks_cluster.certificates[0].sha1_fingerprint]
