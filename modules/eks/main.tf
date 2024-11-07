@@ -9,22 +9,23 @@ resource "aws_eks_cluster" "eks_cluster" {
   depends_on = [aws_iam_role_policy_attachment.eks_cluster_policy]
 }
 
-
-# Data resource for EKS cluster (to fetch certificate authority details for OIDC provider)
+# Fetch the EKS Cluster to get OIDC URL
 data "aws_eks_cluster" "eks_cluster" {
   name = aws_eks_cluster.eks_cluster.name
 }
 
-# Fetch OIDC provider details using a data resource
-data "aws_iam_openid_connect_provider" "eks_oidc_provider" {
-  url = data.aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
-}
-
+# Extract the OIDC URL and thumbprint dynamically from the EKS cluster
 resource "aws_iam_openid_connect_provider" "eks_oidc_provider" {
   url             = data.aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
   client_id_list  = ["sts.amazonaws.com"]
-  thumbprint_list = data.aws_iam_openid_connect_provider.eks_oidc_provider.thumbprint_list
+  thumbprint_list = [
+    # Fetch the thumbprint dynamically using the URL from the cluster's OIDC provider
+    data.aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer_thumbprint
+  ]
+
+  depends_on = [aws_eks_cluster.eks_cluster]
 }
+
 
 resource "aws_eks_node_group" "eks_node_group" {
   cluster_name    = aws_eks_cluster.eks_cluster.name
