@@ -88,15 +88,3 @@ variable "max_size" {
 variable "min_size" {
   type = number
 }
-
-#AWS-LBC Variables
-
-variable "cluster_name" {
-  description = "The name of the EKS cluster"
-  type        = string
-}
-
-variable "region" {
-  description = "AWS region"
-  type        = string
-}
