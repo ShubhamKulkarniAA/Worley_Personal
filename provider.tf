@@ -29,10 +29,12 @@ terraform {
 #   name = var.cluster_name
 # }
 
-# # provider "kubernetes" {
-# #   host                   = "https://DFD6EFC8859CDBE7D63F4498A014453D.gr7.ap-south-1.eks.amazonaws.com"
-# #   token                  = data.aws_eks_cluster_auth.cluster.token
-# #   cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority[0].data)
+# Kubernetes provider configuration
+provider "kubernetes" {
+  host                   = data.aws_eks_cluster.cluster.endpoint
+  token                  = data.aws_eks_cluster_auth.cluster.token
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority[0].data)
+}
 
 # # }
 
