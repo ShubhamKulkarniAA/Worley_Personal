@@ -17,17 +17,15 @@ terraform {
   }
 }
 
-# provider "aws" {
-#   region = "ap-south-1"
-# }
+# Fetch the EKS Cluster details
+data "aws_eks_cluster" "cluster" {
+  name = var.cluster_name
+}
 
-# data "aws_eks_cluster" "cluster" {
-#   name = var.cluster_name
-# }
-
-# data "aws_eks_cluster_auth" "cluster" {
-#   name = var.cluster_name
-# }
+# Fetch the EKS Cluster Authentication Token
+data "aws_eks_cluster_auth" "cluster" {
+  name = var.cluster_name
+}
 
 # Kubernetes provider configuration
 provider "kubernetes" {
@@ -35,8 +33,3 @@ provider "kubernetes" {
   token                  = data.aws_eks_cluster_auth.cluster.token
   cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority[0].data)
 }
-
-# # }
-
-# # # provider "tls" {
-# # # }
