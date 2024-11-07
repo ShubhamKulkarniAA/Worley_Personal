@@ -87,8 +87,3 @@ variable "max_size" {
 variable "min_size" {
   type = number
 }
-
-variable "cluster_oidc_id" {
-  description = "OIDC provider ID for the EKS cluster"
-  type        = string
-}
