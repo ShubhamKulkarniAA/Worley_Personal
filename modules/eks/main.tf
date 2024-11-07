@@ -9,7 +9,6 @@ resource "aws_eks_cluster" "eks_cluster" {
   depends_on = [aws_iam_role_policy_attachment.eks_cluster_policy]
 }
 
-
 #EKS Node Configuration
 
 resource "aws_eks_node_group" "eks_node_group" {
