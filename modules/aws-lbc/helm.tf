@@ -45,7 +45,15 @@ resource "helm_release" "aws_load_balancer_controller" {
     value = var.vpc_id
   }
 
-  replace = true  # Ensure that the release gets replaced with the new version
+  # Conditionally replace the release if the version is different
+  replace = local.should_replace
+
+  lifecycle {
+    ignore_changes = [
+      set["serviceAccount.create"],  # Ignore changes to serviceAccount.create
+      set["serviceAccount.name"]     # Ignore changes to serviceAccount.name
+    ]
+  }
 
   depends_on = [aws_iam_role_policy_attachment.lbc_custom_policy_attachment]
 }
