@@ -66,7 +66,7 @@ kind: Ingress
 metadata:
   name: hello-world-ingress
   annotations:
-    kubernetes.io/ingress.class: alb # Ensure ALB Ingress controller is used
+    ingressClassName: alb # Ensure ALB Ingress controller is used
     alb.ingress.kubernetes.io/scheme: internet-facing # Expose ALB publicly
     alb.ingress.kubernetes.io/target-type: ip # Target type to route to pods
 spec:

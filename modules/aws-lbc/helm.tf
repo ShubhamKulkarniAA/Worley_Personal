@@ -8,7 +8,7 @@ resource "kubernetes_service_account" "aws_load_balancer_controller" {
   }
 }
 
-resource "helm_release" "aws_load_balancer_controller" {
+data "helm_release" "aws_load_balancer_controller" {
   name       = "aws-load-balancer-controller"
   namespace  = "kube-system"
   chart      = "aws-load-balancer-controller"

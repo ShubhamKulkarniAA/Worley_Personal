@@ -1,5 +1,5 @@
 locals {
-  # Define a flag to determine whether to force replace the Helm release (based on a version change)
+
   should_replace = var.new_version != data.helm_release.aws_load_balancer_controller.version
 }
 

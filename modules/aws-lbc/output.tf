@@ -10,3 +10,7 @@ output "aws_lbc_policy_arn" {
 output "helm_release_version" {
   value = helm_release.aws_load_balancer_controller.version
 }
+
+output "lbc_role_arn" {
+  value = aws_iam_role.lbc_role.arn
+}
