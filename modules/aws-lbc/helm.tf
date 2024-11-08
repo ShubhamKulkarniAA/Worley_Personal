@@ -50,10 +50,9 @@ data "helm_release" "aws_load_balancer_controller" {
 
   lifecycle {
     ignore_changes = [
-      set["serviceAccount.create"],  # Ignore changes to serviceAccount.create
-      set["serviceAccount.name"]     # Ignore changes to serviceAccount.name
+      version,
+      set
     ]
   }
-
   depends_on = [aws_iam_role_policy_attachment.lbc_custom_policy_attachment]
 }
