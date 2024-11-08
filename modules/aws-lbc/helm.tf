@@ -3,7 +3,7 @@ resource "helm_release" "aws_load_balancer_controller" {
   namespace  = "kube-system"
   chart      = "aws-load-balancer-controller"
   repository = "https://aws.github.io/eks-charts"
-  version    = "1.10.0"  # Ensure the version is valid
+  version    = "1.9.0"  # Ensure the version is valid
 
   set {
     name  = "clusterName"
@@ -36,7 +36,6 @@ resource "helm_release" "aws_load_balancer_controller" {
   }
 
   replace = true
-  timeout = 600  # 10 minutes, adjust as necessary
 
   depends_on = [aws_iam_role_policy_attachment.lbc_custom_policy_attachment]
 }

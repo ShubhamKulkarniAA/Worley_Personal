@@ -49,7 +49,7 @@ jobs:
       - name: Get VPC ID from Terraform Outputs
         id: outputs
         run: |
-          # Fetch the VPC ID from Terraform outputs and set it as an environment variable
+          # Fetch the VPC ID from Terraform output and set it as an environment variable
           VPC_ID=$(terraform output -raw vpc_id)
           echo "VPC_ID=${VPC_ID}" >> $GITHUB_ENV
         working-directory: ./ # Ensure this points to your Terraform directory
