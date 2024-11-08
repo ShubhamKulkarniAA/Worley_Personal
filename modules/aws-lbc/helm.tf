@@ -48,11 +48,5 @@ data "helm_release" "aws_load_balancer_controller" {
   # Conditionally replace the release if the version is different
   replace = local.should_replace
 
-  lifecycle {
-    ignore_changes = [
-      version,
-      set
-    ]
-  }
   depends_on = [aws_iam_role_policy_attachment.lbc_custom_policy_attachment]
 }
