@@ -7,7 +7,7 @@ resource "helm_release" "aws_load_balancer_controller" {
 
   set {
     name  = "clusterName"
-    value = var.cluster_name
+    value = module.eks.cluster_name
   }
 
   set {
@@ -32,10 +32,8 @@ resource "helm_release" "aws_load_balancer_controller" {
 
   set {
     name  = "vpcId"
-    value = var.vpc_id
+    value = module.vpc.vpc_id
   }
-
-  replace = true
 
   depends_on = [aws_iam_role_policy_attachment.lbc_custom_policy_attachment]
 }

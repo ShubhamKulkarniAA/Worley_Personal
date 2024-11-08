@@ -46,15 +46,6 @@ jobs:
         working-directory: ./ # Point to your main Terraform directory
         if: success()
 
-      - name: Get VPC ID from Terraform Outputs
-        id: outputs
-        run: |
-          # Fetch the VPC ID from Terraform output and set it as an environment variable
-          VPC_ID=$(terraform output -raw vpc_id)
-          echo "VPC_ID=${VPC_ID}" >> $GITHUB_ENV
-        working-directory: ./ # Ensure this points to your Terraform directory
-        if: success()
-
       - name: Update kubeconfig for EKS
         run: |
           aws eks update-kubeconfig --name ${{ secrets.CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
@@ -66,10 +57,14 @@ jobs:
           version: "v3.10.0"
         if: success()
 
-      - name: Install AWS Load Balancer Controller using Helm
+      - name: Add Helm repo for AWS EKS Charts
         run: |
           helm repo add eks https://aws.github.io/eks-charts
           helm repo update
+        if: success()
+
+      - name: Install AWS Load Balancer Controller using Helm
+        run: |
           helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
             --version "1.10.0" \
             --namespace kube-system \
