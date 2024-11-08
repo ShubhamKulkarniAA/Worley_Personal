@@ -46,4 +46,5 @@ module "aws_lbc" {
   region       = var.region
   cluster_name = module.eks.cluster_name
   vpc_id       = module.vpc.vpc_id
+  new_version  = "1.10.0"
 }
