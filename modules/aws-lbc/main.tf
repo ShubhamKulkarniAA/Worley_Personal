@@ -1,6 +1,5 @@
 locals {
-
-  should_replace = var.new_version != data.helm_release.aws_load_balancer_controller.version
+  should_replace = var.new_version != "1.10.0"  # Manually define or dynamically fetch the current version
 }
 
 # IAM role for AWS Load Balancer Controller
