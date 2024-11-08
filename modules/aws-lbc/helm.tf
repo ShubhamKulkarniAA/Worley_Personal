@@ -3,9 +3,8 @@ resource "helm_release" "aws_load_balancer_controller" {
   namespace  = "kube-system"
   chart      = "aws-load-balancer-controller"
   repository = "https://aws.github.io/eks-charts"
-  version    = "1.10.0"  # Make sure this is a valid and correct version
+  version    = "1.10.0"  # Ensure the version is valid
 
-  # Values to be set in the Helm chart
   set {
     name  = "clusterName"
     value = var.cluster_name
@@ -26,10 +25,12 @@ resource "helm_release" "aws_load_balancer_controller" {
     value = "true"
   }
 
-  # Force the Helm release to be replaced if already exists
+  set {
+    name  = "region"
+    value = var.region
+  }
+
   replace = true
 
-  # Ensure the IAM role policy attachment is applied before Helm release
   depends_on = [aws_iam_role_policy_attachment.lbc_custom_policy_attachment]
-
 }

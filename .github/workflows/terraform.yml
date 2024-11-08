@@ -46,32 +46,15 @@ jobs:
         working-directory: ./ # Point to your main Terraform directory
         if: success()
 
-      - name: Retrieve VPC ID for EKS Cluster
-        id: retrieve_vpc_id
-        run: |
-          VPC_ID=$(aws eks describe-cluster --name ${{ secrets.CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }} --query "cluster.resourcesVpcConfig.vpcId" --output text)
-          echo "VPC_ID=$VPC_ID" >> $GITHUB_ENV  # Export VPC_ID to GitHub Actions environment
-        if: success()
-
       - name: Update kubeconfig for EKS
         run: |
           aws eks update-kubeconfig --name ${{ secrets.CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-        if: success()
-
-      - name: Verify kubectl config
-        run: |
-          kubectl config view
-          kubectl get nodes
         if: success()
 
       - name: Install Helm
         uses: azure/setup-helm@v1
         with:
-          version: "v3.10.0" # Specify the version of Helm you'd like to use (example v3.10.0)
+          version: "v3.10.0"
         if: success()
 
       - name: Install AWS Load Balancer Controller using Helm
