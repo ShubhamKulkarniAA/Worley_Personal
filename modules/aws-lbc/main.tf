@@ -3,92 +3,70 @@ resource "aws_iam_role" "lbc_role" {
   name = "aws-lbc-role"
 
   assume_role_policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
+    Version = "2012-10-17",
+    Statement = [
       {
-        "Effect": "Allow",
-        "Action": [
-          "iam:CreateServiceLinkedRole"
-        ],
-        "Resource": "*",
-        "Condition": {
-          "StringEquals": {
-            "iam:AWSServiceName": "elasticloadbalancing.amazonaws.com"
-          }
+        Action    = "sts:AssumeRole"
+        Effect    = "Allow"
+        Principal = {
+          Service = "eks.amazonaws.com"
         }
-      },
-      {
-        "Effect": "Allow",
-        "Action": [
-          "ec2:DescribeSubnets",
-          "ec2:DescribeSecurityGroups",
-          "ec2:DescribeVpcs",
-          "ec2:DescribeInstances",
-          "ec2:DescribeNetworkInterfaces",
-          "elasticloadbalancing:DescribeLoadBalancers",
-          "elasticloadbalancing:DescribeTargetGroups",
-          "elasticloadbalancing:DescribeListeners",
-          "elasticloadbalancing:DescribeRules",
-          "elasticloadbalancing:DescribeTags",
-          "elasticloadbalancing:ModifyLoadBalancerAttributes",
-          "elasticloadbalancing:ModifyTargetGroup",
-          "elasticloadbalancing:ModifyTargetGroupAttributes",
-          "elasticloadbalancing:CreateLoadBalancer",
-          "elasticloadbalancing:CreateTargetGroup",
-          "elasticloadbalancing:RegisterTargets",
-          "elasticloadbalancing:DeregisterTargets",
-          "elasticloadbalancing:DeleteLoadBalancer",
-          "elasticloadbalancing:DeleteTargetGroup"
-        ],
-        "Resource": "*"
       }
     ]
   })
 }
 
-# IAM Policy for AWS Load Balancer Controller
+# Create a custom IAM policy for AWS Load Balancer Controller
 resource "aws_iam_policy" "lbc_custom_policy" {
   name        = "AWSLoadBalancerControllerCustomPolicy"
-  description = "Custom policy for AWS Load Balancer Controller with minimal permissions"
+  description = "Custom policy for AWS Load Balancer Controller with additional permissions"
 
   policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
+    Version = "2012-10-17",
+    Statement = [
       {
-        "Effect": "Allow",
-        "Action": [
+        Action = [
           "elasticloadbalancing:CreateLoadBalancer",
           "elasticloadbalancing:DeleteLoadBalancer",
           "elasticloadbalancing:DescribeLoadBalancers",
           "elasticloadbalancing:ModifyLoadBalancerAttributes",
           "elasticloadbalancing:DescribeTargetGroups",
+          "elasticloadbalancing:DescribeListeners",
           "elasticloadbalancing:CreateTargetGroup",
           "elasticloadbalancing:ModifyTargetGroup",
           "elasticloadbalancing:DeleteTargetGroup",
           "elasticloadbalancing:RegisterTargets",
-          "elasticloadbalancing:DeregisterTargets",
-          "elasticloadbalancing:DescribeListeners",
-          "elasticloadbalancing:CreateListener",
-          "elasticloadbalancing:DeleteListener"
-        ],
-        "Resource": "*"
+          "elasticloadbalancing:DeregisterTargets"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
       },
       {
-        "Effect": "Allow",
-        "Action": [
-          "ec2:DescribeSubnets",
+        Action = [
           "ec2:DescribeSecurityGroups",
-          "ec2:DescribeVpcs"
-        ],
-        "Resource": "*"
+          "ec2:DescribeSubnets",
+          "ec2:DescribeVpcs",
+          "ec2:DescribeNetworkInterfaces"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
       },
       {
-        "Effect": "Allow",
-        "Action": [
+        Action = [
           "eks:DescribeCluster",
-          "eks:DescribeNodegroups"
-        ],
-        "Resource": "*"
+          "eks:ListClusters",
+          "eks:describenodegroups"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+      {
+        Action = [
+          "iam:ListInstanceProfiles",
+          "iam:ListRoles"
+        ]
+        Effect   = "Allow"
+        Resource = "*"
       }
     ]
   })
@@ -98,6 +76,11 @@ resource "aws_iam_policy" "lbc_custom_policy" {
 resource "aws_iam_role_policy_attachment" "lbc_custom_policy_attachment" {
   policy_arn = aws_iam_policy.lbc_custom_policy.arn
   role       = aws_iam_role.lbc_role.name
+}
+
+# Fetch EKS cluster details
+data "aws_eks_cluster" "eks" {
+  name = var.cluster_name
 }
 
 # Fetch OIDC certificate thumbprint dynamically from the EKS OIDC URL
