@@ -16,66 +16,36 @@ jobs:
       CLUSTER_NAME: ${{ secrets.CLUSTER_NAME }}
 
     steps:
-      # Step 1: Checkout the code
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # Step 2: Install Terraform
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: "1.5.0"
 
-      # Step 3: Install kubectl
-      - name: Install kubectl
-        run: |
-          curl -s https://amazon-eks.s3.us-west-2.amazonaws.com/1.24.9/2023-07-21/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl
-          chmod +x /usr/local/bin/kubectl
-          kubectl version --client
-        if: success()
-
-      # Step 4: Remove Terraform Cache
-      - name: Remove Terraform Cache
-        run: rm -rf .terraform
-        if: success()
-
-      # Step 5: Terraform Init
       - name: Terraform Init
         run: terraform init -upgrade
         working-directory: ./ # Point to your main Terraform directory
         if: success()
 
-      # Step 6: Terraform Validate
       - name: Terraform Validate
         run: terraform validate
         working-directory: ./ # Point to your main Terraform directory
         if: success()
 
-      # Step 7: Terraform Plan
       - name: Terraform Plan
         run: |
           terraform plan -out=tfplan -input=false || echo "Terraform plan failed; review configuration."
         working-directory: ./
         if: success()
 
-      # Step 8: Terraform Apply (Only if push is successful)
       - name: Terraform Apply
-        if: github.event_name == 'push' && success()
         run: |
           terraform apply -auto-approve tfplan || echo "Terraform apply failed; review state and plan."
         working-directory: ./ # Point to your main Terraform directory
         if: success()
 
-      # Step 9: Configure AWS credentials using the latest v2 action
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-        if: success()
-
-      # Step 10: Retrieve VPC ID for EKS Cluster
       - name: Retrieve VPC ID for EKS Cluster
         id: retrieve_vpc_id
         run: |
@@ -83,7 +53,6 @@ jobs:
           echo "VPC_ID=$VPC_ID" >> $GITHUB_ENV  # Export VPC_ID to GitHub Actions environment
         if: success()
 
-      # Step 11: Update kubeconfig for EKS
       - name: Update kubeconfig for EKS
         run: |
           aws eks update-kubeconfig --name ${{ secrets.CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
@@ -93,21 +62,21 @@ jobs:
           AWS_REGION: ${{ secrets.AWS_REGION }}
         if: success()
 
-      # Step 12: Verify kubectl config
       - name: Verify kubectl config
         run: |
+          kubectl config view
           kubectl get nodes
         if: success()
 
-      # Step 13: Install Helm using the Azure setup-helm action
       - name: Install Helm
         uses: azure/setup-helm@v1
         with:
           version: "v3.10.0" # Specify the version of Helm you'd like to use (example v3.10.0)
         if: success()
 
-      # Step 14: Install AWS Load Balancer Controller using Helm
       - name: Install AWS Load Balancer Controller using Helm
         run: |
+          helm repo add eks https://aws.github.io/eks-charts
+          helm repo update
           helm install aws-load-balancer-controller eks/aws-load-balancer-controller --version "1.10.0" --namespace kube-system --set clusterName=${{ secrets.CLUSTER_NAME }} --set region=${{ secrets.AWS_REGION }} --set vpcId=${{ env.VPC_ID }}
         if: success()
