@@ -9,90 +9,85 @@ jobs:
   TerraformAWS:
     runs-on: ubuntu-latest
 
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      CLUSTER_NAME: ${{ secrets.CLUSTER_NAME }}
+
     steps:
+      # Step 1: Checkout the code
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      # Step 2: Install Terraform
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: "1.5.0"
 
-      - name: Install AWS CLI
-        run: |
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-          unzip awscliv2.zip
-          sudo ./aws/install
+      # Step 3: Remove Terraform Cache
+      - name: Remove Terraform Cache
+        run: rm -rf .terraform
 
-      - name: Configure AWS CLI with GitHub Secrets
-        run: |
-          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws configure set region ap-southeast-1
-
-      - name: Get EKS Cluster Credentials
-        run: |
-          aws eks --region ap-southeast-1 update-kubeconfig --name Worley-NC-EKS-Cluster
-
+      # Step 4: Terraform Init
       - name: Terraform Init
         run: terraform init -upgrade
         working-directory: ./ # Point to your main Terraform directory
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION}}
 
+      # Step 5: Terraform Validate
       - name: Terraform Validate
         run: terraform validate
         working-directory: ./ # Point to your main Terraform directory
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION}}
 
+      # Step 6: Terraform Plan
       - name: Terraform Plan
         run: |
           terraform plan -out=tfplan -input=false || echo "Terraform plan failed; review configuration."
         working-directory: ./
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION}}
 
+      # Step 7: Terraform Apply (Only if push is successful)
       - name: Terraform Apply
         if: github.event_name == 'push' && success()
         run: |
           terraform apply -auto-approve tfplan || echo "Terraform apply failed; review state and plan."
         working-directory: ./ # Point to your main Terraform directory
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION}}
 
+      # Step 8: Configure AWS credentials using the latest v2 action
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      # Step 9: Update kubeconfig to use the EKS cluster
+      - name: Update kubeconfig for EKS
+        run: |
+          aws eks update-kubeconfig --name ${{ secrets.CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
+
+      # Step 10: Build Docker Image
       - name: Build Docker Image
         if: github.event_name == 'push' && success()
         run: |
           docker build -t worley-nc-ecr-repo .
         working-directory: ./modules/eks
 
+      # Step 11: Authenticate to ECR
       - name: Authenticate to ECR
         if: github.event_name == 'push' && success()
         run: |
-          aws ecr get-login-password --region ap-southeast-1 | docker login --username AWS --password-stdin 484907523966.dkr.ecr.ap-southeast-1.amazonaws.com
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin 484907523966.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
 
+      # Step 12: Tag Docker Image
       - name: Tag Docker Image
         if: github.event_name == 'push' && success()
         run: |
-          docker tag worley-nc-ecr-repo:latest 484907523966.dkr.ecr.ap-southeast-1.amazonaws.com/worley-nc-ecr-repo:latest
+          docker tag worley-nc-ecr-repo:latest 484907523966.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/worley-nc-ecr-repo:latest
         working-directory: ./
 
+      # Step 13: Push Docker Image to ECR
       - name: Push Docker Image to ECR
         if: github.event_name == 'push' && success()
         run: |
-          docker push 484907523966.dkr.ecr.ap-southeast-1.amazonaws.com/worley-nc-ecr-repo:latest
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          docker push 484907523966.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/worley-nc-ecr-repo:latest
