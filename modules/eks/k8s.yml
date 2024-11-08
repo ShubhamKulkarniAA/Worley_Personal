@@ -58,25 +58,3 @@ spec:
       targetPort: 80
   selector:
     app: hello-world
-
----
-# Ingress Resource (ALB) for routing traffic to the Hello World app
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: hello-world-ingress
-  annotations:
-    ingressClassName: alb # Ensure ALB Ingress controller is used
-    alb.ingress.kubernetes.io/scheme: internet-facing # Expose ALB publicly
-    alb.ingress.kubernetes.io/target-type: ip # Target type to route to pods
-spec:
-  rules:
-    - http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: hello-world
-                port:
-                  number: 80
