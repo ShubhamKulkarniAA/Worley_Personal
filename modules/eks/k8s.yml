@@ -1,22 +1,22 @@
 ---
-# Frontend Deployment
+# Simple Deployment for a static Hello World page
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend
+  name: hello-world
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: frontend
+      app: hello-world
   template:
     metadata:
       labels:
-        app: frontend
+        app: hello-world
     spec:
       containers:
-        - name: frontend
-          image: nginx:alpine
+        - name: hello-world
+          image: nginx:alpine # Using Nginx to serve static files
           ports:
             - containerPort: 80
           volumeMounts:
@@ -25,97 +25,51 @@ spec:
       volumes:
         - name: html-content
           configMap:
-            name: frontend-html
+            name: hello-world-html
 
 ---
-# ConfigMap for Frontend HTML Content
+# ConfigMap to store the static HTML content
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: frontend-html
+  name: hello-world-html
 data:
   index.html: |
     <!DOCTYPE html>
     <html>
     <head>
-        <title>Frontend</title>
-        <script>
-            async function fetchMessage() {
-                const response = await fetch('/api/message');
-                const data = await response.json();
-                document.getElementById('message').innerText = data.message;
-            }
-
-            window.onload = fetchMessage;  // Call the function when the page loads
-        </script>
+        <title>Hello World</title>
     </head>
     <body>
-        <h1>Welcome to the Frontend!</h1>
-        <p id="message">Loading message...</p>
+        <h1>Hello, World!</h1>
+        <p>Welcome to my simple static page served from Kubernetes!</p>
     </body>
     </html>
 
 ---
-# Backend Deployment
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: backend
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: backend
-  template:
-    metadata:
-      labels:
-        app: backend
-    spec:
-      containers:
-        - name: backend
-          image: 484907523966.dkr.ecr.ap-southeast-1.amazonaws.com/worley-nc-ecr-repo:latest
-          ports:
-            - containerPort: 5000
-
----
-# Backend Service (ALB Type)
+# Service for the Hello World application
 apiVersion: v1
 kind: Service
 metadata:
-  name: backend
+  name: hello-world
 spec:
-  type: ClusterIP
-  ports:
-    - port: 5000
-      targetPort: 5000
-  selector:
-    app: backend
-
----
-# Frontend Service (ALB Type)
-apiVersion: v1
-kind: Service
-metadata:
-  name: frontend
-spec:
-  type: ClusterIP
   ports:
     - port: 80
       targetPort: 80
   selector:
-    app: frontend
+    app: hello-world
 
 ---
-# Ingress Resource (ALB) with updated name (ui-k8s-ingress)
+# Ingress Resource (ALB) for routing traffic to the Hello World app
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ui-ingress # Updated Ingress name
+  name: hello-world-ingress
   annotations:
-    kubernetes.io/ingress.class: alb # Ensures ALB Ingress Controller is used
-    alb.ingress.kubernetes.io/scheme: internet-facing # Makes the ALB public
+    kubernetes.io/ingress.class: alb # Ensure ALB Ingress controller is used
+    alb.ingress.kubernetes.io/scheme: internet-facing # Expose ALB publicly
+    alb.ingress.kubernetes.io/target-type: ip # Target type to route to pods
 spec:
-  ingressClassName: alb # Ensures ALB ingress class is applied
   rules:
     - http:
         paths:
@@ -123,13 +77,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: frontend
+                name: hello-world
                 port:
                   number: 80
-          - path: /api/*
-            pathType: Prefix
-            backend:
-              service:
-                name: backend
-                port:
-                  number: 5000
