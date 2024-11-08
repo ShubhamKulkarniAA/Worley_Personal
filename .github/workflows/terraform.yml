@@ -26,68 +26,66 @@ jobs:
         with:
           terraform_version: "1.5.0"
 
-      # Step 3: Remove Terraform Cache
+      # Step 3: Install kubectl
+      - name: Install kubectl
+        run: |
+          curl -s https://amazon-eks.s3.us-west-2.amazonaws.com/1.24.9/2023-07-21/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl
+          chmod +x /usr/local/bin/kubectl
+          kubectl version --client
+
+      # Step 4: Remove Terraform Cache
       - name: Remove Terraform Cache
         run: rm -rf .terraform
 
-      # Step 4: Terraform Init
+      # Step 5: Terraform Init
       - name: Terraform Init
         run: terraform init -upgrade
         working-directory: ./ # Point to your main Terraform directory
 
-      # Step 5: Terraform Validate
+      # Step 6: Terraform Validate
       - name: Terraform Validate
         run: terraform validate
         working-directory: ./ # Point to your main Terraform directory
 
-      # Step 6: Terraform Plan
+      # Step 7: Terraform Plan
       - name: Terraform Plan
         run: |
           terraform plan -out=tfplan -input=false || echo "Terraform plan failed; review configuration."
         working-directory: ./
 
-      # Step 7: Terraform Apply (Only if push is successful)
+      # Step 8: Terraform Apply (Only if push is successful)
       - name: Terraform Apply
         if: github.event_name == 'push' && success()
         run: |
           terraform apply -auto-approve tfplan || echo "Terraform apply failed; review state and plan."
         working-directory: ./ # Point to your main Terraform directory
 
-      # Step 8: Configure AWS credentials using the latest v2 action
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+      # Step 10: Retrieve VPC ID for the EKS cluster dynamically
+      - name: Retrieve VPC ID for EKS Cluster
+        id: retrieve_vpc_id
+        run: |
+          VPC_ID=$(aws eks describe-cluster --name ${{ secrets.CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }} --query "cluster.resourcesVpcConfig.vpcId" --output text)
+          echo "VPC_ID=$VPC_ID" >> $GITHUB_ENV
 
-      # Step 9: Update kubeconfig to use the EKS cluster
+      # Step 11: Update kubeconfig for EKS
       - name: Update kubeconfig for EKS
         run: |
           aws eks update-kubeconfig --name ${{ secrets.CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
 
-      # Step 10: Build Docker Image
-      - name: Build Docker Image
-        if: github.event_name == 'push' && success()
+      # Step 12: Verify kubectl config
+      - name: Verify kubectl config
         run: |
-          docker build -t worley-nc-ecr-repo .
-        working-directory: ./modules/eks
+          kubectl get nodes
 
-      # Step 11: Authenticate to ECR
-      - name: Authenticate to ECR
-        if: github.event_name == 'push' && success()
-        run: |
-          aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin 484907523966.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
-
-      # Step 12: Tag Docker Image
-      - name: Tag Docker Image
-        if: github.event_name == 'push' && success()
-        run: |
-          docker tag worley-nc-ecr-repo:latest 484907523966.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/worley-nc-ecr-repo:latest
-        working-directory: ./
-
-      # Step 13: Push Docker Image to ECR
-      - name: Push Docker Image to ECR
-        if: github.event_name == 'push' && success()
-        run: |
-          docker push 484907523966.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/worley-nc-ecr-repo:latest
+      # Step 13: Install AWS Load Balancer Controller using Helm
+      - name: Install AWS Load Balancer Controller using Helm
+        uses: hashicorp/helm-release@v0.1.0
+        with:
+          name: aws-load-balancer-controller
+          chart: eks/aws-load-balancer-controller
+          version: "1.10.0"
+          namespace: kube-system
+          values: |
+            clusterName: ${{ secrets.CLUSTER_NAME }}
+            region: ${{ secrets.AWS_REGION }}
+            vpcId: ${{ env.VPC_ID }}
