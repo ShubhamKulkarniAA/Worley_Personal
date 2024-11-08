@@ -13,7 +13,7 @@ resource "helm_release" "aws_load_balancer_controller" {
   namespace  = "kube-system"
   chart      = "aws-load-balancer-controller"
   repository = "https://aws.github.io/eks-charts"
-  version    = "1.9.0"  # Ensure the version is valid
+  version    = "1.10.0"  # Updated version to upgrade the release
 
   set {
     name  = "clusterName"
@@ -45,7 +45,7 @@ resource "helm_release" "aws_load_balancer_controller" {
     value = var.vpc_id
   }
 
-  replace = true
+  replace = true  # Ensure that the release gets replaced with the new version
 
   depends_on = [aws_iam_role_policy_attachment.lbc_custom_policy_attachment]
 }
