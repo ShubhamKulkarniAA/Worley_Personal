@@ -12,7 +12,7 @@ resource "helm_release" "aws_load_balancer_controller" {
 
   set {
     name  = "serviceAccount.create"
-    value = "true"
+    value = "false"
   }
 
   set {
@@ -30,7 +30,13 @@ resource "helm_release" "aws_load_balancer_controller" {
     value = var.region
   }
 
+  set {
+    name  = "vpcId"
+    value = var.vpc_id
+  }
+
   replace = true
+  timeout = 600  # 10 minutes, adjust as necessary
 
   depends_on = [aws_iam_role_policy_attachment.lbc_custom_policy_attachment]
 }
