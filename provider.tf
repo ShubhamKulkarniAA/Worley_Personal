@@ -18,11 +18,11 @@ provider "tls" {
 }
 
 data "aws_eks_cluster" "cluster" {
-  name = var.cluster_name  # The name of your EKS cluster
+  name = var.cluster_name
 }
 
 data "aws_eks_cluster_auth" "cluster" {
-  name = var.cluster_name  # The name of your EKS cluster
+  name = var.cluster_name
 }
 
 provider "kubernetes" {
