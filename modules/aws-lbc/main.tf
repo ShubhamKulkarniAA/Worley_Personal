@@ -120,7 +120,6 @@ resource "aws_iam_policy" "lbc_custom_policy" {
   })
 }
 
-# IAM role for AWS Load Balancer Controller
 resource "aws_iam_role" "lbc_role" {
   name = "aws-lbc-role"
 
@@ -139,6 +138,13 @@ resource "aws_iam_role" "lbc_role" {
           "StringEquals": {
             "${data.aws_eks_cluster.eks.identity[0].oidc[0].issuer}:sub": "system:serviceaccount:kube-system:aws-load-balancer-controller"
           }
+        }
+      },
+      {
+        "Effect": "Allow",
+        "Action": "sts:AssumeRole",
+        "Principal": {
+          "Service": "elasticloadbalancing.amazonaws.com"
         }
       }
     ]
