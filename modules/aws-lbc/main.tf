@@ -1,4 +1,3 @@
-# Fetch the latest AWS Load Balancer Controller version dynamically from GitHub
 data "external" "aws_lbc_version" {
   program = [
     "curl", "-s", "https://api.github.com/repos/kubernetes-sigs/aws-load-balancer-controller/releases/latest"
@@ -7,8 +6,7 @@ data "external" "aws_lbc_version" {
 
 locals {
   aws_lbc_version = jsondecode(data.external.aws_lbc_version.result)["tag_name"]
-
-  aws_lbc_version_trimmed = trim(local.aws_lbc_version, "v")
+  should_replace  = var.new_version != local.aws_lbc_version
 }
 
 # Fetch the EKS cluster details
