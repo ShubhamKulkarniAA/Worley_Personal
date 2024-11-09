@@ -38,7 +38,7 @@ module "eks" {
   desired_size = var.desired_size
   max_size = var.max_size
   min_size = var.min_size
-  instance_type  = [var.instance_type]
+  instance_type  = var.instance_type
   subnet_ids = [module.vpc.public_subnet1_id, module.vpc.public_subnet2_id]
 }
 
