@@ -22,8 +22,9 @@ resource "helm_release" "aws_load_balancer_controller" {
   namespace  = "kube-system"
   chart      = "aws-load-balancer-controller"
   repository = "https://aws.github.io/eks-charts"
-  force_update = true   # Force a replacement if the version changes (ensures upgrade)
+  force_update = true  # Force a replacement if the version changes (ensures upgrade)
 
+  # Setting values for the chart
   set {
     name  = "clusterName"
     value = var.cluster_name
@@ -34,7 +35,7 @@ resource "helm_release" "aws_load_balancer_controller" {
     value = var.region
   }
 
-replace = true          # This will force Helm to replace existing resources
+  replace = true  # Force Helm to replace existing resources
 
   depends_on = [
     aws_iam_role_policy_attachment.lbc_custom_policy_attachment,
