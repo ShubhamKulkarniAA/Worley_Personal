@@ -28,4 +28,4 @@ node_group_name  = "Worley-NC-EKS-Node-Group"
 desired_size     = 1
 max_size         = 1
 min_size         = 1
-instance_type    = "t2.micro"
+instance_type    = "t3.medium"
