@@ -35,17 +35,6 @@ resource "helm_release" "aws_load_balancer_controller" {
     value = var.vpc_id
   }
 
-  set {
-  name  = "affinity"
-  value = "{}"  # Disable affinity temporarily for debugging
-}
-
-set {
-  name  = "tolerations"
-  value = "[]"  # Remove tolerations temporarily for debugging
-}
-
-
   depends_on = [
     aws_iam_role_policy_attachment.lbc_custom_policy_attachment
   ]
