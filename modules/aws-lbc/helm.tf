@@ -35,6 +35,11 @@ resource "helm_release" "aws_load_balancer_controller" {
     value = var.region
   }
 
+    set {
+    name  = "vpcId"
+    value = var.vpc_id
+  }
+
   replace = true  # Force Helm to replace existing resources
 
   depends_on = [
