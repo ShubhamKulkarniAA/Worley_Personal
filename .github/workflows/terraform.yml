@@ -16,6 +16,9 @@ jobs:
       CLUSTER_NAME: ${{ secrets.CLUSTER_NAME }}
 
     steps:
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v2
+
       - name: Terraform Init
         run: terraform init -upgrade
         working-directory: ./
