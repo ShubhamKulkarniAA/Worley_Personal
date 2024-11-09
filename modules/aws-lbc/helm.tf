@@ -31,11 +31,6 @@ resource "helm_release" "aws_load_balancer_controller" {
   }
 
   set {
-    name  = "rbac.create"
-    value = "true"
-  }
-
-  set {
     name  = "region"
     value = var.region
   }
