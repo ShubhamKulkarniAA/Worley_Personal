@@ -26,16 +26,6 @@ resource "helm_release" "aws_load_balancer_controller" {
   }
 
   set {
-    name  = "serviceAccount.create"
-    value = "true"  # We don't want Helm to create the ServiceAccount, it's already created by Terraform
-  }
-
-  set {
-    name  = "serviceAccount.name"
-    value = "aws-load-balancer-controller"
-  }
-
-  set {
     name  = "region"
     value = var.region
   }
@@ -44,6 +34,17 @@ resource "helm_release" "aws_load_balancer_controller" {
     name  = "vpcId"
     value = var.vpc_id
   }
+
+  set {
+  name  = "affinity"
+  value = "{}"  # Disable affinity temporarily for debugging
+}
+
+set {
+  name  = "tolerations"
+  value = "[]"  # Remove tolerations temporarily for debugging
+}
+
 
   depends_on = [
     aws_iam_role_policy_attachment.lbc_custom_policy_attachment

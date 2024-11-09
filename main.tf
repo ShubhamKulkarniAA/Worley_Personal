@@ -1,4 +1,4 @@
-/*module "vpc" {
+module "vpc" {
   source = "./modules/vpc"
   region = var.region
   vpc_cidr = var.vpc_cidr
@@ -47,4 +47,3 @@ module "aws_lbc" {
   cluster_name = module.eks.cluster_name
   vpc_id       = module.vpc.vpc_id
 }
-*/
