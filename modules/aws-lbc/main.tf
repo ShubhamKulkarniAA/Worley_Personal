@@ -86,7 +86,6 @@ resource "aws_iam_policy" "lbc_custom_policy" {
         "Action": [
           "elasticloadbalancing:CreateLoadBalancer",
           "elasticloadbalancing:CreateTargetGroup",
-          "elasticloadbalancer:CreateListener",
           "elasticloadbalancing:DeleteListener",
           "elasticloadbalancing:CreateRule",
           "elasticloadbalancing:DeleteRule"
