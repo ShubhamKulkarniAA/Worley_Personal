@@ -10,7 +10,7 @@ resource "aws_iam_role" "lbc_role" {
     Version = "2012-10-17",
     Statement = [
       {
-        Action    = "sts:AssumeRole"
+        Action    = "sts:AssumeRoleWithWebIdentity"
         Effect    = "Allow"
         Principal = {
           Service = "elasticloadbalancing.amazonaws.com"
