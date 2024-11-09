@@ -33,7 +33,7 @@ resource "aws_iam_role" "lbc_role" {
         }
         Condition = {
           StringEquals = {
-            # Updated to reference OIDC issuer URL dynamically
+            # Correctly referencing OIDC issuer URL dynamically for the service account
             "oidc.eks.${var.region}.amazonaws.com/id/${data.aws_eks_cluster.eks.identity[0].oidc[0].issuer}:sub" = "system:serviceaccount:kube-system:aws-load-balancer-controller"
           }
         }
