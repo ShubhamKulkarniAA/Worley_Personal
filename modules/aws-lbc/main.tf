@@ -11,8 +11,9 @@ locals {
 }
 
 # Fetch the EKS cluster details
+
 data "aws_eks_cluster" "eks" {
-  name = var.cluster_name  # Ensure this is passed from the root module
+  name = var.cluster_name
 }
 
 # Fetch OIDC certificate thumbprint dynamically from the EKS OIDC URL
@@ -115,23 +116,4 @@ resource "aws_iam_policy" "lbc_custom_policy" {
 resource "aws_iam_role_policy_attachment" "lbc_custom_policy_attachment" {
   policy_arn = aws_iam_policy.lbc_custom_policy.arn
   role       = aws_iam_role.lbc_role.name
-}
-
-data "aws_eks_cluster" "eks" {
-  name = var.cluster_name
-}
-
-# Fetch OIDC certificate thumbprint dynamically from the EKS OIDC URL
-data "tls_certificate" "eks_cluster" {
-  url = data.aws_eks_cluster.eks.identity[0].oidc[0].issuer
-}
-
-# Set up the OIDC identity provider for the EKS cluster using dynamic thumbprint
-resource "aws_iam_openid_connect_provider" "eks_oidc_provider" {
-  url = data.aws_eks_cluster.eks.identity[0].oidc[0].issuer
-
-  client_id_list = ["sts.amazonaws.com"]
-  thumbprint_list = [
-    data.tls_certificate.eks_cluster.certificates[0].sha1_fingerprint
-  ]
 }
