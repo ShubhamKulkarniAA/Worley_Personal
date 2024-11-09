@@ -126,7 +126,7 @@ resource "aws_iam_role" "lbc_role" {
           "sts:AssumeRoleWithWebIdentity"
         ],
         "Principal": {
-          "Federated": "${data.aws_eks_cluster.eks.identity[0].oidc[0].issuer}"
+          "Federated": "${aws_iam_openid_connect_provider.eks_oidc_provider.arn}"
         },
         "Condition": {
           "StringEquals": {
@@ -137,7 +137,7 @@ resource "aws_iam_role" "lbc_role" {
     ]
   })
 
-  depends_on = [data.aws_eks_cluster.eks]
+  depends_on = [aws_iam_openid_connect_provider.eks_oidc_provider]
 }
 
 # Attach the custom IAM policy to the LBC role
