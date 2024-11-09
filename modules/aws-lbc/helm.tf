@@ -35,6 +35,11 @@ resource "helm_release" "aws_load_balancer_controller" {
     value = var.vpc_id
   }
 
+  set {
+    name  = "serviceAccount.name"
+    value = kubernetes_service_account.aws_load_balancer_controller.metadata[0].name
+  }
+
   depends_on = [
     aws_iam_role_policy_attachment.lbc_custom_policy_attachment
   ]

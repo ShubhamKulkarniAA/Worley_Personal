@@ -29,7 +29,12 @@ resource "aws_iam_role" "lbc_role" {
         Action    = "sts:AssumeRoleWithWebIdentity"
         Effect    = "Allow"
         Principal = {
-          Service = "elasticloadbalancing.amazonaws.com"
+          Federated = aws_iam_openid_connect_provider.eks_oidc_provider.arn
+        }
+        Condition = {
+          StringEquals = {
+            "oidc.eks.${var.region}.amazonaws.com/id/${data.aws_eks_cluster.eks.identity[0].oidc[0].issuer_id}:sub" = "system:serviceaccount:kube-system:aws-load-balancer-controller"
+          }
         }
       }
     ]
