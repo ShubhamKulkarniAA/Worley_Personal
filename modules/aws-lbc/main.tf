@@ -123,18 +123,6 @@ resource "aws_iam_role" "lbc_role" {
       {
         "Effect": "Allow",
         "Action": [
-          "iam:CreateServiceLinkedRole"
-        ],
-        "Resource": "*",
-        "Condition": {
-          "StringEquals": {
-            "iam:AWSServiceName": "elasticloadbalancing.amazonaws.com"
-          }
-        }
-      },
-      {
-        "Effect": "Allow",
-        "Action": [
           "sts:AssumeRoleWithWebIdentity"
         ],
         "Principal": {
