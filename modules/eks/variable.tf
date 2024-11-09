@@ -18,6 +18,21 @@ variable "node_role_arn" {
   type        = string
 }
 
+variable "ec2_key_name" {
+  description = "Name of the EC2 key pair"
+  type        = string
+}
+
+variable "ami_id" {
+  description = "AMI ID for the EKS worker nodes"
+  type        = string
+}
+
+variable "instance_type" {
+  description = "The EC2 instance type"
+  type        = string
+}
+
 variable "desired_size" {
   description = "The desired number of nodes in the EKS node group"
   type        = number
@@ -36,15 +51,4 @@ variable "min_size" {
 variable "subnet_ids" {
   description = "The IDs of the subnets to use for the EKS cluster and node group"
   type        = list(string)
-}
-
-variable "instance_type" {
-  description = "The EC2 instance type for EKS worker nodes"
-  type        = string
-}
-
-variable "ec2_key_name" {
-  description = "Name of the EC2 key pair"
-  type        = string
-  default     = "EKS"  # Set the default key name if you want
 }

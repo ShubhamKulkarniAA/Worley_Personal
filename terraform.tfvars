@@ -29,3 +29,5 @@ desired_size     = 1
 max_size         = 1
 min_size         = 1
 instance_type    = "t3.medium"
+ec2_key_name     = "EKS"
+ami_id           = "ami-047126e50991d067b"
