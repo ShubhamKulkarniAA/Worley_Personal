@@ -3,7 +3,7 @@ resource "kubernetes_service_account" "aws_load_balancer_controller" {
     name      = "aws-load-balancer-controller"
     namespace = "kube-system"
     annotations = {
-      "eks.amazonaws.com/role-arn" = aws_iam_role.lbc_role.arn  # Annotate ServiceAccount with IAM role ARN
+      "eks.amazonaws.com/role-arn" = aws_iam_role.lbc_role.arn
     }
   }
 }
@@ -13,7 +13,7 @@ resource "helm_release" "aws_load_balancer_controller" {
   namespace  = "kube-system"
   chart      = "aws-load-balancer-controller"
   repository = "https://aws.github.io/eks-charts"
-  force_update = true   # Force a replacement if the version changes (ensures upgrade)
+  force_update = true   # Force a replacement if the version changes
 
   set {
     name  = "clusterName"
