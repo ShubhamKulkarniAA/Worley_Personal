@@ -18,7 +18,7 @@ resource "kubernetes_service_account" "aws_load_balancer_controller" {
 
 # Helm Release for AWS Load Balancer Controller
 resource "helm_release" "aws_load_balancer_controller" {
-  name       = "aws-load-balancer-controller"
+  name       = "aws-lbc-service-account"
   namespace  = "kube-system"
   chart      = "aws-load-balancer-controller"
   repository = "https://aws.github.io/eks-charts"
