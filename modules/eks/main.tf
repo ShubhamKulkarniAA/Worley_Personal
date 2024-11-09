@@ -15,7 +15,7 @@ resource "aws_launch_template" "eks_node_launch_template" {
   name_prefix   = "eks-node-template"
   image_id      = var.ami_id  # Custom AMI ID for EKS Nodes
   instance_type = var.instance_type  # Instance type for EKS Nodes
-  key_name      = var.ec2_key_name  # EC2 Key Pair for SSH access to nodes
+  key_name      = var.ec2_key_name  # EC2 Key Pair
 }
 
 # EKS Node Group
