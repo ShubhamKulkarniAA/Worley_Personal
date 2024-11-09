@@ -39,7 +39,6 @@ module "eks" {
   max_size = var.max_size
   min_size = var.min_size
   ec2_key_name    = var.ec2_key_name
-  ami_id          = var.ami_id
   instance_type  = var.instance_type
   subnet_ids = [module.vpc.public_subnet1_id, module.vpc.public_subnet2_id]
 }

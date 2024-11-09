@@ -23,11 +23,6 @@ variable "ec2_key_name" {
   type        = string
 }
 
-variable "ami_id" {
-  description = "AMI ID for the EKS worker nodes"
-  type        = string
-}
-
 variable "instance_type" {
   description = "The EC2 instance type"
   type        = string

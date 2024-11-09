@@ -97,8 +97,3 @@ variable "ec2_key_name" {
   description = "The name of the EC2 key pair used for SSH access"
   type        = string
 }
-
-variable "ami_id" {
-  description = "The AMI ID used for the EC2 instances in the EKS node group"
-  type        = string
-}

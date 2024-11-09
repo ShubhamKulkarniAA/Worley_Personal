@@ -13,7 +13,6 @@ resource "aws_eks_cluster" "eks_cluster" {
 # Define Launch Template with key_name argument
 resource "aws_launch_template" "eks_node_launch_template" {
   name_prefix   = "eks-node-template"
-  image_id      = var.ami_id  # Custom AMI ID for EKS Nodes
   instance_type = var.instance_type  # Instance type for EKS Nodes
   key_name      = var.ec2_key_name  # EC2 Key Pair for SSH access to nodes
 }
