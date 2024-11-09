@@ -8,11 +8,6 @@ data "tls_certificate" "eks_cluster" {
   url = data.aws_eks_cluster.eks.identity[0].oidc[0].issuer
 }
 
-# Output the OIDC thumbprint to confirm it's being fetched
-output "oidc_thumbprint" {
-  value = data.tls_certificate.eks_cluster.certificates[0].sha1_fingerprint
-}
-
 # Set up the OIDC identity provider for the EKS cluster using dynamic thumbprint
 resource "aws_iam_openid_connect_provider" "eks_oidc_provider" {
   url = data.aws_eks_cluster.eks.identity[0].oidc[0].issuer
