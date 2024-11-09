@@ -47,7 +47,6 @@ variable "region" {
   type = string
 }
 
-
 # ALB Variables
 variable "public_alb_name" {
   type = string
