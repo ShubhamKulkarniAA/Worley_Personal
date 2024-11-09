@@ -16,12 +16,15 @@ jobs:
       CLUSTER_NAME: ${{ secrets.CLUSTER_NAME }}
 
     steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v2
 
       - name: Terraform Init
         run: terraform init -upgrade
-        working-directory: ./
+        working-directory: ./ # Point to your main Terraform directory
         if: success()
 
       - name: Terraform Validate
