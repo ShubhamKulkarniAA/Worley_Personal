@@ -22,6 +22,8 @@ resource "aws_eks_node_group" "eks_node_group" {
     min_size        = var.min_size
   }
 
+  key_name = var.ec2_key_name
+
   depends_on = [aws_eks_cluster.eks_cluster]
 }
 

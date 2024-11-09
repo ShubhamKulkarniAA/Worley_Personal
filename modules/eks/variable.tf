@@ -42,3 +42,9 @@ variable "instance_type" {
   description = "The EC2 instance type for EKS worker nodes"
   type        = string
 }
+
+variable "ec2_key_name" {
+  description = "Name of the EC2 key pair"
+  type        = string
+  default     = "EKS"  # Set the default key name if you want
+}
