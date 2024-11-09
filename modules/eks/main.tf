@@ -18,7 +18,7 @@ resource "aws_launch_template" "eks_node_launch_template" {
   key_name      = var.ec2_key_name  # EC2 Key Pair for SSH access to nodes
 }
 
-# EKS Node Group - Using the launch template to reference key_name
+# EKS Node Group
 resource "aws_eks_node_group" "eks_node_group" {
   cluster_name    = aws_eks_cluster.eks_cluster.name
   node_group_name = var.node_group_name
