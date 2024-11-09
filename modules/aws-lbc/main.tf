@@ -86,7 +86,7 @@ resource "aws_iam_policy" "lbc_custom_policy" {
         "Action": [
           "elasticloadbalancing:CreateLoadBalancer",
           "elasticloadbalancing:CreateTargetGroup",
-          "elasticloadbalancing:CreateListener",
+          "elasticloadbalancer:CreateListener",
           "elasticloadbalancing:DeleteListener",
           "elasticloadbalancing:CreateRule",
           "elasticloadbalancing:DeleteRule"
@@ -125,7 +125,6 @@ resource "aws_iam_role" "lbc_role" {
         "Action": [
           "iam:CreateServiceLinkedRole"
         ],
-        "Resource": "*",
         "Condition": {
           "StringEquals": {
             "iam:AWSServiceName": "elasticloadbalancing.amazonaws.com"
