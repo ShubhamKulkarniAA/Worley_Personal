@@ -107,6 +107,14 @@ resource "aws_iam_policy" "lbc_custom_policy" {
           "elasticloadbalancing:DeregisterTargets"
         ],
         "Resource": "*"
+      },
+
+      {
+        "Effect": "Allow",
+        "Action": [
+          "iam:PassRole"
+        ],
+        "Resource": "*"
       }
     ]
   })
