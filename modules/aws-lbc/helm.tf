@@ -18,8 +18,6 @@ resource "helm_release" "aws_load_balancer_controller" {
   namespace  = "kube-system"
   chart      = "aws-load-balancer-controller"
   repository = "https://aws.github.io/eks-charts"
-  version    = local.aws_lbc_version  # If using the version locally or passed dynamically
-
   force_update = true   # Force a replacement if the version changes (ensures upgrade)
 
   set {
