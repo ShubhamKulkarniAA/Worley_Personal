@@ -51,12 +51,6 @@ jobs:
           aws eks update-kubeconfig --name ${{ secrets.CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
         if: success()
 
-      - name: Verify AWS Load Balancer Controller Logs
-        run: |
-          # Verify that the AWS Load Balancer Controller is running without error
-          kubectl logs -n kube-system -l app.kubernetes.io/name=aws-load-balancer-controller | grep -i "successfully acquired lease" || echo "Error: Load Balancer Controller not starting correctly"
-        if: success()
-
       - name: Apply ClusterRoleBinding for AWS Load Balancer Controller
         run: |
           kubectl apply -f modules/aws-lbc/aws-lb-controller-clusterrolebinding.yaml

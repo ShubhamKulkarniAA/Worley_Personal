@@ -14,3 +14,8 @@ output "helm_release_version" {
 output "lbc_role_arn" {
   value = aws_iam_role.lbc_role.arn
 }
+
+output "aws_lbc_version" {
+  value = local.aws_lbc_version
+  description = "The version of the AWS Load Balancer Controller being used"
+}
