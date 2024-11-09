@@ -11,14 +11,12 @@ resource "aws_eks_cluster" "eks_cluster" {
 }
 
 # Define Launch Template with key_name argument
-
 resource "aws_launch_template" "eks_node_launch_template" {
   name_prefix   = "eks-node-template"
-  image_id      = var.ami_id
-  instance_type = var.instance_type
-  key_name      = var.ec2_key_name  #  EC2 key pair
+  image_id      = var.ami_id  # Custom AMI ID for EKS Nodes
+  instance_type = var.instance_type  # Instance type for EKS Nodes
+  key_name      = var.ec2_key_name  # EC2 Key Pair for SSH access to nodes
 }
-
 
 # EKS Node Group - Using the launch template to reference key_name
 resource "aws_eks_node_group" "eks_node_group" {
@@ -26,7 +24,6 @@ resource "aws_eks_node_group" "eks_node_group" {
   node_group_name = var.node_group_name
   node_role_arn   = var.node_role_arn
   subnet_ids      = var.subnet_ids
-  instance_types  = [var.instance_type]
 
   scaling_config {
     desired_size = var.desired_size
@@ -41,7 +38,6 @@ resource "aws_eks_node_group" "eks_node_group" {
 
   depends_on = [aws_eks_cluster.eks_cluster]
 }
-
 
 # IAM Role for EKS Cluster
 resource "aws_iam_role" "eks_cluster_role" {
