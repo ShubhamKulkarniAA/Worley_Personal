@@ -138,7 +138,7 @@ resource "aws_iam_role" "lbc_role" {
           "sts:AssumeRoleWithWebIdentity"
         ],
         "Principal": {
-          "Federated": "arn:aws:iam::${data.aws_eks_cluster.eks.cluster_arn}:oidc-provider/${data.aws_eks_cluster.eks.identity[0].oidc[0].issuer}"
+          "Federated": "arn:aws:iam::${data.aws_eks_cluster.eks.arn}:oidc-provider/${data.aws_eks_cluster.eks.identity[0].oidc[0].issuer}"
         },
         "Condition": {
           "StringEquals": {
