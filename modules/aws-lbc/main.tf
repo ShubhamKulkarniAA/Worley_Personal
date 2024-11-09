@@ -5,8 +5,9 @@ data "external" "aws_lbc_version" {
 }
 
 locals {
-  aws_lbc_version = jsondecode(data.external.aws_lbc_version.result)["tag_name"]
-  should_replace  = var.new_version != local.aws_lbc_version
+  # Decode the full output and ensure `tag_name` is a string
+  aws_lbc_version = tostring(jsondecode(data.external.aws_lbc_version.result)["tag_name"])
+  should_replace  = var.new_version != local.aws_lbc_version  # Compare the provided version and the fetched version
 }
 
 # Fetch the EKS cluster details
