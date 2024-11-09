@@ -4,9 +4,9 @@ resource "kubernetes_service_account" "aws_load_balancer_controller" {
     name      = "aws-load-balancer-controller"
     namespace = "kube-system"
     annotations = {
-      "eks.amazonaws.com/role-arn"              = aws_iam_role.lbc_role.arn
-      "meta.helm.sh/release-name"               = "aws-load-balancer-controller"
-      "meta.helm.sh/release-namespace"          = "kube-system"
+      "eks.amazonaws.com/role-arn" = aws_iam_role.lbc_role.arn
+      "meta.helm.sh/release-name"  = "aws-load-balancer-controller"
+      "meta.helm.sh/release-namespace" = "kube-system"
     }
     labels = {
       "app.kubernetes.io/managed-by" = "Helm"
