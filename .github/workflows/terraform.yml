@@ -36,7 +36,6 @@ jobs:
 
       - name: Terraform Plan
         run: |
-          export TF_LOG=TRACE
           terraform plan -out=tfplan -input=false || echo "Terraform plan failed; review configuration."
         working-directory: ./
         if: success()

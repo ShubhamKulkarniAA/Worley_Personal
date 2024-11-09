@@ -3,7 +3,12 @@ data "external" "aws_lbc_version" {
     "curl", "-s", "https://api.github.com/repos/kubernetes-sigs/aws-load-balancer-controller/releases/latest"
   ]
 }
-
+# Output the raw JSON response for debugging purposes
+resource "null_resource" "debug" {
+  provisioner "local-exec" {
+    command = "echo '${data.external.aws_lbc_version.result}'"
+  }
+}
 locals {
   # Decode the full output and ensure `tag_name` is a string
   aws_lbc_version = tostring(jsondecode(data.external.aws_lbc_version.result)["tag_name"])
