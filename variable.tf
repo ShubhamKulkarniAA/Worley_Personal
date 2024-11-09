@@ -88,3 +88,8 @@ variable "max_size" {
 variable "min_size" {
   type = number
 }
+
+variable "instance_type" {
+  description = "The EC2 instance type for EKS worker nodes"
+  type        = string
+}

@@ -37,3 +37,8 @@ variable "subnet_ids" {
   description = "The IDs of the subnets to use for the EKS cluster and node group"
   type        = list(string)
 }
+
+variable "instance_type" {
+  description = "The EC2 instance type for EKS worker nodes"
+  type        = string
+}

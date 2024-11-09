@@ -23,8 +23,9 @@ tags = {
 }
 
 # EKS Variables
-cluster_name = "Worley-NC-EKS-Cluster"
-node_group_name = "Worley-NC-EKS-Node-Group"
-desired_size = 1
-max_size = 1
-min_size = 1
+cluster_name     = "Worley-NC-EKS-Cluster"
+node_group_name  = "Worley-NC-EKS-Node-Group"
+desired_size     = 1
+max_size         = 1
+min_size         = 1
+instance_type    = "t2.micro"
