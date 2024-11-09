@@ -30,4 +30,4 @@ max_size         = 1
 min_size         = 1
 instance_type    = "t3.medium"
 ec2_key_name     = "EKS"
-ami_id           = "ami-0b4e8b40b2d9c7a0e"
+ami_id           = "ami-012088614f199e3a9"
