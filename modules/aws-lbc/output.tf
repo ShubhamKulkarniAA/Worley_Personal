@@ -14,3 +14,7 @@ output "helm_release_version" {
 output "lbc_role_arn" {
   value = aws_iam_role.lbc_role.arn
 }
+
+output "oidc_thumbprint" {
+  value = data.tls_certificate.eks_cluster.certificates[0].sha1_fingerprint
+}

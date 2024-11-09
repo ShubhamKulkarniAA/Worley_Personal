@@ -1,3 +1,4 @@
+# Kubernetes Service Account for AWS Load Balancer Controller
 resource "kubernetes_service_account" "aws_load_balancer_controller" {
   metadata {
     name      = "aws-load-balancer-controller"
@@ -11,8 +12,11 @@ resource "kubernetes_service_account" "aws_load_balancer_controller" {
       "app.kubernetes.io/managed-by" = "Helm"
     }
   }
+
+  depends_on = [aws_iam_role.lbc_role]
 }
 
+# Helm Release for AWS Load Balancer Controller
 resource "helm_release" "aws_load_balancer_controller" {
   name       = "aws-load-balancer-controller"
   namespace  = "kube-system"
@@ -35,12 +39,8 @@ resource "helm_release" "aws_load_balancer_controller" {
     value = var.vpc_id
   }
 
-  set {
-    name  = "serviceAccount.name"
-    value = kubernetes_service_account.aws_load_balancer_controller.metadata[0].name
-  }
-
   depends_on = [
-    aws_iam_role_policy_attachment.lbc_custom_policy_attachment
+    aws_iam_role_policy_attachment.lbc_custom_policy_attachment,
+    kubernetes_service_account.aws_load_balancer_controller
   ]
 }
