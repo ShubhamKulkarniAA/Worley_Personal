@@ -14,3 +14,10 @@ variable "vpc_id" {
   description = "The VPC ID"
   type        = string
 }
+
+# Optional: OIDC thumbprint to pass if dynamically fetching doesn't work
+variable "oidc_thumbprint" {
+  description = "The thumbprint of the OIDC certificate"
+  type        = string
+  default     = ""  # Empty default to allow dynamic fetching or manual input
+}
