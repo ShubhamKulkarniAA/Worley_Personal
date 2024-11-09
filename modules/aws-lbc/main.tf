@@ -138,7 +138,7 @@ resource "aws_iam_role" "lbc_role" {
           "sts:AssumeRoleWithWebIdentity"
         ],
         "Principal": {
-          "Federated": "arn:aws:iam::${data.aws_eks_cluster.eks.cluster_arn}:oidc-provider/${data.aws_eks_cluster.eks.identity[0].oidc[0].issuer}"
+          "Federated": "${data.aws_eks_cluster.eks.identity[0].oidc[0].issuer}"
         },
         "Condition": {
           "StringEquals": {
@@ -152,9 +152,47 @@ resource "aws_iam_role" "lbc_role" {
   depends_on = [data.aws_eks_cluster.eks]
 }
 
-
 # Attach the custom IAM policy to the LBC role
 resource "aws_iam_role_policy_attachment" "lbc_custom_policy_attachment" {
   policy_arn = aws_iam_policy.lbc_custom_policy.arn
   role       = aws_iam_role.lbc_role.name
+}
+
+# IAM role for AWS Load Balancer Controller
+resource "aws_iam_role" "lbc_role" {
+  name = "aws-lbc-role"
+
+  assume_role_policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Action": [
+          "iam:CreateServiceLinkedRole"
+        ],
+        "Resource": "*",
+        "Condition": {
+          "StringEquals": {
+            "iam:AWSServiceName": "elasticloadbalancing.amazonaws.com"
+          }
+        }
+      },
+      {
+        "Effect": "Allow",
+        "Action": [
+          "sts:AssumeRoleWithWebIdentity"
+        ],
+        "Principal": {
+          "Federated": "${data.aws_eks_cluster.eks.identity[0].oidc[0].issuer}"
+        },
+        "Condition": {
+          "StringEquals": {
+            "${data.aws_eks_cluster.eks.identity[0].oidc[0].issuer}:sub": "system:serviceaccount:kube-system:aws-load-balancer-controller"
+          }
+        }
+      }
+    ]
+  })
+
+  depends_on = [data.aws_eks_cluster.eks]
 }
