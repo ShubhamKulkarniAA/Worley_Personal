@@ -16,37 +16,11 @@ resource "aws_iam_openid_connect_provider" "eks_oidc_provider" {
   thumbprint_list = var.oidc_thumbprint != "" ? [var.oidc_thumbprint] : [data.tls_certificate.eks_cluster.certificates[0].sha1_fingerprint]
 }
 
-
-# IAM role for AWS Load Balancer Controller
-resource "aws_iam_role" "lbc_role" {
-  name = "aws-lbc-role"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Action    = "sts:AssumeRoleWithWebIdentity"
-        Effect    = "Allow"
-        Principal = {
-          Federated = aws_iam_openid_connect_provider.eks_oidc_provider.arn
-        }
-        Condition = {
-          StringEquals = {
-            # Correctly referencing OIDC issuer URL dynamically for the service account
-            "oidc.eks.${var.region}.amazonaws.com/id/${data.aws_eks_cluster.eks.identity[0].oidc[0].issuer}:sub" = "system:serviceaccount:kube-system:aws-load-balancer-controller"
-          }
-        }
-      }
-    ]
-  })
-}
-
-# Custom IAM policy for AWS Load Balancer Controller
+# Define the custom IAM policy for the Load Balancer Controller
 resource "aws_iam_policy" "lbc_custom_policy" {
-  name        = "AWSLoadBalancerControllerCustomPolicy"
-  description = "Custom policy for AWS Load Balancer Controller with essential permissions"
-
-  policy = jsonencode({
+  name        = "aws-lbc-custom-policy"
+  description = "Custom policy for AWS Load Balancer Controller to manage resources"
+  policy      = jsonencode({
     "Version": "2012-10-17",
     "Statement": [
       {
@@ -64,16 +38,29 @@ resource "aws_iam_policy" "lbc_custom_policy" {
       {
         "Effect": "Allow",
         "Action": [
-          "ec2:Describe*",
-          "elasticloadbalancing:Describe*",
-          "elasticloadbalancing:CreateLoadBalancer",
-          "elasticloadbalancing:CreateTargetGroup",
-          "elasticloadbalancing:CreateListener",
-          "elasticloadbalancing:DeleteListener",
-          "elasticloadbalancing:CreateRule",
-          "elasticloadbalancing:DeleteRule",
-          "elasticloadbalancing:RegisterTargets",
-          "elasticloadbalancing:DeregisterTargets"
+          "ec2:DescribeAccountAttributes",
+          "ec2:DescribeAddresses",
+          "ec2:DescribeAvailabilityZones",
+          "ec2:DescribeInternetGateways",
+          "ec2:DescribeVpcs",
+          "ec2:DescribeVpcPeeringConnections",
+          "ec2:DescribeSubnets",
+          "ec2:DescribeSecurityGroups",
+          "ec2:DescribeInstances",
+          "ec2:DescribeNetworkInterfaces",
+          "ec2:DescribeTags",
+          "elasticloadbalancing:DescribeLoadBalancers",
+          "elasticloadbalancing:DescribeLoadBalancerAttributes",
+          "elasticloadbalancing:DescribeListeners",
+          "elasticloadbalancing:DescribeListenerCertificates",
+          "elasticloadbalancing:DescribeSSLPolicies",
+          "elasticloadbalancing:DescribeRules",
+          "elasticloadbalancing:DescribeTargetGroups",
+          "elasticloadbalancing:DescribeTargetGroupAttributes",
+          "elasticloadbalancing:DescribeTargetHealth",
+          "elasticloadbalancing:DescribeTags",
+          "elasticloadbalancing:DescribeTrustStores",
+          "elasticloadbalancing:DescribeListenerAttributes"
         ],
         "Resource": "*"
       },
@@ -81,7 +68,13 @@ resource "aws_iam_policy" "lbc_custom_policy" {
         "Effect": "Allow",
         "Action": [
           "ec2:AuthorizeSecurityGroupIngress",
-          "ec2:RevokeSecurityGroupIngress",
+          "ec2:RevokeSecurityGroupIngress"
+        ],
+        "Resource": "*"
+      },
+      {
+        "Effect": "Allow",
+        "Action": [
           "ec2:CreateSecurityGroup",
           "ec2:CreateTags",
           "ec2:DeleteTags"
@@ -91,14 +84,67 @@ resource "aws_iam_policy" "lbc_custom_policy" {
       {
         "Effect": "Allow",
         "Action": [
+          "elasticloadbalancing:CreateLoadBalancer",
+          "elasticloadbalancing:CreateTargetGroup",
+          "elasticloadbalancing:CreateListener",
+          "elasticloadbalancing:DeleteListener",
+          "elasticloadbalancing:CreateRule",
+          "elasticloadbalancing:DeleteRule"
+        ],
+        "Resource": "*"
+      },
+      {
+        "Effect": "Allow",
+        "Action": [
           "elasticloadbalancing:AddTags",
           "elasticloadbalancing:RemoveTags"
         ],
-        "Resource": [
-          "arn:aws:elasticloadbalancing:*:*:targetgroup/*/*",
-          "arn:aws:elasticloadbalancing:*:*:loadbalancer/net/*/*",
-          "arn:aws:elasticloadbalancing:*:*:loadbalancer/app/*/*"
-        ]
+        "Resource": "*"
+      },
+      {
+        "Effect": "Allow",
+        "Action": [
+          "elasticloadbalancing:RegisterTargets",
+          "elasticloadbalancing:DeregisterTargets"
+        ],
+        "Resource": "*"
+      }
+    ]
+  })
+}
+
+# IAM role for AWS Load Balancer Controller
+resource "aws_iam_role" "lbc_role" {
+  name = "aws-lbc-role"
+
+  assume_role_policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Action": [
+          "iam:CreateServiceLinkedRole"
+        ],
+        "Resource": "*",
+        "Condition": {
+          "StringEquals": {
+            "iam:AWSServiceName": "elasticloadbalancing.amazonaws.com"
+          }
+        }
+      },
+      {
+        "Effect": "Allow",
+        "Action": [
+          "sts:AssumeRoleWithWebIdentity"
+        ],
+        "Principal": {
+          "Federated": "arn:aws:iam::${data.aws_eks_cluster.eks.cluster_id}:oidc-provider/${data.aws_eks_cluster.eks.identity[0].oidc[0].issuer}"
+        },
+        "Condition": {
+          "StringEquals": {
+            "${data.aws_eks_cluster.eks.identity[0].oidc[0].issuer}:sub": "system:serviceaccount:kube-system:aws-load-balancer-controller"
+          }
+        }
       }
     ]
   })
