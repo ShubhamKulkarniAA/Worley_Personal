@@ -13,7 +13,7 @@ resource "kubernetes_service_account" "aws_load_balancer_controller" {
     }
   }
 
-  depends_on = [aws_iam_role.lbc_role] # Ensuring IAM role is created first
+  depends_on = [aws_iam_role.lbc_role]  # Ensure IAM role is created before the service account
 }
 
 # Helm Release for AWS Load Balancer Controller
@@ -22,9 +22,10 @@ resource "helm_release" "aws_load_balancer_controller" {
   namespace  = "kube-system"
   chart      = "aws-load-balancer-controller"
   repository = "https://aws.github.io/eks-charts"
-  force_update = true  # Force a replacement if the version changes (ensures upgrade)
 
-  # Setting values for the chart
+  force_update = true  # Ensures that Helm forces an update if the version changes
+
+  # Setting values for the Helm chart
   set {
     name  = "clusterName"
     value = var.cluster_name
@@ -35,15 +36,15 @@ resource "helm_release" "aws_load_balancer_controller" {
     value = var.region
   }
 
-    set {
+  set {
     name  = "vpcId"
-    value = var.vpc_id
+    value = var.vpc_id  # Make sure the correct VPC ID is set, as required by the controller
   }
 
-  replace = true  # Force Helm to replace existing resources
+  replace = true  # Force Helm to replace existing resources if needed
 
   depends_on = [
-    aws_iam_role_policy_attachment.lbc_custom_policy_attachment,
-    kubernetes_service_account.aws_load_balancer_controller # Ensure the service account is created first
+    aws_iam_role_policy_attachment.lbc_custom_policy_attachment,  # Ensure the IAM role policy is attached first
+    kubernetes_service_account.aws_load_balancer_controller         # Ensure the service account is created first
   ]
 }
