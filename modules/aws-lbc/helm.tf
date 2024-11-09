@@ -13,7 +13,7 @@ resource "helm_release" "aws_load_balancer_controller" {
   namespace  = "kube-system"
   chart      = "aws-load-balancer-controller"
   repository = "https://aws.github.io/eks-charts"
-  version    = local.aws_lbc_version_trimmed  # Use the version passed from the root module
+  version    = local.aws_lbc_version # Use the version passed from the root module
 
   force_update = true   # Force a replacement if the version changes (ensures upgrade)
 
