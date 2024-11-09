@@ -13,7 +13,7 @@ resource "helm_release" "aws_load_balancer_controller" {
   namespace  = "kube-system"
   chart      = "aws-load-balancer-controller"
   repository = "https://aws.github.io/eks-charts"
-  version    = var.new_version
+  version    = var.new_version  # Use the version passed from the root module
 
   set {
     name  = "clusterName"
@@ -41,7 +41,7 @@ resource "helm_release" "aws_load_balancer_controller" {
   }
 
   # Conditionally replace the release if the version is different
-  replace = local.should_replace  # Ensure this is set dynamically to trigger upgrade when needed
+  replace = local.should_replace
 
   depends_on = [
     aws_iam_role_policy_attachment.lbc_custom_policy_attachment

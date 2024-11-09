@@ -1,15 +1,34 @@
-
+# Fetch the latest AWS Load Balancer Controller version dynamically from GitHub
 data "external" "aws_lbc_version" {
   program = [
     "curl", "-s", "https://api.github.com/repos/kubernetes-sigs/aws-load-balancer-controller/releases/latest"
   ]
 }
 
-# Decode the JSON response to extract the version tag
 locals {
   aws_lbc_version = jsondecode(data.external.aws_lbc_version.result)["tag_name"]
+  should_replace  = var.new_version != local.aws_lbc_version  # Compare provided version and fetched version
 }
 
+# Fetch the EKS cluster details
+data "aws_eks_cluster" "eks" {
+  name = var.cluster_name  # Ensure this is passed from the root module
+}
+
+# Fetch OIDC certificate thumbprint dynamically from the EKS OIDC URL
+data "tls_certificate" "eks_cluster" {
+  url = data.aws_eks_cluster.eks.identity[0].oidc[0].issuer
+}
+
+# Set up the OIDC identity provider for the EKS cluster using dynamic thumbprint
+resource "aws_iam_openid_connect_provider" "eks_oidc_provider" {
+  url = data.aws_eks_cluster.eks.identity[0].oidc[0].issuer
+
+  client_id_list = ["sts.amazonaws.com"]
+  thumbprint_list = [
+    data.tls_certificate.eks_cluster.certificates[0].sha1_fingerprint
+  ]
+}
 
 # IAM role for AWS Load Balancer Controller
 resource "aws_iam_role" "lbc_role" {
@@ -96,6 +115,10 @@ resource "aws_iam_policy" "lbc_custom_policy" {
 resource "aws_iam_role_policy_attachment" "lbc_custom_policy_attachment" {
   policy_arn = aws_iam_policy.lbc_custom_policy.arn
   role       = aws_iam_role.lbc_role.name
+}
+
+data "aws_eks_cluster" "eks" {
+  name = var.cluster_name
 }
 
 # Fetch OIDC certificate thumbprint dynamically from the EKS OIDC URL
