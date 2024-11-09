@@ -125,6 +125,7 @@ resource "aws_iam_role" "lbc_role" {
         "Action": [
           "iam:CreateServiceLinkedRole"
         ],
+        "Resource": "*",
         "Condition": {
           "StringEquals": {
             "iam:AWSServiceName": "elasticloadbalancing.amazonaws.com"
