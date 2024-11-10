@@ -1,3 +1,6 @@
+# Fetch AWS caller identity (current account)
+data "aws_caller_identity" "current" {}
+
 # Fetch the EKS cluster details
 data "aws_eks_cluster" "eks" {
   name = var.cluster_name
