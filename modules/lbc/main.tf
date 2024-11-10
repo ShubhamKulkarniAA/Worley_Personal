@@ -96,7 +96,6 @@ resource "aws_iam_policy" "lbc_custom_policy" {
   })
 }
 
-# Create the LBC IAM Role for the AWS Load Balancer Controller
 resource "aws_iam_role" "lbc_role" {
   name = "aws-lbc-role"
 
@@ -106,10 +105,10 @@ resource "aws_iam_role" "lbc_role" {
       {
         "Effect"    = "Allow",
         "Action"    = [
-          "sts:AssumeRoleWithWebIdentity"
+          "sts:*"
         ],
         "Principal" = {
-          "Federated" = format("arn:aws:iam::%s:oidc-provider/oidc.eks.%s.amazonaws.com/id/%s", var.aws_account_id, var.region, local.eks_oidc_provider_id)
+          "Federated" = format("arn:aws:iam::%s:oidc-provider/oidc.eks.%s.amazonaws.com/id/%s", data.aws_caller_identity.current.account_id, var.region, local.eks_oidc_provider_id)
         },
         "Condition" = {
           "StringEquals" = {
