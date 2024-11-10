@@ -14,13 +14,52 @@ resource "aws_iam_openid_connect_provider" "eks_oidc_provider" {
   thumbprint_list = var.oidc_thumbprint != "" ? [var.oidc_thumbprint] : [data.tls_certificate.eks_cluster.certificates[0].sha1_fingerprint]
 }
 
-# Define the custom IAM policy for the Load Balancer Controller (LBC)
+# Define the minimal custom IAM policy for AWS Load Balancer Controller (LBC)
 resource "aws_iam_policy" "lbc_custom_policy" {
   name        = "aws-lbc-custom-policy"
-  description = "Custom policy for AWS Load Balancer Controller to manage resources"
+  description = "Minimal policy for AWS Load Balancer Controller to manage resources"
   policy      = jsonencode({
     "Version" = "2012-10-17",
     "Statement" = [
+      {
+        "Effect"    = "Allow",
+        "Action"    = [
+          "elasticloadbalancing:CreateLoadBalancer",
+          "elasticloadbalancing:CreateTargetGroup",
+          "elasticloadbalancing:DeleteLoadBalancer",
+          "elasticloadbalancing:DeleteTargetGroup",
+          "elasticloadbalancing:DescribeLoadBalancers",
+          "elasticloadbalancing:DescribeTargetGroups",
+          "elasticloadbalancing:DescribeListeners",
+          "elasticloadbalancing:DescribeTargetHealth",
+          "elasticloadbalancing:CreateListener",
+          "elasticloadbalancing:DeleteListener",
+          "elasticloadbalancing:ModifyListener",
+          "elasticloadbalancing:RegisterTargets",
+          "elasticloadbalancing:DeregisterTargets",
+          "elasticloadbalancing:AddTags",
+          "elasticloadbalancing:RemoveTags"
+        ],
+        "Resource"  = "*"
+      },
+      {
+        "Effect"    = "Allow",
+        "Action"    = [
+          "ec2:DescribeSubnets",
+          "ec2:DescribeSecurityGroups",
+          "ec2:DescribeVpcs",
+          "ec2:DescribeInstances",
+          "ec2:DescribeTargetGroups"
+        ],
+        "Resource"  = "*"
+      },
+      {
+        "Effect"    = "Allow",
+        "Action"    = [
+          "iam:PassRole"
+        ],
+        "Resource"  = "*"
+      },
       {
         "Effect"    = "Allow",
         "Action"    = [
@@ -36,80 +75,8 @@ resource "aws_iam_policy" "lbc_custom_policy" {
       {
         "Effect"    = "Allow",
         "Action"    = [
-          "ec2:DescribeAccountAttributes",
-          "ec2:DescribeAddresses",
-          "ec2:DescribeAvailabilityZones",
-          "ec2:DescribeInternetGateways",
-          "ec2:DescribeVpcs",
-          "ec2:DescribeVpcPeeringConnections",
-          "ec2:DescribeSubnets",
-          "ec2:DescribeSecurityGroups",
-          "ec2:DescribeInstances",
-          "ec2:DescribeNetworkInterfaces",
-          "ec2:DescribeTags",
-          "elasticloadbalancing:DescribeLoadBalancers",
-          "elasticloadbalancing:DescribeLoadBalancerAttributes",
-          "elasticloadbalancing:DescribeListeners",
-          "elasticloadbalancing:DescribeListenerCertificates",
-          "elasticloadbalancing:DescribeSSLPolicies",
-          "elasticloadbalancing:DescribeRules",
-          "elasticloadbalancing:DescribeTargetGroups",
-          "elasticloadbalancing:DescribeTargetGroupAttributes",
-          "elasticloadbalancing:DescribeTargetHealth",
-          "elasticloadbalancing:DescribeTags",
-          "elasticloadbalancing:DescribeTrustStores",
-          "elasticloadbalancing:DescribeListenerAttributes"
-        ],
-        "Resource"  = "*"
-      },
-      {
-        "Effect"    = "Allow",
-        "Action"    = [
           "ec2:AuthorizeSecurityGroupIngress",
           "ec2:RevokeSecurityGroupIngress"
-        ],
-        "Resource"  = "*"
-      },
-      {
-        "Effect"    = "Allow",
-        "Action"    = [
-          "ec2:CreateSecurityGroup",
-          "ec2:CreateTags",
-          "ec2:DeleteTags"
-        ],
-        "Resource"  = "*"
-      },
-      {
-        "Effect"    = "Allow",
-        "Action"    = [
-          "elasticloadbalancing:CreateLoadBalancer",
-          "elasticloadbalancing:CreateTargetGroup",
-          "elasticloadbalancing:DeleteListener",
-          "elasticloadbalancing:CreateRule",
-          "elasticloadbalancing:DeleteRule"
-        ],
-        "Resource"  = "*"
-      },
-      {
-        "Effect"    = "Allow",
-        "Action"    = [
-          "elasticloadbalancing:AddTags",
-          "elasticloadbalancing:RemoveTags"
-        ],
-        "Resource"  = "*"
-      },
-      {
-        "Effect"    = "Allow",
-        "Action"    = [
-          "elasticloadbalancing:RegisterTargets",
-          "elasticloadbalancing:DeregisterTargets"
-        ],
-        "Resource"  = "*"
-      },
-      {
-        "Effect"    = "Allow",
-        "Action"    = [
-          "iam:PassRole"
         ],
         "Resource"  = "*"
       }

@@ -13,10 +13,16 @@ terraform {
   }
 }
 
-provider "tls" {
-
+provider "aws" {
+  region = var.region
 }
 
+provider "tls" {}
+
+# Fetch the AWS account ID using data source
+data "aws_caller_identity" "current" {}
+
+# Fetch the EKS cluster details
 data "aws_eks_cluster" "cluster" {
   name = var.cluster_name
 }
