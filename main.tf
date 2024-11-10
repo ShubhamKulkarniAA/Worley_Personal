@@ -43,6 +43,11 @@ module "eks" {
   subnet_ids            = [module.vpc.public_subnet1_id, module.vpc.public_subnet2_id]
   cluster_role_arn      = module.eks.cluster_role_arn
   node_role_arn         = module.eks.node_role_arn
+
+  providers = {
+    kubernetes = kubernetes
+    helm       = helm
+  }
 }
 
 # Install LBC after EKS Cluster is ready
@@ -53,6 +58,11 @@ module "lbc" {
   cluster_role_arn    = module.eks.cluster_role_arn
   node_role_arn       = module.eks.node_role_arn
   vpc_id              = module.vpc.vpc_id
+
+  providers = {
+    kubernetes = kubernetes
+    helm       = helm
+    }
 
 }
 
