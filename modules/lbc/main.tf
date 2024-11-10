@@ -3,12 +3,9 @@ data "aws_caller_identity" "current" {}
 
 # Fetch the EKS cluster details
 data "aws_eks_cluster" "eks" {
-  name = var.cluster_name
+  name = module.eks.cluster_name
 }
 
-data "aws_eks_cluster_auth" "eks" {
-  name = var.cluster_name
-}
 
 # Fetch OIDC certificate thumbprint dynamically from the EKS OIDC URL
 data "tls_certificate" "eks_cluster" {
