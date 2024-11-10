@@ -30,7 +30,6 @@ resource "aws_iam_openid_connect_provider" "eks_oidc_provider" {
   thumbprint_list = var.oidc_thumbprint != "" ? [var.oidc_thumbprint] : [data.tls_certificate.eks_cluster.certificates[0].sha1_fingerprint]
 }
 
-# Define the minimal custom IAM policy for AWS Load Balancer Controller (LBC)
 resource "aws_iam_policy" "lbc_custom_policy" {
   name        = "aws-lbc-custom-policy"
   description = "Minimal policy for AWS Load Balancer Controller to manage resources"
@@ -54,7 +53,15 @@ resource "aws_iam_policy" "lbc_custom_policy" {
           "elasticloadbalancing:RegisterTargets",
           "elasticloadbalancing:DeregisterTargets",
           "elasticloadbalancing:AddTags",
-          "elasticloadbalancing:RemoveTags"
+          "elasticloadbalancing:RemoveTags",
+          "elasticloadbalancing:DescribeTags"    # added DescribeTags permission
+        ],
+        "Resource"  = "*"
+      },
+      {
+        "Effect"    = "Allow",
+        "Action"    = [
+          "shield:GetSubscriptionState"   # added Shield permission
         ],
         "Resource"  = "*"
       },
