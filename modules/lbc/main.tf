@@ -75,7 +75,9 @@ resource "aws_iam_policy" "lbc_custom_policy" {
           "elasticloadbalancing:DescribeTargetHealth",
           "elasticloadbalancing:DescribeTags",
           "elasticloadbalancing:DescribeTrustStores",
-          "elasticloadbalancing:DescribeListenerAttributes"
+          "elasticloadbalancing:DescribeListenerAttributes",
+          "elasticloadbalancing:RegisterTargets",
+          "elasticloadbalancing:DeregisterTargets"
         ],
         "Resource": "*"
       },
