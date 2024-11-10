@@ -49,7 +49,6 @@ resource "helm_release" "aws_load_balancer_controller" {
   replace = true  # Force Helm to replace existing resources if needed
 
   depends_on = [
-    module.eks,
     aws_iam_role_policy_attachment.lbc_custom_policy_attachment,
     kubernetes_service_account.aws_load_balancer_controller
   ]
