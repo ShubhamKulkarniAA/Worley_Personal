@@ -10,9 +10,9 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
+      AWS_REGION: ap-south-1
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_REGION: ap-south-1
       CLUSTER_NAME: ${{ secrets.CLUSTER_NAME }}
       REPOSITORY_NAMES: "worley-nc-ui-k8s, worley-nc-api-k8s"
       TERRAFORM_DIR: "./"
@@ -40,15 +40,13 @@ jobs:
 
       # Generate Terraform Plan
       - name: Terraform Plan
-        run: |
-          terraform plan -out=tfplan -input=false || echo "Terraform plan failed; review configuration."
+        run: terraform plan -out=tfplan -input=false
         working-directory: ${{ env.TERRAFORM_DIR }}
         if: success()
 
       # Apply Terraform Plan
       - name: Terraform Apply
-        run: |
-          terraform apply -auto-approve tfplan || echo "Terraform apply failed; review state and plan."
+        run: terraform apply -auto-approve tfplan
         working-directory: ${{ env.TERRAFORM_DIR }}
         if: success()
 
@@ -85,24 +83,23 @@ jobs:
 
       # Update kubeconfig for EKS
       - name: Update kubeconfig for EKS
+        if: success()
         run: |
           aws eks update-kubeconfig --name ${{ secrets.CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
-        if: success()
 
       # Apply ClusterRoleBinding for AWS Load Balancer Controller
       - name: Apply ClusterRoleBinding for AWS Load Balancer Controller
+        if: success()
         run: |
           kubectl apply -f modules/lbc/aws-lb-controller-clusterrolebinding.yaml
-        if: success()
 
       # Apply Kubernetes Resources
       - name: Apply Kubernetes Resources
+        if: success()
         run: |
           kubectl apply -f modules/eks/k8s.yml
-        if: success()
 
-      # Apply Ingress Resources
       - name: Apply Ingress Resources
+        if: success()
         run: |
           kubectl apply -f modules/eks/ingress.yml
-        if: success()
