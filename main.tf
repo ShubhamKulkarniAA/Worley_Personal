@@ -44,7 +44,7 @@ module "eks" {
   lbc_custom_policy_arn = module.lbc.lbc_custom_policy_arn
 }
 
-module "aws_lbc" {
+module "lbc" {
   source       = "./modules/lbc"
   region       = var.region
   cluster_name = module.eks.cluster_name
