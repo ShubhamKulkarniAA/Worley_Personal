@@ -24,18 +24,23 @@ data "aws_caller_identity" "current" {}
 
 # Kubernetes provider configuration
 provider "kubernetes" {
-  host                   = module.eks.cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+  host                   = module.eks.eks_cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks.eks_cluster_certificate_authority)
   token                  = data.aws_eks_cluster_auth.cluster.token
 }
 
 # Helm provider configuration
 provider "helm" {
   kubernetes {
-    host                   = module.eks.cluster_endpoint
-    cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+    host                   = module.eks.eks_cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks.eks_cluster_certificate_authority)
     token                  = data.aws_eks_cluster_auth.cluster.token
   }
+}
+
+# Fetch the EKS cluster details after it's created
+data "aws_eks_cluster" "eks" {
+  name = module.eks.cluster_name
 }
 
 # Fetch the authentication token for the EKS cluster
