@@ -72,7 +72,11 @@ resource "aws_iam_policy" "lbc_custom_policy" {
           "ec2:DescribeSecurityGroups",
           "ec2:DescribeVpcs",
           "ec2:DescribeInstances",
-          "ec2:DescribeAvailabilityZones"
+          "ec2:DescribeAvailabilityZones",
+          "ec2:CreateSecurityGroup",
+          "ec2:AuthorizeSecurityGroupIngress",
+          "ec2:RevokeSecurityGroupIngress",
+          "ec2:ModifyInstanceAttribute"
         ],
         "Resource"  = "*"
       },
