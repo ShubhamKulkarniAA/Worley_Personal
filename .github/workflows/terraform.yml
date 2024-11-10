@@ -107,4 +107,4 @@ jobs:
       - name: Apply Ingress Resources
         if: success()
         run: |
-          kubectl apply -f modules/eks/ingress.yml
+          kubectl apply -f modules/eks/ingress.yml --save-config
