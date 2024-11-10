@@ -22,6 +22,15 @@ provider "tls" {}
 # Fetch the AWS account ID using data source
 data "aws_caller_identity" "current" {}
 
+# Fetch EKS cluster details
+data "aws_eks_cluster" "eks" {
+  name = var.cluster_name
+}
+
+# Fetch the Kubernetes cluster authentication token
+data "aws_eks_cluster_auth" "cluster" {
+  name = var.cluster_name
+}
 
 # Kubernetes Provider Configuration using module outputs
 provider "kubernetes" {

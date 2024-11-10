@@ -3,6 +3,11 @@ data "aws_eks_cluster" "eks" {
   name = var.cluster_name
 }
 
+# Fetch the EKS cluster auth details (for Kubernetes provider)
+data "aws_eks_cluster_auth" "cluster" {
+  name = var.cluster_name
+}
+
 # IAM Role for EKS Cluster
 resource "aws_iam_role" "eks_cluster_role" {
   name = "eks-cluster-role"
