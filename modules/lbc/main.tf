@@ -12,6 +12,11 @@ data "tls_certificate" "eks_cluster" {
   url = data.aws_eks_cluster.eks.identity[0].oidc[0].issuer
 }
 
+# Local to extract OIDC provider ID from the EKS issuer URL
+locals {
+  eks_oidc_provider_id = split("/", data.aws_eks_cluster.eks.identity[0].oidc[0].issuer)[5]
+}
+
 # Set up the OIDC identity provider for the EKS cluster using dynamic thumbprint
 resource "aws_iam_openid_connect_provider" "eks_oidc_provider" {
   url = data.aws_eks_cluster.eks.identity[0].oidc[0].issuer
@@ -25,7 +30,7 @@ resource "aws_iam_openid_connect_provider" "eks_oidc_provider" {
 # Define the minimal custom IAM policy for AWS Load Balancer Controller (LBC)
 resource "aws_iam_policy" "lbc_custom_policy" {
   name        = "aws-lbc-custom-policy"
-  description = "Minimal policy for AWS Load Balancer Controller to manage resources"
+  description = "Policy for AWS Load Balancer Controller to manage resources"
   policy      = jsonencode({
     "Version" = "2012-10-17",
     "Statement" = [
@@ -101,14 +106,14 @@ resource "aws_iam_role" "lbc_role" {
       {
         "Effect"    = "Allow",
         "Action"    = [
-				"sts:*"
+             "sts:*"
         ],
         "Principal" = {
-          "Federated" = format("arn:aws:iam::%s:oidc-provider/oidc.eks.%s.amazonaws.com/id/%s", var.aws_account_id, var.region, var.eks_oidc_provider_id)
+          "Federated" = format("arn:aws:iam::%s:oidc-provider/oidc.eks.%s.amazonaws.com/id/%s", var.aws_account_id, var.region, local.eks_oidc_provider_id)
         },
         "Condition" = {
           "StringEquals" = {
-            format("oidc.eks.%s.amazonaws.com/id/%s:sub", var.region, var.eks_oidc_provider_id) = "system:serviceaccount:kube-system:aws-load-balancer-controller"
+            format("oidc.eks.%s.amazonaws.com/id/%s:sub", var.region, local.eks_oidc_provider_id) = "system:serviceaccount:kube-system:aws-load-balancer-controller"
           }
         }
       },
