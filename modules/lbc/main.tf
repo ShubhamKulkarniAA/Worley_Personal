@@ -1,7 +1,3 @@
-# Fetch the EKS cluster details
-data "aws_eks_cluster" "eks" {
-  name = var.cluster_name
-}
 
 # Fetch OIDC certificate thumbprint dynamically from the EKS OIDC URL
 data "tls_certificate" "eks_cluster" {
@@ -13,6 +9,8 @@ resource "aws_iam_openid_connect_provider" "eks_oidc_provider" {
   url = data.aws_eks_cluster.eks.identity[0].oidc[0].issuer
 
   client_id_list = ["sts.amazonaws.com"]
+
+  # Dynamically set the thumbprint if not provided in the variable
   thumbprint_list = var.oidc_thumbprint != "" ? [var.oidc_thumbprint] : [data.tls_certificate.eks_cluster.certificates[0].sha1_fingerprint]
 }
 
@@ -21,23 +19,23 @@ resource "aws_iam_policy" "lbc_custom_policy" {
   name        = "aws-lbc-custom-policy"
   description = "Custom policy for AWS Load Balancer Controller to manage resources"
   policy      = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
+    "Version" = "2012-10-17",
+    "Statement" = [
       {
-        "Effect": "Allow",
-        "Action": [
+        "Effect"    = "Allow",
+        "Action"    = [
           "iam:CreateServiceLinkedRole"
         ],
-        "Resource": "*",
-        "Condition": {
-          "StringEquals": {
-            "iam:AWSServiceName": "elasticloadbalancing.amazonaws.com"
+        "Resource"  = "*",
+        "Condition" = {
+          "StringEquals" = {
+            "iam:AWSServiceName" = "elasticloadbalancing.amazonaws.com"
           }
         }
       },
       {
-        "Effect": "Allow",
-        "Action": [
+        "Effect"    = "Allow",
+        "Action"    = [
           "ec2:DescribeAccountAttributes",
           "ec2:DescribeAddresses",
           "ec2:DescribeAvailabilityZones",
@@ -62,59 +60,58 @@ resource "aws_iam_policy" "lbc_custom_policy" {
           "elasticloadbalancing:DescribeTrustStores",
           "elasticloadbalancing:DescribeListenerAttributes"
         ],
-        "Resource": "*"
+        "Resource"  = "*"
       },
       {
-        "Effect": "Allow",
-        "Action": [
+        "Effect"    = "Allow",
+        "Action"    = [
           "ec2:AuthorizeSecurityGroupIngress",
           "ec2:RevokeSecurityGroupIngress"
         ],
-        "Resource": "*"
+        "Resource"  = "*"
       },
       {
-        "Effect": "Allow",
-        "Action": [
+        "Effect"    = "Allow",
+        "Action"    = [
           "ec2:CreateSecurityGroup",
           "ec2:CreateTags",
           "ec2:DeleteTags"
         ],
-        "Resource": "*"
+        "Resource"  = "*"
       },
       {
-        "Effect": "Allow",
-        "Action": [
+        "Effect"    = "Allow",
+        "Action"    = [
           "elasticloadbalancing:CreateLoadBalancer",
           "elasticloadbalancing:CreateTargetGroup",
           "elasticloadbalancing:DeleteListener",
           "elasticloadbalancing:CreateRule",
           "elasticloadbalancing:DeleteRule"
         ],
-        "Resource": "*"
+        "Resource"  = "*"
       },
       {
-        "Effect": "Allow",
-        "Action": [
+        "Effect"    = "Allow",
+        "Action"    = [
           "elasticloadbalancing:AddTags",
           "elasticloadbalancing:RemoveTags"
         ],
-        "Resource": "*"
+        "Resource"  = "*"
       },
       {
-        "Effect": "Allow",
-        "Action": [
+        "Effect"    = "Allow",
+        "Action"    = [
           "elasticloadbalancing:RegisterTargets",
           "elasticloadbalancing:DeregisterTargets"
         ],
-        "Resource": "*"
+        "Resource"  = "*"
       },
-
       {
-        "Effect": "Allow",
-        "Action": [
+        "Effect"    = "Allow",
+        "Action"    = [
           "iam:PassRole"
         ],
-        "Resource": "*"
+        "Resource"  = "*"
       }
     ]
   })
@@ -125,27 +122,27 @@ resource "aws_iam_role" "lbc_role" {
   name = "aws-lbc-role"
 
   assume_role_policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
+    "Version" = "2012-10-17",
+    "Statement" = [
       {
-        "Effect": "Allow",
-        "Action": [
+        "Effect"    = "Allow",
+        "Action"    = [
           "sts:AssumeRoleWithWebIdentity"
         ],
-        "Principal": {
-          "Federated": "${aws_iam_openid_connect_provider.eks_oidc_provider.arn}"
+        "Principal" = {
+          "Federated" = format("arn:aws:iam::%s:oidc-provider/oidc.eks.%s.amazonaws.com/id/%s", var.aws_account_id, var.region, var.eks_oidc_provider_id)
         },
-        "Condition": {
-          "StringEquals": {
-            "${data.aws_eks_cluster.eks.identity[0].oidc[0].issuer}:sub": "system:serviceaccount:kube-system:aws-load-balancer-controller"
+        "Condition" = {
+          "StringEquals" = {
+            format("oidc.eks.%s.amazonaws.com/id/%s:sub", var.region, var.eks_oidc_provider_id) = "system:serviceaccount:kube-system:aws-load-balancer-controller"
           }
         }
       },
       {
-        "Effect": "Allow",
-        "Action": "sts:AssumeRole",
-        "Principal": {
-          "Service": "elasticloadbalancing.amazonaws.com"
+        "Effect"    = "Allow",
+        "Action"    = "sts:AssumeRole",
+        "Principal" = {
+          "Service" = "elasticloadbalancing.amazonaws.com"
         }
       }
     ]
