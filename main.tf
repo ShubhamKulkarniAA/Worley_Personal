@@ -61,5 +61,5 @@ resource "aws_iam_role_policy_attachment" "lbc_node_policy" {
   policy_arn = module.lbc.lbc_custom_policy_arn
   role       = module.eks.node_role_arn
 
-  depends_on = [module.eks]  # Ensure this is applied after EKS is created
+  depends_on = [aws_iam_role.eks_node_role]
 }

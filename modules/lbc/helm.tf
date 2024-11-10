@@ -20,8 +20,9 @@ resource "kubernetes_service_account" "aws_load_balancer_controller" {
     }
   }
 
-  depends_on = [aws_iam_role.lbc_role]  # IAM role is created before the service account
+  depends_on = [module.eks.aws_eks_cluster.eks_cluster, aws_iam_role.lbc_role]
 }
+
 
 # Helm Release for AWS Load Balancer Controller
 resource "helm_release" "aws_load_balancer_controller" {
