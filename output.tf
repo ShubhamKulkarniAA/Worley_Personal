@@ -77,5 +77,5 @@ output "eks_node_role_arn" {
 
 #lbc Output
 output "lbc_role_arn" {
-  value = module.aws_lbc.lbc_role_arn
+  value = module.lbc.lbc_role_arn
 }
