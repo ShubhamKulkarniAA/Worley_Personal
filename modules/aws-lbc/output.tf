@@ -18,3 +18,8 @@ output "lbc_role_arn" {
 output "oidc_thumbprint" {
   value = data.tls_certificate.eks_cluster.certificates[0].sha1_fingerprint
 }
+
+# Output the policy ARN
+output "lbc_custom_policy_arn" {
+  value = aws_iam_policy.lbc_custom_policy.arn
+}

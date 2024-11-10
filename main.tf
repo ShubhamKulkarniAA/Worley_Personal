@@ -41,6 +41,7 @@ module "eks" {
   ec2_key_name    = var.ec2_key_name
   instance_type  = var.instance_type
   subnet_ids = [module.vpc.public_subnet1_id, module.vpc.public_subnet2_id]
+  lbc_custom_policy_arn = module.lbc.lbc_custom_policy_arn
 }
 
 module "aws_lbc" {

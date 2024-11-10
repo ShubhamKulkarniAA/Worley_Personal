@@ -47,3 +47,8 @@ variable "subnet_ids" {
   description = "The IDs of the subnets to use for the EKS cluster and node group"
   type        = list(string)
 }
+
+variable "lbc_custom_policy_arn" {
+  description = "ARN of the custom IAM policy for the Load Balancer Controller"
+  type        = string
+}

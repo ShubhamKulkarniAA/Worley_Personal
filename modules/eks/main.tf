@@ -61,9 +61,9 @@ resource "aws_iam_role_policy_attachment" "eks_registry_policy" {
   role       = aws_iam_role.eks_node_role.name
 }
 
-# Attach the custom LBC policy to the EKS Node Role
+# Attach the custom IAM policy to the EKS Node Role
 resource "aws_iam_role_policy_attachment" "eks_node_lbc_policy_attachment" {
-  policy_arn = aws_iam_policy.lbc_custom_policy.arn
+  policy_arn = var.lbc_custom_policy_arn
   role       = aws_iam_role.eks_node_role.name
 }
 
