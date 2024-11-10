@@ -56,12 +56,6 @@ resource "aws_iam_role_policy_attachment" "eks_registry_policy" {
   role       = aws_iam_role.eks_node_role.name
 }
 
-# Attach the custom IAM policy to the EKS Node Role (via var.lbc_custom_policy_arn)
-resource "aws_iam_role_policy_attachment" "eks_node_lbc_policy_attachment" {
-  policy_arn = var.lbc_custom_policy_arn  # Reference the custom policy ARN passed from the root module
-  role       = aws_iam_role.eks_node_role.name
-}
-
 # EKS Cluster definition
 resource "aws_eks_cluster" "eks_cluster" {
   name     = var.cluster_name
@@ -100,6 +94,14 @@ resource "aws_eks_node_group" "eks_node_group" {
   }
 
   depends_on = [aws_eks_cluster.eks_cluster]
+}
+
+# Attach LBC Custom Policy to Node Role after Node Group creation
+resource "aws_iam_role_policy_attachment" "lbc_node_policy" {
+  policy_arn = var.lbc_custom_policy_arn  # Attach the custom LBC policy
+  role       = aws_iam_role.eks_node_role.name
+
+  depends_on = [aws_eks_node_group.eks_node_group]  # Ensure this attaches after the Node Group is created
 }
 
 # Fetch the EKS cluster details after it's created

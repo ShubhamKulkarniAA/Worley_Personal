@@ -99,6 +99,7 @@ variable "ec2_key_name" {
   type        = string
 }
 
+# LBC Variables
 variable "lbc_custom_policy_arn" {
   description = "The ARN of the custom IAM policy for AWS Load Balancer Controller"
   type        = string

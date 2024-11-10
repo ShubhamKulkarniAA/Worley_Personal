@@ -1,4 +1,4 @@
-#VPC Output
+# VPC Output
 output "vpc_id" {
   description = "The VPC ID"
   value = module.vpc.vpc_id
@@ -28,8 +28,7 @@ output "private_subnet2_id" {
   value = module.vpc.private_subnet2_id
 }
 
-
-#ALB Output
+# ALB Output
 output "public_alb_arn" {
   value = module.alb.public_alb_arn
 }
@@ -37,7 +36,6 @@ output "public_alb_arn" {
 output "public_alb_tg_arn" {
   value = module.alb.public_alb_tg_arn
 }
-
 
 # ECR Outputs
 output "repository_uris" {
@@ -60,8 +58,7 @@ output "lifecycle_policy" {
   value = module.ecr.lifecycle_policy
 }
 
-
-#EKS Output
+# EKS Output
 output "eks_cluster_id" {
   description = "The ID of the EKS cluster"
   value       = module.eks.eks_cluster_id
@@ -85,11 +82,7 @@ output "eks_node_role_arn" {
   value = module.eks.node_role_arn
 }
 
-#LBC Output
-output "lbc_role_arn" {
-  value = module.lbc.lbc_role_arn
-}
-
+# LBC Output
 output "lbc_custom_policy_arn" {
   description = "The ARN of the Load Balancer Controller custom policy"
   value       = module.lbc.lbc_custom_policy_arn

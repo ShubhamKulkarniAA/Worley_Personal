@@ -29,6 +29,7 @@ module "ecr" {
   tags                   = var.tags
 }
 
+# EKS Cluster is created first
 module "eks" {
   source = "./modules/eks"
 
@@ -40,17 +41,18 @@ module "eks" {
   ec2_key_name          = var.ec2_key_name
   instance_type         = var.instance_type
   subnet_ids            = [module.vpc.public_subnet1_id, module.vpc.public_subnet2_id]
-  lbc_custom_policy_arn = module.lbc.lbc_custom_policy_arn
   cluster_role_arn      = module.eks.cluster_role_arn
   node_role_arn         = module.eks.node_role_arn
+  lbc_custom_policy_arn = module.lbc.lbc_custom_policy_arn
 }
 
+# LBC (Load Balancer Controller) created after EKS cluster is ready
 module "lbc" {
   source              = "./modules/lbc"
   region              = var.region
-  cluster_name        = module.eks.cluster_name  # Reference eks module output
+  cluster_name        = module.eks.cluster_name
   cluster_role_arn    = module.eks.cluster_role_arn
   node_role_arn       = module.eks.node_role_arn
   vpc_id              = module.vpc.vpc_id
-  depends_on = [module.eks]
+  depends_on          = [module.eks]  # Ensure the EKS cluster is created first
 }

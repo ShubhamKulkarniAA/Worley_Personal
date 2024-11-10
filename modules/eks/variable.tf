@@ -49,6 +49,7 @@ variable "subnet_ids" {
 }
 
 variable "lbc_custom_policy_arn" {
-  description = "ARN of the custom IAM policy for the Load Balancer Controller"
+  description = "The ARN of the custom IAM policy for AWS Load Balancer Controller"
   type        = string
+  default     = ""
 }
