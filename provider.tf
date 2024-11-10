@@ -7,8 +7,8 @@ terraform {
   }
 
   backend "s3" {
-    bucket = "terraform-nc-bucket-test"
-    key    = "terraform-nc-bucket-test/terraform.tfstate"
+    bucket = "worley-nc-test-bucket"
+    key    = "worley-nc-test-bucket/terraform.tfstate"
     region = "ap-south-1"
   }
 }
