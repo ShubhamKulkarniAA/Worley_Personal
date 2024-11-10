@@ -14,6 +14,8 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_REGION: ${{ secrets.AWS_REGION }}
       CLUSTER_NAME: ${{ secrets.CLUSTER_NAME }}
+      REPOSITORY_NAMES: "worley-nc-ui-k8s, worley-nc-api-k8s"
+      TERRAFORM_DIR: "./"
 
     steps:
       - name: Checkout Code
@@ -24,25 +26,50 @@ jobs:
 
       - name: Terraform Init
         run: terraform init -upgrade
-        working-directory: ./ # Point to your main Terraform directory
+        working-directory: ${{ env.TERRAFORM_DIR }}
         if: success()
 
       - name: Terraform Validate
         run: terraform validate
-        working-directory: ./ # Point to your main Terraform directory
+        working-directory: ${{ env.TERRAFORM_DIR }}
         if: success()
 
       - name: Terraform Plan
         run: |
           terraform plan -out=tfplan -input=false || echo "Terraform plan failed; review configuration."
-        working-directory: ./
+        working-directory: ${{ env.TERRAFORM_DIR }}
         if: success()
 
       - name: Terraform Apply
         run: |
           terraform apply -auto-approve tfplan || echo "Terraform apply failed; review state and plan."
-        working-directory: ./ # Point to your main Terraform directory
+        working-directory: ${{ env.TERRAFORM_DIR }}
         if: success()
+
+      - name: Authenticate to ECR
+        if: success()
+        run: |
+          aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin 484907523966.dkr.ecr.ap-southeast-1.amazonaws.com
+
+      - name: Build and Push Docker Images for UI and API
+        if: success()
+        run: |
+
+          IFS=',' read -ra REPOSITORY_NAMES <<< "${{ env.REPOSITORY_NAMES }}"
+
+          for repo in "${REPOSITORY_NAMES[@]}"; do
+          repo=$(echo $repo | xargs)
+          echo "Building and pushing Docker image for $repo repository"
+
+            # Build Docker image
+            docker build -t "${repo}-ecr-repo" .
+
+            # Tag Docker image
+            docker tag "${repo}-ecr-repo:latest" "484907523966.dkr.ecr.ap-southeast-1.amazonaws.com/$repo:latest"
+
+            # Push Docker image to ECR
+            docker push "484907523966.dkr.ecr.ap-southeast-1.amazonaws.com/$repo:latest"
+          done
 
       - name: Update kubeconfig for EKS
         run: |

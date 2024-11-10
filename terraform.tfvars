@@ -16,9 +16,9 @@ region = "ap-southeast-1"
 public_alb_name = "Worley-NC-Public-ALB"
 
 # ECR Variables
-repository_name = "worley-nc-ecr-repo"
-image_tag_mutability = "MUTABLE"
-tags = {
+repository_names        = ["worley-nc-ui-k8s","worley-nc-api-k8s"]
+image_tag_mutability    = "MUTABLE"
+tags                    = {
   Environment = "dev"
 }
 

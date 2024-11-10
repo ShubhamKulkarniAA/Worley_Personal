@@ -24,9 +24,9 @@ module "alb" {
 
 module "ecr" {
   source = "./modules/ecr"
-  repository_name = var.repository_name
-  image_tag_mutability = var.image_tag_mutability
-  tags = var.tags
+  repository_names       = var.repository_names
+  image_tag_mutability   = var.image_tag_mutability
+  tags                   = var.tags
 }
 
 module "eks" {

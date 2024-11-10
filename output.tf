@@ -39,15 +39,25 @@ output "public_alb_tg_arn" {
 }
 
 
-#ECR Output
-output "repository_uri" {
-  description = "URI of the ECR repository"
-  value       = module.ecr.repository_uri
+# ECR Outputs
+output "repository_uris" {
+  description = "The repository URLs of the created ECR repositories"
+  value = module.ecr.repository_urls
 }
 
-output "repository_name" {
-  description = "Name of the ECR repository"
-  value       = module.ecr.repository_name
+output "repository_names" {
+  description = "The names of the created ECR repositories"
+  value = module.ecr.repository_names
+}
+
+output "repository_arn" {
+  description = "The ARNs of the created ECR repositories"
+  value = module.ecr.repository_arn
+}
+
+output "lifecycle_policy" {
+  description = "The lifecycle policies applied to the repositories"
+  value = module.ecr.lifecycle_policy
 }
 
 
