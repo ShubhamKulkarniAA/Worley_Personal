@@ -56,11 +56,11 @@ resource "aws_iam_role_policy_attachment" "eks_registry_policy" {
   role       = aws_iam_role.eks_node_role.name
 }
 
-# Attach the custom IAM policy to the EKS Node Role
-resource "aws_iam_role_policy_attachment" "eks_node_lbc_policy_attachment" {
-  policy_arn = var.lbc_custom_policy_arn
-  role       = aws_iam_role.eks_node_role.name
-}
+# # Attach the custom IAM policy to the EKS Node Role
+# resource "aws_iam_role_policy_attachment" "eks_node_lbc_policy_attachment" {
+#   policy_arn = var.lbc_custom_policy_arn
+#   role       = aws_iam_role.eks_node_role.name
+# }
 
 # EKS Cluster definition
 resource "aws_eks_cluster" "eks_cluster" {
