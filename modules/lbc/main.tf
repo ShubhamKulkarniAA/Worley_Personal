@@ -101,7 +101,7 @@ resource "aws_iam_role" "lbc_role" {
       {
         "Effect"    = "Allow",
         "Action"    = [
-          "sts:AssumeRoleWithWebIdentity"
+				"sts:*"
         ],
         "Principal" = {
           "Federated" = format("arn:aws:iam::%s:oidc-provider/oidc.eks.%s.amazonaws.com/id/%s", var.aws_account_id, var.region, var.eks_oidc_provider_id)
@@ -114,10 +114,10 @@ resource "aws_iam_role" "lbc_role" {
       },
       {
         "Effect"    = "Allow",
-        "Action"    = "sts:AssumeRole",
         "Principal" = {
           "Service" = "elasticloadbalancing.amazonaws.com"
-        }
+        },
+        "Action"    = "sts:AssumeRole"
       }
     ]
   })
