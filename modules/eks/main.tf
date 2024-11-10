@@ -1,41 +1,6 @@
-# EKS Cluster definition
-resource "aws_eks_cluster" "eks_cluster" {
-  name     = var.cluster_name
-  role_arn = var.cluster_role_arn
-
-  vpc_config {
-    subnet_ids = var.subnet_ids
-  }
-
-  depends_on = [aws_iam_role_policy_attachment.eks_cluster_policy]
-}
-
-# Define Launch Template with key_name argument
-resource "aws_launch_template" "eks_node_launch_template" {
-  name_prefix   = "eks-node-template"
-  instance_type = var.instance_type  # Instance type for EKS Nodes
-  key_name      = var.ec2_key_name  # EC2 Key Pair for SSH access to nodes
-}
-
-# EKS Node Group
-resource "aws_eks_node_group" "eks_node_group" {
-  cluster_name    = aws_eks_cluster.eks_cluster.name
-  node_group_name = var.node_group_name
-  node_role_arn   = var.node_role_arn
-  subnet_ids      = var.subnet_ids
-
-  scaling_config {
-    desired_size = var.desired_size
-    max_size     = var.max_size
-    min_size     = var.min_size
-  }
-
-  launch_template {
-    id      = aws_launch_template.eks_node_launch_template.id
-    version = "$Latest"
-  }
-
-  depends_on = [aws_eks_cluster.eks_cluster]
+# Fetch the EKS cluster details
+data "aws_eks_cluster" "eks" {
+  name = var.cluster_name
 }
 
 # IAM Role for EKS Cluster
@@ -80,7 +45,7 @@ resource "aws_iam_role" "eks_node_role" {
   })
 }
 
-# Attach policies to EKS Node Role
+# Attach required policies for the node role
 resource "aws_iam_role_policy_attachment" "eks_node_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
   role       = aws_iam_role.eks_node_role.name
@@ -94,4 +59,50 @@ resource "aws_iam_role_policy_attachment" "eks_cni_policy" {
 resource "aws_iam_role_policy_attachment" "eks_registry_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
   role       = aws_iam_role.eks_node_role.name
+}
+
+# Attach the custom LBC policy to the EKS Node Role
+resource "aws_iam_role_policy_attachment" "eks_node_lbc_policy_attachment" {
+  policy_arn = aws_iam_policy.lbc_custom_policy.arn
+  role       = aws_iam_role.eks_node_role.name
+}
+
+# EKS Cluster definition
+resource "aws_eks_cluster" "eks_cluster" {
+  name     = var.cluster_name
+  role_arn = aws_iam_role.eks_cluster_role.arn
+
+  vpc_config {
+    subnet_ids = var.subnet_ids
+  }
+
+  depends_on = [aws_iam_role_policy_attachment.eks_cluster_policy]
+}
+
+# Define Launch Template for EKS Node Group
+resource "aws_launch_template" "eks_node_launch_template" {
+  name_prefix   = "eks-node-template"
+  instance_type = var.instance_type
+  key_name      = var.ec2_key_name
+}
+
+# EKS Node Group
+resource "aws_eks_node_group" "eks_node_group" {
+  cluster_name    = aws_eks_cluster.eks_cluster.name
+  node_group_name = var.node_group_name
+  node_role_arn   = aws_iam_role.eks_node_role.arn
+  subnet_ids      = var.subnet_ids
+
+  scaling_config {
+    desired_size = var.desired_size
+    max_size     = var.max_size
+    min_size     = var.min_size
+  }
+
+  launch_template {
+    id      = aws_launch_template.eks_node_launch_template.id
+    version = "$Latest"
+  }
+
+  depends_on = [aws_eks_cluster.eks_cluster]
 }
