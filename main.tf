@@ -43,11 +43,16 @@ module "eks" {
   subnet_ids            = [module.vpc.public_subnet1_id, module.vpc.public_subnet2_id]
   cluster_role_arn      = module.eks.cluster_role_arn
   node_role_arn         = module.eks.node_role_arn
+}
 
-  providers = {
-    kubernetes = kubernetes
-    helm       = helm
-  }
+# Fetch the EKS cluster details after it's created
+data "aws_eks_cluster" "eks" {
+  name = module.eks.cluster_name
+}
+
+# Fetch the authentication token for the EKS cluster
+data "aws_eks_cluster_auth" "cluster" {
+  name = module.eks.cluster_name
 }
 
 # Install LBC after EKS Cluster is ready
@@ -62,14 +67,13 @@ module "lbc" {
   providers = {
     kubernetes = kubernetes
     helm       = helm
-    }
-
+  }
 }
 
 # Attach the LBC Custom Policy to the Node Role AFTER Node Group is created
 resource "aws_iam_role_policy_attachment" "lbc_node_policy" {
   policy_arn = module.lbc.lbc_custom_policy_arn
-  role       = "eks-node-role"
+  role       = module.eks.node_role_arn
 
   depends_on = [module.eks]
 }
