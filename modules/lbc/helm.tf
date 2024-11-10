@@ -20,7 +20,6 @@ resource "kubernetes_service_account" "aws_load_balancer_controller" {
     }
   }
 
-  depends_on = [module.eks.aws_eks_cluster.eks_cluster, aws_iam_role.lbc_role]
 }
 
 
