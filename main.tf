@@ -45,15 +45,6 @@ module "eks" {
   node_role_arn         = module.eks.node_role_arn
 }
 
-# Fetch the EKS cluster details after it's created
-data "aws_eks_cluster" "eks" {
-  name = module.eks.cluster_name
-}
-
-# Fetch the authentication token for the EKS cluster
-data "aws_eks_cluster_auth" "cluster" {
-  name = module.eks.cluster_name
-}
 
 # Install LBC after EKS Cluster is ready
 module "lbc" {
