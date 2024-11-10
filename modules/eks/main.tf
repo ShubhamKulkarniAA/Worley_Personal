@@ -1,13 +1,3 @@
-# Fetch the EKS cluster details
-data "aws_eks_cluster" "eks" {
-  name = var.cluster_name
-}
-
-# Fetch the EKS cluster auth details (for Kubernetes provider)
-data "aws_eks_cluster_auth" "cluster" {
-  name = var.cluster_name
-}
-
 # IAM Role for EKS Cluster
 resource "aws_iam_role" "eks_cluster_role" {
   name = "eks-cluster-role"
@@ -110,4 +100,30 @@ resource "aws_eks_node_group" "eks_node_group" {
   }
 
   depends_on = [aws_eks_cluster.eks_cluster]
+}
+
+# Fetch the EKS cluster details after it's created
+data "aws_eks_cluster" "eks" {
+  name = aws_eks_cluster.eks_cluster.name
+}
+
+# Fetch the authentication token for the EKS cluster
+data "aws_eks_cluster_auth" "cluster" {
+  name = aws_eks_cluster.eks_cluster.name
+}
+
+# Kubernetes Provider Configuration using module outputs
+provider "kubernetes" {
+  host                   = data.aws_eks_cluster.eks.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
+  token                  = data.aws_eks_cluster_auth.cluster.token
+}
+
+# Helm Provider Configuration using module outputs
+provider "helm" {
+  kubernetes {
+    host                   = data.aws_eks_cluster.eks.endpoint
+    cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
+    token                  = data.aws_eks_cluster_auth.cluster.token
+  }
 }
