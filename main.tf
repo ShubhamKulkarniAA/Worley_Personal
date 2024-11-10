@@ -45,7 +45,7 @@ module "eks" {
 }
 
 module "aws_lbc" {
-  source       = "./modules/aws-lbc"
+  source       = "./modules/lbc"
   region       = var.region
   cluster_name = module.eks.cluster_name
   vpc_id       = module.vpc.vpc_id

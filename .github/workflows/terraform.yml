@@ -51,7 +51,7 @@ jobs:
 
       - name: Apply ClusterRoleBinding for AWS Load Balancer Controller
         run: |
-          kubectl apply -f modules/aws-lbc/aws-lb-controller-clusterrolebinding.yaml
+          kubectl apply -f modules/lbc/aws-lb-controller-clusterrolebinding.yaml
         if: success()
 
       - name: Apply Kubernetes Resources
