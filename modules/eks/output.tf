@@ -1,39 +1,46 @@
-output "cluster_name" {
-  description = "The name of the EKS cluster"
-  value       = aws_eks_cluster.eks_cluster.name
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.73.0"
+    }
+  }
+
+  backend "s3" {
+    bucket = "worley-nc-test-bucket"
+    key    = "worley-nc-test-bucket/terraform.tfstate"
+    region = "ap-south-1"
+  }
 }
 
-output "cluster_role_arn" {
-  description = "The ARN of the IAM role for the EKS cluster"
-  value       = aws_iam_role.eks_cluster_role.arn
+provider "aws" {
+  region = var.region
 }
 
-output "node_role_arn" {
-  description = "The ARN of the IAM role for the EKS node group"
-  value       = aws_iam_role.eks_node_role.arn
+provider "tls" {}
+
+# Fetch the AWS account ID using data source
+data "aws_caller_identity" "current" {}
+
+# Reference the EKS cluster output from the `module.eks`
+module "eks" {
+  source      = "./modules/eks"  # Adjust to the actual path of your EKS module
+  cluster_name = var.cluster_name
+  subnet_ids  = var.subnet_ids
 }
 
-output "eks_cluster_id" {
-  description = "The ID of the EKS cluster"
-  value       = aws_eks_cluster.eks_cluster.id
+# Kubernetes Provider Configuration using module outputs
+provider "kubernetes" {
+  host                   = module.eks.eks_cluster_endpoint  # Use output from the module
+  cluster_ca_certificate = base64decode(module.eks.eks_cluster_certificate_authority)  # Use output from the module
+  token                  = data.aws_eks_cluster_auth.cluster.token  # Token will still come from data source
 }
 
-output "eks_cluster_endpoint" {
-  description = "The endpoint of the EKS cluster"
-  value       = aws_eks_cluster.eks_cluster.endpoint
-}
-
-output "eks_cluster_certificate_authority" {
-  description = "The certificate authority data for the EKS cluster"
-  value       = aws_eks_cluster.eks_cluster.certificate_authority[0].data
-}
-
-output "eks_node_group_arn" {
-  description = "The ARN of the EKS node group"
-  value       = aws_eks_node_group.eks_node_group.arn
-}
-
-output "oidc_provider_url" {
-  description = "The OIDC provider URL for the EKS cluster"
-  value       = aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
+# Helm Provider Configuration using module outputs
+provider "helm" {
+  kubernetes {
+    host                   = module.eks.eks_cluster_endpoint  # Use output from the module
+    cluster_ca_certificate = base64decode(module.eks.eks_cluster_certificate_authority)  # Use output from the module
+    token                  = data.aws_eks_cluster_auth.cluster.token  # Token will still come from data source
+  }
 }
