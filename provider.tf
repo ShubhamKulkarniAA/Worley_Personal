@@ -22,19 +22,23 @@ provider "tls" {}
 # Fetch the AWS account ID using data source
 data "aws_caller_identity" "current" {}
 
-
 # Kubernetes provider configuration
 provider "kubernetes" {
-  host                   = data.aws_eks_cluster.eks.endpoint
-  cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
+  host                   = module.eks.cluster_endpoint
+  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
   token                  = data.aws_eks_cluster_auth.cluster.token
 }
 
 # Helm provider configuration
 provider "helm" {
   kubernetes {
-    host                   = data.aws_eks_cluster.eks.endpoint
-    cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
+    host                   = module.eks.cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
     token                  = data.aws_eks_cluster_auth.cluster.token
   }
+}
+
+# Fetch the authentication token for the EKS cluster
+data "aws_eks_cluster_auth" "cluster" {
+  name = module.eks.cluster_name
 }
