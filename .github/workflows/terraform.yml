@@ -46,6 +46,8 @@ jobs:
         working-directory: ${{ env.TERRAFORM_DIR }}
         if: success()
 
+        ############################ ECR Module ###############################
+
       - name: Authenticate to ECR
         if: success()
         run: |
@@ -72,6 +74,8 @@ jobs:
           done
         working-directory: ./modules/eks
         shell: /usr/bin/bash -e {0}
+
+        ############################ EKS Module ###############################
 
       - name: Update kubeconfig for EKS
         run: |
