@@ -30,7 +30,6 @@ jobs:
       - name: Terraform Format
         run: terraform fmt -check -diff
         working-directory: ${{ env.TERRAFORM_DIR }}
-        if: success()
 
       # Initialize Terraform
       - name: Terraform Init
