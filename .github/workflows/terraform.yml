@@ -26,11 +26,6 @@ jobs:
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v2
 
-      # Format Terraform files
-      - name: Terraform Format
-        run: terraform fmt
-        working-directory: ${{ env.TERRAFORM_DIR }}
-
       # Initialize Terraform
       - name: Terraform Init
         run: terraform init -upgrade

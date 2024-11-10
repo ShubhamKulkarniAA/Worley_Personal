@@ -38,11 +38,6 @@ provider "helm" {
   }
 }
 
-# Fetch the EKS cluster details after it's created
-data "aws_eks_cluster" "eks" {
-  name = module.eks.cluster_name
-}
-
 # Fetch the authentication token for the EKS cluster
 data "aws_eks_cluster_auth" "cluster" {
   name = module.eks.cluster_name
