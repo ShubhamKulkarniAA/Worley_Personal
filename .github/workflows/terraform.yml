@@ -13,7 +13,7 @@ jobs:
       AWS_REGION: ap-south-1
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      CLUSTER_NAME: ${{ secrets.CLUSTER_NAME }}
+      CLUSTER_NAME: Worley-NC-EKS-Cluster
       REPOSITORY_NAMES: "worley-nc-ui-k8s, worley-nc-api-k8s"
       TERRAFORM_DIR: "./"
 
@@ -90,7 +90,7 @@ jobs:
       - name: Update kubeconfig for EKS
         if: success()
         run: |
-          aws eks update-kubeconfig --name ${{ secrets.CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
+          aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
 
       # Apply ClusterRoleBinding for AWS Load Balancer Controller
       - name: Apply ClusterRoleBinding for AWS Load Balancer Controller
