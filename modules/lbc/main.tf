@@ -107,9 +107,7 @@ resource "aws_iam_role" "lbc_role" {
     "Statement" = [
       {
         "Effect"    = "Allow",
-        "Action"    = [
-          "sts:*"
-        ],
+        "Action"    = "sts:AssumeRoleWithWebIdentity",
         "Principal" = {
           "Federated" = format("arn:aws:iam::%s:oidc-provider/oidc.eks.%s.amazonaws.com/id/%s", data.aws_caller_identity.current.account_id, var.region, local.eks_oidc_provider_id)
         },
