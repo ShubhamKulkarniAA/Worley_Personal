@@ -46,8 +46,10 @@ module "eks" {
 }
 
 module "lbc" {
-  source       = "./modules/lbc"
-  region       = var.region
-  cluster_name = module.eks.cluster_name
-  vpc_id       = module.vpc.vpc_id
+  source              = "./modules/lbc"
+  region              = var.region
+  cluster_name        = module.eks.cluster_name  # Reference eks module output
+  cluster_role_arn    = module.eks.cluster_role_arn
+  node_role_arn       = module.eks.node_role_arn
+  vpc_id              = module.vpc.vpc_id
 }
