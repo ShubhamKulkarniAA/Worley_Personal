@@ -1,8 +1,4 @@
 
-data "aws_eks_cluster_auth" "eks" {
-  name = var.cluster_name
-}
-
 # Kubernetes Service Account for AWS Load Balancer Controller
 resource "kubernetes_service_account" "aws_load_balancer_controller" {
   metadata {
