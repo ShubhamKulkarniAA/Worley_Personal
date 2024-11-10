@@ -1,4 +1,3 @@
-
 # Kubernetes Service Account for AWS Load Balancer Controller
 resource "kubernetes_service_account" "aws_load_balancer_controller" {
   metadata {
@@ -13,9 +12,7 @@ resource "kubernetes_service_account" "aws_load_balancer_controller" {
       "app.kubernetes.io/managed-by" = "Helm"
     }
   }
-
 }
-
 
 # Helm Release for AWS Load Balancer Controller
 resource "helm_release" "aws_load_balancer_controller" {
