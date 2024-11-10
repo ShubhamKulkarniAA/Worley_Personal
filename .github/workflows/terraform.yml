@@ -70,6 +70,8 @@ jobs:
             # Push Docker image to ECR
             docker push "484907523966.dkr.ecr.ap-southeast-1.amazonaws.com/$repo:latest"
           done
+        working-directory: ./modules/eks
+        shell: /usr/bin/bash -e {0}
 
       - name: Update kubeconfig for EKS
         run: |
