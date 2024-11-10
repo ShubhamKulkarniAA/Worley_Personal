@@ -19,10 +19,10 @@ provider "aws" {
 
 provider "tls" {}
 
-# Fetch the AWS account ID using data source
+# Fetch the AWS account ID
 data "aws_caller_identity" "current" {}
 
-# Fetch the EKS cluster details
+
 data "aws_eks_cluster" "cluster" {
   name = module.eks.cluster_name
 }
