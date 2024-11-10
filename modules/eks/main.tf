@@ -75,16 +75,11 @@ resource "aws_launch_template" "eks_node_launch_template" {
   key_name      = var.ec2_key_name
 
   # Define instance metadata options for IMDSv2
-metadata_options {
+  metadata_options {
     http_tokens              = "required"  # Enforce IMDSv2
     http_endpoint            = "enabled"   # Enable metadata endpoint
-    http_put_response_hop_limit = 1
+    http_put_response_hop_limit = 1         # Limit PUT hops
     instance_metadata_tags   = "disabled"  # Disable metadata tags (optional)
-  }
-
-  # Additional instance configuration can go here
-  iam_instance_profile {
-    arn = aws_iam_instance_profile.eks_node_instance_profile.arn
   }
 }
 
@@ -109,9 +104,8 @@ resource "aws_eks_node_group" "eks_node_group" {
   depends_on = [aws_eks_cluster.eks_cluster]
 }
 
-# IAM Instance Profile for EKS Node Role (if not already defined)
+# IAM Instance Profile for EKS Node Role (No longer required directly in the launch template)
 resource "aws_iam_instance_profile" "eks_node_instance_profile" {
   name = "eks-node-instance-profile"
-
   role = aws_iam_role.eks_node_role.name
 }
