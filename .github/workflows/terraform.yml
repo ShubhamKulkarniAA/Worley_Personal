@@ -12,86 +12,96 @@ jobs:
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_REGION: ${{ secrets.AWS_REGION }}
+      AWS_REGION: ap-south-1
       CLUSTER_NAME: ${{ secrets.CLUSTER_NAME }}
       REPOSITORY_NAMES: "worley-nc-ui-k8s, worley-nc-api-k8s"
       TERRAFORM_DIR: "./"
 
     steps:
+      # Checkout code from the repository
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      # Install Terraform
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v2
 
+      # Initialize Terraform
       - name: Terraform Init
         run: terraform init -upgrade
         working-directory: ${{ env.TERRAFORM_DIR }}
         if: success()
 
+      # Validate Terraform configuration
       - name: Terraform Validate
         run: terraform validate
         working-directory: ${{ env.TERRAFORM_DIR }}
         if: success()
 
+      # Generate Terraform Plan
       - name: Terraform Plan
         run: |
           terraform plan -out=tfplan -input=false || echo "Terraform plan failed; review configuration."
         working-directory: ${{ env.TERRAFORM_DIR }}
         if: success()
 
+      # Apply Terraform Plan
       - name: Terraform Apply
         run: |
           terraform apply -auto-approve tfplan || echo "Terraform apply failed; review state and plan."
         working-directory: ${{ env.TERRAFORM_DIR }}
         if: success()
 
-        ############################ ECR Module ###############################
+      ############################ ECR Module ###############################
 
+      # Authenticate to ECR
       - name: Authenticate to ECR
         if: success()
         run: |
-          aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin 484907523966.dkr.ecr.ap-southeast-1.amazonaws.com
+          aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin 484907523966.dkr.ecr.ap-south-1.amazonaws.com
 
+      # Build and Push Docker Images for UI and API
       - name: Build and Push Docker Images for UI and API
         if: success()
         run: |
-
           IFS=',' read -ra REPOSITORY_NAMES <<< "${{ env.REPOSITORY_NAMES }}"
-
           for repo in "${REPOSITORY_NAMES[@]}"; do
-          repo=$(echo $repo | xargs)
-          echo "Building and pushing Docker image for $repo repository"
+            repo=$(echo $repo | xargs)
+            echo "Building and pushing Docker image for $repo repository"
 
             # Build Docker image
             docker build -t "${repo}-ecr-repo" .
 
             # Tag Docker image
-            docker tag "${repo}-ecr-repo:latest" "484907523966.dkr.ecr.ap-southeast-1.amazonaws.com/$repo:latest"
+            docker tag "${repo}-ecr-repo:latest" "484907523966.dkr.ecr.ap-south-1.amazonaws.com/$repo:latest"
 
             # Push Docker image to ECR
-            docker push "484907523966.dkr.ecr.ap-southeast-1.amazonaws.com/$repo:latest"
+            docker push "484907523966.dkr.ecr.ap-south-1.amazonaws.com/$repo:latest"
           done
         working-directory: ./modules/eks
         shell: /usr/bin/bash -e {0}
 
-        ############################ EKS Module ###############################
+      ############################ EKS Module ###############################
 
+      # Update kubeconfig for EKS
       - name: Update kubeconfig for EKS
         run: |
           aws eks update-kubeconfig --name ${{ secrets.CLUSTER_NAME }} --region ${{ secrets.AWS_REGION }}
         if: success()
 
+      # Apply ClusterRoleBinding for AWS Load Balancer Controller
       - name: Apply ClusterRoleBinding for AWS Load Balancer Controller
         run: |
           kubectl apply -f modules/lbc/aws-lb-controller-clusterrolebinding.yaml
         if: success()
 
+      # Apply Kubernetes Resources
       - name: Apply Kubernetes Resources
         run: |
           kubectl apply -f modules/eks/k8s.yml
         if: success()
 
+      # Apply Ingress Resources
       - name: Apply Ingress Resources
         run: |
           kubectl apply -f modules/eks/ingress.yml
