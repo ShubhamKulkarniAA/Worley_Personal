@@ -1,6 +1,6 @@
 
 data "aws_eks_cluster_auth" "eks" {
-  name = module.eks.cluster_name
+  name = var.cluster_name
 }
 
 # Kubernetes Service Account for AWS Load Balancer Controller

@@ -3,7 +3,7 @@ data "aws_caller_identity" "current" {}
 
 # Fetch the EKS cluster details
 data "aws_eks_cluster" "eks" {
-  name = module.eks.cluster_name
+  name = var.cluster_name
 }
 
 
