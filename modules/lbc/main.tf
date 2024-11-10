@@ -299,14 +299,3 @@ resource "aws_iam_role_policy_attachment" "lbc_custom_policy_attachment" {
 
   depends_on = [aws_iam_role.lbc_role]  # Ensure the IAM role is created before attaching the policy
 }
-
-# Kubernetes Service Account for AWS Load Balancer Controller
-resource "kubernetes_service_account" "aws_load_balancer_controller_sa" {
-  metadata {
-    name      = "aws-load-balancer-controller"
-    namespace = "kube-system"
-    annotations = {
-      "eks.amazonaws.com/role-arn" = aws_iam_role.lbc_role.arn
-    }
-  }
-}
