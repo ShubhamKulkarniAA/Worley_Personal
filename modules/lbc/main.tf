@@ -71,7 +71,8 @@ resource "aws_iam_policy" "lbc_custom_policy" {
           "ec2:DescribeSubnets",
           "ec2:DescribeSecurityGroups",
           "ec2:DescribeVpcs",
-          "ec2:DescribeInstances"
+          "ec2:DescribeInstances",
+          "ec2:DescribeAvailabilityZones"
         ],
         "Resource"  = "*"
       },
