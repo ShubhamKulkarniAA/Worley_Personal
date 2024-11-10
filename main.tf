@@ -43,10 +43,9 @@ module "eks" {
   subnet_ids            = [module.vpc.public_subnet1_id, module.vpc.public_subnet2_id]
   cluster_role_arn      = module.eks.cluster_role_arn
   node_role_arn         = module.eks.node_role_arn
-  lbc_custom_policy_arn = module.lbc.lbc_custom_policy_arn
 }
 
-# LBC (Load Balancer Controller) created after EKS cluster is ready
+# Install LBC after EKS Cluster is ready
 module "lbc" {
   source              = "./modules/lbc"
   region              = var.region
@@ -54,5 +53,14 @@ module "lbc" {
   cluster_role_arn    = module.eks.cluster_role_arn
   node_role_arn       = module.eks.node_role_arn
   vpc_id              = module.vpc.vpc_id
-  depends_on          = [module.eks]  # Ensure the EKS cluster is created first
+
+  depends_on = [module.eks]  # Ensure LBC is applied after EKS is created
+}
+
+# Attach the LBC Custom Policy to the Node Role AFTER Node Group is created
+resource "aws_iam_role_policy_attachment" "lbc_node_policy" {
+  policy_arn = module.lbc.lbc_custom_policy_arn
+  role       = module.eks.node_role_arn
+
+  depends_on = [module.eks]  # Ensure this is applied after EKS is created
 }

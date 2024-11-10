@@ -96,13 +96,6 @@ resource "aws_eks_node_group" "eks_node_group" {
   depends_on = [aws_eks_cluster.eks_cluster]
 }
 
-# Attach LBC Custom Policy to Node Role after Node Group creation
-resource "aws_iam_role_policy_attachment" "lbc_node_policy" {
-  policy_arn = var.lbc_custom_policy_arn  # Attach the custom LBC policy
-  role       = aws_iam_role.eks_node_role.name
-
-  depends_on = [aws_eks_node_group.eks_node_group]  # Ensure this attaches after the Node Group is created
-}
 
 # Fetch the EKS cluster details after it's created
 data "aws_eks_cluster" "eks" {

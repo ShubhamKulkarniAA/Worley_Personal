@@ -37,14 +37,20 @@ resource "helm_release" "aws_load_balancer_controller" {
   }
 
   set {
+    name  = "serviceAccount.create"
+    value = "false"
+  }
+
+  set {
     name  = "vpcId"
-    value = var.vpc_id  # Make sure the correct VPC ID is set, as required by the controller
+    value = var.vpc_id
   }
 
   replace = true  # Force Helm to replace existing resources if needed
 
   depends_on = [
-    aws_iam_role_policy_attachment.lbc_custom_policy_attachment,  # Ensure the IAM role policy is attached first
-    kubernetes_service_account.aws_load_balancer_controller         # Ensure the service account is created first
+    module.eks,
+    aws_iam_role_policy_attachment.lbc_custom_policy_attachment,
+    kubernetes_service_account.aws_load_balancer_controller
   ]
 }
