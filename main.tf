@@ -31,17 +31,18 @@ module "ecr" {
 
 module "eks" {
   source = "./modules/eks"
-  cluster_name = var.cluster_name
-  cluster_role_arn = module.eks.cluster_role_arn
-  node_role_arn = module.eks.node_role_arn
-  node_group_name = var.node_group_name
-  desired_size = var.desired_size
-  max_size = var.max_size
-  min_size = var.min_size
-  ec2_key_name    = var.ec2_key_name
-  instance_type  = var.instance_type
-  subnet_ids = [module.vpc.public_subnet1_id, module.vpc.public_subnet2_id]
+
+  cluster_name          = var.cluster_name
+  node_group_name       = var.node_group_name
+  desired_size          = var.desired_size
+  max_size              = var.max_size
+  min_size              = var.min_size
+  ec2_key_name          = var.ec2_key_name
+  instance_type         = var.instance_type
+  subnet_ids            = [module.vpc.public_subnet1_id, module.vpc.public_subnet2_id]
   lbc_custom_policy_arn = module.lbc.lbc_custom_policy_arn
+  cluster_role_arn      = module.eks.cluster_role_arn
+  node_role_arn         = module.eks.node_role_arn
 }
 
 module "lbc" {
