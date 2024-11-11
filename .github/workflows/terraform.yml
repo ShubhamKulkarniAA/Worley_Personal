@@ -27,18 +27,6 @@ jobs:
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v2
 
-        # Initialize Terraform
-      - name: Terraform Init
-        run: terraform init -reconfigure
-        working-directory: ${{ env.TERRAFORM_DIR }}
-        if: success()
-
-      # Destroy existing Terraform-managed infrastructure
-      - name: Terraform Destroy
-        run: terraform destroy -auto-approve
-        working-directory: ${{ env.TERRAFORM_DIR }}
-        if: success()
-
       # Initialize Terraform
       - name: Terraform Init
         run: terraform init -upgrade
