@@ -87,12 +87,21 @@ resource "aws_launch_template" "eks_node_launch_template" {
     http_put_response_hop_limit = 1         # Limit PUT hops
     instance_metadata_tags   = "disabled"  # Disable metadata tags (optional)
   }
-    # Base64 encode the user data
+
+  # Base64 encode the user data
   user_data = base64encode(<<-EOF
+    MIME-Version: 1.0
+    Content-Type: multipart/mixed; boundary="==BOUNDARY=="
+
+    --==BOUNDARY==
+    Content-Type: text/x-shellscript; charset="us-ascii"
+
     #!/bin/bash
     TOKEN=$(curl -X PUT -H "X-aws-ec2-metadata-token-ttl-seconds: 21600" \
     http://169.254.169.254/latest/api/token)
     echo $TOKEN > /etc/metadata_token
+
+    --==BOUNDARY==--
   EOF
   )
 }
@@ -113,7 +122,7 @@ resource "aws_eks_node_group" "eks_node_group" {
   # Specify the instance profile in the launch template
   launch_template {
     id      = aws_launch_template.eks_node_launch_template.id
-    version = "$Latest"
+    version = "$Default"
   }
 
   depends_on = [aws_eks_cluster.eks_cluster]
