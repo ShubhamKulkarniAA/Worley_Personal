@@ -32,13 +32,3 @@ variable "eks_oidc_provider_id" {
   type        = string
   default     = ""  # Set to an empty string, it will be populated in the main.tf
 }
-
-variable "cluster_role_arn" {
-  description = "The ARN of the EKS cluster role."
-  type        = string
-}
-
-variable "node_role_arn" {
-  description = "The ARN of the IAM role to use for the EKS node group"
-  type        = string
-}

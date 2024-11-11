@@ -13,6 +13,7 @@ resource "kubernetes_service_account" "aws_load_balancer_controller" {
       "app.kubernetes.io/managed-by" = "Helm"
     }
   }
+  depends_on = [aws_iam_role.lbc_role]
 }
 
 # Helm Release for AWS Load Balancer Controller
