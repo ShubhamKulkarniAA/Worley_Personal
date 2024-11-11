@@ -16,12 +16,17 @@ jobs:
       CLUSTER_NAME: Worley-NC-EKS-Cluster
       REPOSITORY_NAMES: "worley-nc-ui-k8s, worley-nc-api-k8s"
       TERRAFORM_DIR: "./"
-      KUBE_CONFIG_PATH: ~/.kube/config # Use the default kubeconfig path
+      KUBE_CONFIG_PATH: /home/runner/.kube/config # Set the KUBECONFIG environment variable
 
     steps:
       # Checkout code from the repository
       - name: Checkout Code
         uses: actions/checkout@v3
+
+      # Reinitialize Terraform backend
+      - name: Reinitialize Terraform Backend
+        run: terraform init -reconfigure
+        working-directory: ${{ env.TERRAFORM_DIR }}
 
       # Install Terraform
       - name: Install Terraform
@@ -55,8 +60,10 @@ jobs:
       - name: Update kubeconfig for EKS
         if: success()
         run: |
+          mkdir -p /home/runner/.kube
           aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
-          export KUBE_CONFIG_PATH=${{ env.KUBE_CONFIG_PATH }}
+          export KUBECONFIG=/home/runner/.kube/config
+          ls -l /home/runner/.kube/config  # Verify the kubeconfig file exists
 
       ############################ ECR Module ###############################
 
