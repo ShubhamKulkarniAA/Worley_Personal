@@ -30,7 +30,12 @@ jobs:
       # Remove Terraform state for EKS resources
       - name: Remove Terraform State for EKS
         run: |
-          terraform state list | grep eks | xargs -n1 terraform state rm
+          eks_resources=$(terraform state list | grep eks)
+          if [ -n "$eks_resources" ]; then
+            echo "$eks_resources" | xargs -n1 terraform state rm
+          else
+            echo "No EKS resources found in state."
+          fi
         working-directory: ${{ env.TERRAFORM_DIR }}
 
       # Install Terraform
