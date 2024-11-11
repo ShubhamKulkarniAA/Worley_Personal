@@ -33,13 +33,6 @@ jobs:
           terraform state list | grep eks | xargs -n1 terraform state rm
         working-directory: ${{ env.TERRAFORM_DIR }}
 
-      # Remove Terraform cache
-      - name: Remove Terraform Cache
-        run: |
-          rm -rf ${{ env.TERRAFORM_DIR }}/.terraform
-          rm -f ${{ env.TERRAFORM_DIR }}/terraform.tfstate
-          rm -f ${{ env.TERRAFORM_DIR }}/terraform.tfstate.backup
-
       # Install Terraform
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v2
