@@ -56,8 +56,9 @@ resource "aws_iam_role_policy_attachment" "eks_registry_policy" {
   role       = aws_iam_role.eks_node_role.name
 }
 
-resource "aws_iam_role_policy_attachment" "eks_elb_policy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerServiceRole"
+# Attach ElasticLoadBalancingReadOnly policy to the node role
+resource "aws_iam_role_policy_attachment" "eks_elb_read_only_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/ElasticLoadBalancingReadOnly"
   role       = aws_iam_role.eks_node_role.name
 }
 
