@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      AWS_REGION: ap-south-1
+      AWS_REGION: ap-southeast-1
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       CLUSTER_NAME: Worley-NC-EKS-Cluster
@@ -56,7 +56,7 @@ jobs:
       - name: Authenticate to ECR
         if: success()
         run: |
-          aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin 484907523966.dkr.ecr.ap-south-1.amazonaws.com
+          aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin 484907523966.dkr.ecr.ap-southeast-1.amazonaws.com
 
       # Build and Push Docker Images for UI and API
       - name: Build and Push Docker Images for UI and API
@@ -71,10 +71,10 @@ jobs:
             docker build -t "${repo}-ecr-repo" .
 
             # Tag Docker image
-            docker tag "${repo}-ecr-repo:latest" "484907523966.dkr.ecr.ap-south-1.amazonaws.com/$repo:latest"
+            docker tag "${repo}-ecr-repo:latest" "484907523966.dkr.ecr.ap-southeast-1.amazonaws.com/$repo:latest"
 
             # Push Docker image to ECR
-            docker push "484907523966.dkr.ecr.ap-south-1.amazonaws.com/$repo:latest"
+            docker push "484907523966.dkr.ecr.ap-southeast-1.amazonaws.com/$repo:latest"
           done
         working-directory: ./modules/eks
         shell: /usr/bin/bash -e {0}

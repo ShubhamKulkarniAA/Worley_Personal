@@ -109,24 +109,3 @@ resource "aws_iam_instance_profile" "eks_node_instance_profile" {
   name = "eks-node-instance-profile"
   role = aws_iam_role.eks_node_role.name
 }
-
-# Fetch the authentication token for the EKS cluster (Ensure EKS cluster exists before this)
-data "aws_eks_cluster_auth" "cluster" {
-  name = module.eks.cluster_name
-}
-
-# Kubernetes provider configuration
-provider "kubernetes" {
-  host                   = module.eks.eks_cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks.eks_cluster_certificate_authority)
-  token                  = data.aws_eks_cluster_auth.cluster.token
-}
-
-# Helm provider configuration
-provider "helm" {
-  kubernetes {
-    host                   = module.eks.eks_cluster_endpoint
-    cluster_ca_certificate = base64decode(module.eks.eks_cluster_certificate_authority)
-    token                  = data.aws_eks_cluster_auth.cluster.token
-  }
-}
