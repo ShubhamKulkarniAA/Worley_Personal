@@ -97,6 +97,14 @@ resource "aws_launch_template" "eks_node_launch_template" {
     http_put_response_hop_limit = 1         # Limit PUT hops
     instance_metadata_tags   = "disabled"  # Disable metadata tags (optional)
   }
+
+  # Instance Metadata Service v2 (IMDSv2) settings
+  user_data = <<-EOF
+    #!/bin/bash
+    TOKEN=$(curl -X PUT -H "X-aws-ec2-metadata-token-ttl-seconds: 21600" \
+    http://169.254.169.254/latest/api/token)
+    echo $TOKEN > /etc/metadata_token
+  EOF
 }
 
 # EKS Node Group

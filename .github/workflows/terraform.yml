@@ -10,9 +10,9 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      AWS_REGION: ${{secrets.AWS_REGION}}
-      AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
-      AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+      AWS_REGION: ap-south-1
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       CLUSTER_NAME: Worley-NC-EKS-Cluster
       REPOSITORY_NAMES: "worley-nc-ui-k8s, worley-nc-api-k8s"
       TERRAFORM_DIR: "./"
@@ -38,24 +38,36 @@ jobs:
         working-directory: ${{ env.TERRAFORM_DIR }}
         if: success()
 
+      # Generate Terraform Plan for EKS
+      - name: Terraform Plan for EKS
+        run: terraform plan -out=tfplan-eks -input=false
+        working-directory: ${{ env.TERRAFORM_DIR }}
+        if: success()
+
+      # Apply Terraform Plan for EKS
+      - name: Terraform Apply for EKS
+        run: terraform apply -auto-approve tfplan-eks
+        working-directory: ${{ env.TERRAFORM_DIR }}
+        if: success()
+
+      # Update kubeconfig for EKS
+      - name: Update kubeconfig for EKS
+        if: success()
+        run: |
+          mkdir -p $HOME/.kube
+          aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
+
       # Generate Terraform Plan for remaining resources
-      - name: Terraform Plan
+      - name: Terraform Plan for remaining resources
         run: terraform plan -out=tfplan -input=false
         working-directory: ${{ env.TERRAFORM_DIR }}
         if: success()
 
       # Apply Terraform Plan for remaining resources
-      - name: Terraform Apply
+      - name: Terraform Apply for remaining resources
         run: terraform apply -auto-approve tfplan
         working-directory: ${{ env.TERRAFORM_DIR }}
-        if:
-          success()
-
-          # Update kubeconfig for EKS
-      - name: Update kubeconfig for EKS
         if: success()
-        run: |
-          aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
 
       ############################ ECR Module ###############################
 
