@@ -52,6 +52,11 @@ resource "helm_release" "aws_load_balancer_controller" {
     value = var.vpc_id
   }
 
+  set {
+  name  = "webhookBindPort"
+  value = "9443"  # Default port for the webhook
+}
+
   replace = true  # Force Helm to replace existing resources
 
   depends_on = [
