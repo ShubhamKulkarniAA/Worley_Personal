@@ -38,14 +38,33 @@ jobs:
         working-directory: ${{ env.TERRAFORM_DIR }}
         if: success()
 
-      # Generate Terraform Plan
-      - name: Terraform Plan
+      # Generate Terraform Plan for EKS
+      - name: Terraform Plan for EKS
+        run: terraform plan -target=module.eks -out=tfplan-eks -input=false
+        working-directory: ${{ env.TERRAFORM_DIR }}
+        if: success()
+
+      # Apply Terraform Plan for EKS
+      - name: Terraform Apply for EKS
+        run: terraform apply -auto-approve tfplan-eks
+        working-directory: ${{ env.TERRAFORM_DIR }}
+        if: success()
+
+      # Update kubeconfig for EKS
+      - name: Update kubeconfig for EKS
+        if: success()
+        run: |
+          mkdir -p $HOME/.kube
+          aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
+
+      # Generate Terraform Plan for remaining resources
+      - name: Terraform Plan for remaining resources
         run: terraform plan -out=tfplan -input=false
         working-directory: ${{ env.TERRAFORM_DIR }}
         if: success()
 
-      # Apply Terraform Plan
-      - name: Terraform Apply
+      # Apply Terraform Plan for remaining resources
+      - name: Terraform Apply for remaining resources
         run: terraform apply -auto-approve tfplan
         working-directory: ${{ env.TERRAFORM_DIR }}
         if: success()
@@ -80,12 +99,6 @@ jobs:
         shell: /usr/bin/bash -e {0}
 
       ############################ EKS Module ###############################
-
-      # Update kubeconfig for EKS
-      - name: Update kubeconfig for EKS
-        if: success()
-        run: |
-          aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
 
       # Apply ClusterRoleBinding for AWS Load Balancer Controller
       - name: Apply ClusterRoleBinding for AWS Load Balancer Controller
