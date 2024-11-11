@@ -1,3 +1,8 @@
+# Fetch the EKS cluster details
+data "aws_eks_cluster" "eks" {
+  name = var.cluster_name
+}
+
 # IAM Role for EKS Cluster
 resource "aws_iam_role" "eks_cluster_role" {
   name = "eks-cluster-role"
@@ -56,11 +61,6 @@ resource "aws_iam_role_policy_attachment" "eks_registry_policy" {
   role       = aws_iam_role.eks_node_role.name
 }
 
-# IAM Instance Profile for EKS Node Role (required for EC2 instances to assume IAM role)
-resource "aws_iam_instance_profile" "eks_node_instance_profile" {
-  name = "eks-node-instance-profile"
-  role = aws_iam_role.eks_node_role.name
-}
 
 # EKS Cluster definition
 resource "aws_eks_cluster" "eks_cluster" {
@@ -74,20 +74,11 @@ resource "aws_eks_cluster" "eks_cluster" {
   depends_on = [aws_iam_role_policy_attachment.eks_cluster_policy]
 }
 
-# Define Launch Template for EKS Node Group with IMDSv2 settings
+# Define Launch Template for EKS Node Group
 resource "aws_launch_template" "eks_node_launch_template" {
   name_prefix   = "eks-node-template"
   instance_type = var.instance_type
   key_name      = var.ec2_key_name
-
-  # Define instance metadata options for IMDSv2
-  metadata_options {
-    http_tokens              = "required"  # Enforce IMDSv2
-    http_endpoint            = "enabled"   # Enable metadata endpoint
-    http_put_response_hop_limit = 1         # Limit PUT hops
-    instance_metadata_tags   = "disabled"  # Disable metadata tags (optional)
-  }
-
 }
 
 # EKS Node Group
@@ -101,6 +92,11 @@ resource "aws_eks_node_group" "eks_node_group" {
     desired_size = var.desired_size
     max_size     = var.max_size
     min_size     = var.min_size
+  }
+
+  launch_template {
+    id      = aws_launch_template.eks_node_launch_template.id
+    version = "$Latest"
   }
 
   depends_on = [aws_eks_cluster.eks_cluster]
