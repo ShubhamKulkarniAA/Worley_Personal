@@ -56,16 +56,6 @@ resource "aws_iam_role_policy_attachment" "eks_registry_policy" {
   role       = aws_iam_role.eks_node_role.name
 }
 
-resource "aws_iam_role_policy_attachment" "ec2_full_access_policy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
-  role       = aws_iam_role.eks_node_role.name
-}
-
-resource "aws_iam_role_policy_attachment" "elb_full_access_policy" {
-  policy_arn = "arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess"
-  role       = aws_iam_role.eks_node_role.name
-}
-
 # IAM Instance Profile for EKS Node Role (required for EC2 instances to assume IAM role)
 resource "aws_iam_instance_profile" "eks_node_instance_profile" {
   name = "eks-node-instance-profile"
@@ -97,8 +87,7 @@ resource "aws_launch_template" "eks_node_launch_template" {
     http_put_response_hop_limit = 1         # Limit PUT hops
     instance_metadata_tags   = "disabled"  # Disable metadata tags (optional)
   }
-
-  # Base64 encode the user data
+    # Base64 encode the user data
   user_data = base64encode(<<-EOF
     #!/bin/bash
     TOKEN=$(curl -X PUT -H "X-aws-ec2-metadata-token-ttl-seconds: 21600" \
@@ -124,7 +113,7 @@ resource "aws_eks_node_group" "eks_node_group" {
   # Specify the instance profile in the launch template
   launch_template {
     id      = aws_launch_template.eks_node_launch_template.id
-    version = "$Default"
+    version = "$Latest"
   }
 
   depends_on = [aws_eks_cluster.eks_cluster]
