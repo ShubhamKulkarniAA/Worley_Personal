@@ -24,7 +24,7 @@ resource "aws_iam_role_policy_attachment" "eks_cluster_policy" {
 
 # IAM Role for EKS Node
 resource "aws_iam_role" "eks_node_role" {
-  name = trimspace("eks-node-role")
+  name = "eks-node-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -54,6 +54,12 @@ resource "aws_iam_role_policy_attachment" "eks_cni_policy" {
 resource "aws_iam_role_policy_attachment" "eks_registry_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
   role       = aws_iam_role.eks_node_role.name
+}
+
+# IAM Instance Profile for EKS Node Role
+resource "aws_iam_instance_profile" "eks_node_instance_profile" {
+  name = "eks-node-instance-profile"
+  role = aws_iam_role.eks_node_role.name
 }
 
 # EKS Cluster definition
@@ -98,14 +104,8 @@ resource "aws_eks_node_group" "eks_node_group" {
 
   launch_template {
     id      = aws_launch_template.eks_node_launch_template.id
-    version = "$Latest"
+    version = "$Default"
   }
 
   depends_on = [aws_eks_cluster.eks_cluster]
-}
-
-# IAM Instance Profile for EKS Node Role (No longer required directly in the launch template)
-resource "aws_iam_instance_profile" "eks_node_instance_profile" {
-  name = "eks-node-instance-profile"
-  role = aws_iam_role.eks_node_role.name
 }
