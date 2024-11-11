@@ -40,7 +40,7 @@ jobs:
 
       # Generate Terraform Plan for EKS
       - name: Terraform Plan for EKS
-        run: terraform plan -target=module.eks -out=tfplan-eks -input=false
+        run: terraform plan -out=tfplan-eks -input=false
         working-directory: ${{ env.TERRAFORM_DIR }}
         if: success()
 

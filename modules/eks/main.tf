@@ -56,7 +56,7 @@ resource "aws_iam_role_policy_attachment" "eks_registry_policy" {
   role       = aws_iam_role.eks_node_role.name
 }
 
-# IAM Instance Profile for EKS Node Role
+# IAM Instance Profile for EKS Node Role (required for EC2 instances to assume IAM role)
 resource "aws_iam_instance_profile" "eks_node_instance_profile" {
   name = "eks-node-instance-profile"
   role = aws_iam_role.eks_node_role.name
@@ -102,9 +102,10 @@ resource "aws_eks_node_group" "eks_node_group" {
     min_size     = var.min_size
   }
 
+  # Specify the instance profile in the launch template
   launch_template {
     id      = aws_launch_template.eks_node_launch_template.id
-    version = "$Default"
+    version = "$Latest"
   }
 
   depends_on = [aws_eks_cluster.eks_cluster]
