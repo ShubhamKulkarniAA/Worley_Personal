@@ -134,8 +134,7 @@ resource "aws_iam_policy" "lbc_custom_policy" {
           }
         }
       },
-      # Add additional policy statements here as required
-    ]
+      ]
   })
 }
 
