@@ -22,10 +22,16 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      # Reinitialize Terraform backend
+      - name: Reinitialize Terraform Backend
+        run: terraform init -reconfigure
+        working-directory: ${{ env.TERRAFORM_DIR }}
+
       # Remove Terraform state for EKS resources
       - name: Remove Terraform State for EKS
         run: |
           terraform state list | grep eks | xargs -n1 terraform state rm
+        working-directory: ${{ env.TERRAFORM_DIR }}
 
       # Remove Terraform cache
       - name: Remove Terraform Cache
