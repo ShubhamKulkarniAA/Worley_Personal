@@ -52,3 +52,10 @@ module "lbc" {
   cluster_name        = module.eks.cluster_name
   vpc_id              = module.vpc.vpc_id
 }
+
+#Attach the LBC Custom Policy to the Node Role
+
+resource "aws_iam_role_policy_attachment" "lbc_node_policy" {
+  policy_arn = module.lbc.lbc_custom_policy_arn
+  role       = module.eks.eks_node_role
+}
