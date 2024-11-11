@@ -46,14 +46,14 @@ module "eks" {
 
 # Install LBC after EKS Cluster is ready
 
-module "lbc" {
-  source              = "./modules/lbc"
-  region              = var.region
-  cluster_name        = module.eks.cluster_name
-  cluster_role_arn    = module.eks.cluster_role_arn
-  node_role_arn       = module.eks.node_role_arn
-  vpc_id              = module.vpc.vpc_id
+# module "lbc" {
+#   source              = "./modules/lbc"
+#   region              = var.region
+#   cluster_name        = module.eks.cluster_name
+#   cluster_role_arn    = module.eks.cluster_role_arn
+#   node_role_arn       = module.eks.node_role_arn
+#   vpc_id              = module.vpc.vpc_id
 
-depends_on = [ module.eks ]
+# depends_on = [ module.eks ]
 
-}
+# }
