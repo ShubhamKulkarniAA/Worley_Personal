@@ -98,10 +98,3 @@ variable "ec2_key_name" {
   description = "The name of the EC2 key pair used for SSH access"
   type        = string
 }
-
-# LBC Variables
-variable "lbc_custom_policy_arn" {
-  description = "The ARN of the custom IAM policy for AWS Load Balancer Controller"
-  type        = string
-  default     = ""
-}

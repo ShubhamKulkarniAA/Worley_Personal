@@ -81,9 +81,3 @@ output "eks_cluster_role_arn" {
 output "eks_node_role_arn" {
   value = module.eks.node_role_arn
 }
-
-# LBC Output
-output "lbc_custom_policy_arn" {
-  description = "The ARN of the Load Balancer Controller custom policy"
-  value       = module.lbc.lbc_custom_policy_arn
-}

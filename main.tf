@@ -47,8 +47,8 @@ module "eks" {
 # Install LBC after EKS Cluster is ready
 
 module "lbc" {
-  source       = "./modules/lbc"
-  region       = var.region
-  cluster_name = module.eks.cluster_name
-  vpc_id       = module.vpc.vpc_id
+  source              = "./modules/lbc"
+  region              = var.region
+  cluster_name        = module.eks.cluster_name
+  vpc_id              = module.vpc.vpc_id
 }
