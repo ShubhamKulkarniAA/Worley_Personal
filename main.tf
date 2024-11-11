@@ -29,7 +29,6 @@ module "ecr" {
   tags                   = var.tags
 }
 
-# EKS Cluster is created first
 module "eks" {
   source = "./modules/eks"
 
@@ -46,6 +45,7 @@ module "eks" {
 }
 
 # Install LBC after EKS Cluster is ready
+
 module "lbc" {
   source              = "./modules/lbc"
   region              = var.region
