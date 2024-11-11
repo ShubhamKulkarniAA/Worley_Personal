@@ -55,13 +55,12 @@ module "lbc" {
   node_role_arn       = module.eks.node_role_arn
   vpc_id              = module.vpc.vpc_id
 
-  depends_on = [module.eks]
 }
 
 # Attach the LBC Custom Policy to the Node Role AFTER Node Group is created
-resource "aws_iam_role_policy_attachment" "lbc_node_policy" {
-  policy_arn = module.lbc.lbc_custom_policy_arn
-  role       = module.eks.eks_node_role
+# resource "aws_iam_role_policy_attachment" "lbc_node_policy" {
+#   policy_arn = module.lbc.lbc_custom_policy_arn
+#   role       = module.eks.eks_node_role
 
-  depends_on = [module.eks]
-}
+#   depends_on = [module.eks, module.lbc]
+#}

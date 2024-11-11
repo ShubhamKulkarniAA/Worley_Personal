@@ -56,6 +56,16 @@ resource "aws_iam_role_policy_attachment" "eks_registry_policy" {
   role       = aws_iam_role.eks_node_role.name
 }
 
+resource "aws_iam_role_policy_attachment" "ec2_full_access_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2FullAccess"
+  role       = aws_iam_role.eks_node_role.name
+}
+
+resource "aws_iam_role_policy_attachment" "elb_full_access_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/ElasticLoadBalancingFullAccess"
+  role       = aws_iam_role.eks_node_role.name
+}
+
 # IAM Instance Profile for EKS Node Role (required for EC2 instances to assume IAM role)
 resource "aws_iam_instance_profile" "eks_node_instance_profile" {
   name = "eks-node-instance-profile"
