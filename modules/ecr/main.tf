@@ -27,9 +27,6 @@ resource "aws_ecr_repository" "ecr_repo" {
   image_tag_mutability = var.image_tag_mutability
   tags                = var.tags
 
-  lifecycle {
-    prevent_destroy = true
-  }
 }
 
 # Create ECR lifecycle policies for each repository
