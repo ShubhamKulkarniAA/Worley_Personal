@@ -38,15 +38,15 @@ jobs:
         working-directory: ${{ env.TERRAFORM_DIR }}
         if: success()
 
-      # Generate Terraform Plan for EKS
-      - name: Terraform Plan for EKS
-        run: terraform plan -target=module.eks -out=tfplan-eks -input=false
+      # Generate Terraform Plan for remaining resources
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan -input=false
         working-directory: ${{ env.TERRAFORM_DIR }}
         if: success()
 
-      # Apply Terraform Plan for EKS
-      - name: Terraform Apply for EKS
-        run: terraform apply -auto-approve tfplan-eks
+      # Apply Terraform Plan for remaining resources
+      - name: Terraform Apply
+        run: terraform apply -auto-approve tfplan
         working-directory: ${{ env.TERRAFORM_DIR }}
         if: success()
 
@@ -54,20 +54,7 @@ jobs:
       - name: Update kubeconfig for EKS
         if: success()
         run: |
-          mkdir -p $HOME/.kube
           aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
-
-      # Generate Terraform Plan for remaining resources
-      - name: Terraform Plan for remaining resources
-        run: terraform plan -out=tfplan -input=false
-        working-directory: ${{ env.TERRAFORM_DIR }}
-        if: success()
-
-      # Apply Terraform Plan for remaining resources
-      - name: Terraform Apply for remaining resources
-        run: terraform apply -auto-approve tfplan
-        working-directory: ${{ env.TERRAFORM_DIR }}
-        if: success()
 
       ############################ ECR Module ###############################
 

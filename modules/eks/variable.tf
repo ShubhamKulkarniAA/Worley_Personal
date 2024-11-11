@@ -21,7 +21,10 @@ variable "node_role_arn" {
 variable "ec2_key_name" {
   description = "Name of the EC2 key pair"
   type        = string
-  default     = "EKS"
+  default     = ""
+}
+
+variable "security_group_ids" {
 }
 
 variable "instance_type" {

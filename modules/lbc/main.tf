@@ -3,10 +3,12 @@ data "aws_caller_identity" "current" {}
 
 # Fetch the EKS cluster details
 data "aws_eks_cluster" "eks" {
+  depends_on = [ aws_eks_cluster.eks_cluster ]
   name = var.cluster_name
 }
 
 data "aws_eks_cluster_auth" "eks" {
+  depends_on = [ aws_eks_cluster.eks_cluster ]
   name = var.cluster_name
 }
 
