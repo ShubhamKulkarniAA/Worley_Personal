@@ -24,9 +24,6 @@ variable "ec2_key_name" {
   default     = ""
 }
 
-variable "security_group_ids" {
-}
-
 variable "instance_type" {
   description = "The EC2 instance type"
   type        = string
