@@ -27,6 +27,12 @@ jobs:
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v2
 
+      # Destroy existing Terraform-managed infrastructure
+      - name: Terraform Destroy
+        run: terraform destroy -auto-approve
+        working-directory: ${{ env.TERRAFORM_DIR }}
+        if: success()
+
       # Initialize Terraform
       - name: Terraform Init
         run: terraform init -upgrade
@@ -55,10 +61,7 @@ jobs:
       - name: Update kubeconfig for EKS
         if: success()
         run: |
-          mkdir -p /home/runner/.kube
           aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
-          export KUBECONFIG=/home/runner/.kube/config
-          ls -l /home/runner/.kube/config  # Verify the kubeconfig file exists
 
       ############################ ECR Module ###############################
 

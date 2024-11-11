@@ -56,6 +56,11 @@ resource "aws_iam_role_policy_attachment" "eks_registry_policy" {
   role       = aws_iam_role.eks_node_role.name
 }
 
+resource "aws_iam_role_policy_attachment" "eks_elb_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerServiceRole"
+  role       = aws_iam_role.eks_node_role.name
+}
+
 # EKS Cluster definition
 resource "aws_eks_cluster" "eks_cluster" {
   name     = var.cluster_name
