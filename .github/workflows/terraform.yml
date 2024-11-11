@@ -16,37 +16,12 @@ jobs:
       CLUSTER_NAME: Worley-NC-EKS-Cluster
       REPOSITORY_NAMES: "worley-nc-ui-k8s, worley-nc-api-k8s"
       TERRAFORM_DIR: "./"
+      KUBE_CONFIG_PATH: ~/.kube/config # Use the default kubeconfig path
 
     steps:
       # Checkout code from the repository
       - name: Checkout Code
         uses: actions/checkout@v3
-
-      # Reinitialize Terraform backend
-      - name: Reinitialize Terraform Backend
-        run: terraform init -reconfigure
-        working-directory: ${{ env.TERRAFORM_DIR }}
-
-      # Remove Terraform state for EKS resources
-      - name: Remove Terraform State for EKS
-        run: |
-          set +e
-          eks_resources=$(terraform state list | grep eks)
-          if [ -n "$eks_resources" ]; then
-            echo "$eks_resources" | xargs -n1 terraform state rm
-          else
-            echo "No EKS resources found in state."
-          fi
-          set -e
-        working-directory: ${{ env.TERRAFORM_DIR }}
-        shell: /usr/bin/bash -e {0}
-
-      # Remove Terraform cache
-      - name: Remove Terraform Cache
-        run: |
-          rm -rf ${{ env.TERRAFORM_DIR }}/.terraform
-          rm -f ${{ env.TERRAFORM_DIR }}/terraform.tfstate
-          rm -f ${{ env.TERRAFORM_DIR }}/terraform.tfstate.backup
 
       # Install Terraform
       - name: Install Terraform
@@ -81,6 +56,7 @@ jobs:
         if: success()
         run: |
           aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
+          export KUBE_CONFIG_PATH=${{ env.KUBE_CONFIG_PATH }}
 
       ############################ ECR Module ###############################
 
