@@ -25,6 +25,12 @@ resource "helm_release" "aws_load_balancer_controller" {
   force_update = true  # Ensures that Helm forces an update if the version changes
 
   # Setting values for the Helm chart
+
+  set {
+    name = "replicaCount"
+    value = 1
+  }
+
   set {
     name  = "clusterName"
     value = var.cluster_name
@@ -45,7 +51,7 @@ resource "helm_release" "aws_load_balancer_controller" {
     value = var.vpc_id
   }
 
-  replace = true  # Force Helm to replace existing resources if needed
+  replace = true  # Force Helm to replace existing resources
 
   depends_on = [
     aws_iam_role_policy_attachment.lbc_custom_policy_attachment,
