@@ -111,27 +111,45 @@ resource "null_resource" "fetch_imds_token" {
   provisioner "local-exec" {
     command = <<EOT
 #!/bin/bash
+
 # Request an IMDSv2 token
-TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" \
+echo "Requesting IMDSv2 token..."
+TOKEN=$(curl -s -X PUT "http://169.254.169.254/latest/api/token" \
 -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
 
+if [ -z "$TOKEN" ]; then
+  echo "Error: Failed to fetch IMDSv2 token"
+  exit 1
+fi
+echo "Token fetched successfully: $TOKEN"
+
 # Fetch Instance ID and Region using the token
-INSTANCE_ID=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" \
+echo "Fetching Instance ID..."
+INSTANCE_ID=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" \
   http://169.254.169.254/latest/meta-data/instance-id)
 
-REGION=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" \
+if [ -z "$INSTANCE_ID" ]; then
+  echo "Error: Failed to fetch Instance ID"
+  exit 1
+fi
+echo "Instance ID: $INSTANCE_ID"
+
+echo "Fetching Region..."
+REGION=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" \
   http://169.254.169.254/latest/meta-data/placement/region)
 
-# Output results
-echo "Instance ID: $INSTANCE_ID"
+if [ -z "$REGION" ]; then
+  echo "Error: Failed to fetch Region"
+  exit 1
+fi
 echo "Region: $REGION"
 
 # Verify AWS STS identity (optional, to confirm permissions)
+echo "Verifying AWS STS identity..."
 aws sts get-caller-identity --region $REGION
 EOT
   }
 
-  depends_on = [
-    aws_eks_cluster.eks_cluster
-  ]
+  depends_on = [aws_eks_cluster.eks_cluster]
+
 }
