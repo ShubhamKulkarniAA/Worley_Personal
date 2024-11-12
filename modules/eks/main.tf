@@ -51,6 +51,11 @@ resource "aws_iam_role_policy_attachment" "eks_cni_policy" {
   role       = aws_iam_role.eks_node_role.name
 }
 
+# Additional policy for accessing ECR (if using ECR for images)
+resource "aws_iam_role_policy_attachment" "eks_ecr_policy" {
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+  role       = aws_iam_role.eks_node_role.name
+}
 
 # EKS Cluster definition
 resource "aws_eks_cluster" "eks_cluster" {
@@ -59,9 +64,12 @@ resource "aws_eks_cluster" "eks_cluster" {
 
   vpc_config {
     subnet_ids = var.subnet_ids
+    security_group_ids = var.security_group_ids  # Optional if you want to specify security groups
   }
 
-  depends_on = [aws_iam_role_policy_attachment.eks_cluster_policy]
+  depends_on = [
+    aws_iam_role_policy_attachment.eks_cluster_policy
+  ]
 }
 
 # Define Launch Template for EKS Node Group
@@ -94,4 +102,15 @@ resource "aws_eks_node_group" "eks_node_group" {
   }
 
   depends_on = [aws_eks_cluster.eks_cluster]
+}
+
+# Automating kubeconfig setup using a local-exec provisioner
+resource "null_resource" "kubeconfig" {
+  provisioner "local-exec" {
+    command = "aws eks --region ${var.region} update-kubeconfig --name ${aws_eks_cluster.eks_cluster.name}"
+  }
+
+  depends_on = [
+    aws_eks_cluster.eks_cluster
+  ]
 }

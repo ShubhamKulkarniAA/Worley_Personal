@@ -3,6 +3,10 @@ variable "cluster_name" {
   type        = string
 }
 
+variable "region" {
+  type = string
+}
+
 variable "cluster_role_arn" {
   description = "The ARN of the IAM role to use for the EKS cluster"
   type        = string
