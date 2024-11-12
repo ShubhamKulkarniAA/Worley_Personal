@@ -44,7 +44,7 @@ module "eks" {
   node_role_arn         = module.eks.node_role_arn
 }
 
-# Install LBC after EKS Cluster is ready
+############################ Apply in 2nd Part ###############################
 
 module "lbc" {
   source              = "./modules/lbc"
