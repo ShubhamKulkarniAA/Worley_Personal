@@ -153,7 +153,7 @@ if curl --silent --max-time 2 http://169.254.169.254/latest/api/token; then
 else
   echo "Not running inside EC2 instance. Skipping IMDSv2 metadata fetch."
   # Set default region or handle AWS region in another way, e.g., from environment variable
-  REGION=${AWS_REGION:-"us-west-2"}  # Use AWS_REGION from environment or fallback to default region
+  REGION=$$AWS_REGION
   INSTANCE_ID=$(aws ec2 describe-instances --query "Reservations[0].Instances[0].InstanceId" --output text)
   echo "Using region: $REGION and Instance ID: $INSTANCE_ID"
 fi
