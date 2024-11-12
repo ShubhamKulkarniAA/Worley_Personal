@@ -77,8 +77,10 @@ resource "aws_launch_template" "eks_node_launch_template" {
   instance_type = var.instance_type
   key_name      = var.ec2_key_name
 
-  metadata_options {
-    http_tokens = "optional"
+metadata_options {
+    http_tokens               = "required"
+    http_put_response_hop_limit = 2
+    http_endpoint             = "enabled"
   }
 }
 
@@ -107,6 +109,25 @@ resource "aws_eks_node_group" "eks_node_group" {
 resource "null_resource" "kubeconfig" {
   provisioner "local-exec" {
     command = "aws eks --region ${var.region} update-kubeconfig --name ${aws_eks_cluster.eks_cluster.name}"
+  }
+
+  depends_on = [
+    aws_eks_cluster.eks_cluster
+  ]
+}
+
+# Fetch IMDS token and authenticate using a local-exec provisioner
+resource "null_resource" "fetch_imds_token" {
+  provisioner "local-exec" {
+    command = <<EOT
+#!/bin/bash
+TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+INSTANCE_ID=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" -v http://169.254.169.254/latest/meta-data/instance-id)
+REGION=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" -v http://169.254.169.254/latest/meta-data/placement/region)
+echo "Instance ID: $INSTANCE_ID"
+echo "Region: $REGION"
+aws sts get-caller-identity
+EOT
   }
 
   depends_on = [
