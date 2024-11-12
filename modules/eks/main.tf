@@ -105,9 +105,9 @@ resource "aws_eks_node_group" "eks_node_group" {
   depends_on = [aws_eks_cluster.eks_cluster]
 }
 
-# Fetch IMDS token and authenticate using a local-exec provisioner (only for EC2)
+# Fetch IMDS token and authenticate using a local-exec provisioner
 resource "null_resource" "fetch_imds_token" {
-  count = var.is_github_actions == false ? 1 : 0  # Only run for non-Github Actions environments
+  count = var.is_github_actions == true ? 0 : 1  # Only run for non-Github Actions environments
 
   provisioner "local-exec" {
     command = <<EOT

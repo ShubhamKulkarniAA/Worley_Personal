@@ -48,3 +48,9 @@ variable "subnet_ids" {
   description = "The IDs of the subnets to use for the EKS cluster and node group"
   type        = list(string)
 }
+
+variable "is_github_actions" {
+  description = "A flag to check if the pipeline is running in GitHub Actions"
+  type        = bool
+  default     = false
+}

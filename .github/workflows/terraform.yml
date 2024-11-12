@@ -93,7 +93,7 @@ jobs:
         run: |
           kubectl apply -f modules/lbc/aws-lb-controller-clusterrolebinding.yaml
 
-      ####################### Apply it in 2nd Part #############################
+      ####################### Apply in 2nd Part ######################
 
     #   # Apply Kubernetes Resources
     #   - name: Apply Kubernetes Resources
@@ -101,6 +101,7 @@ jobs:
     #     run: |
     #       kubectl apply -f modules/eks/k8s.yml
 
+    #   # Apply Ingress Resources
     #   - name: Apply Ingress Resources
     #     if: success()
     #     run: |
