@@ -77,7 +77,7 @@ resource "aws_launch_template" "eks_node_launch_template" {
   instance_type = var.instance_type
   key_name      = var.ec2_key_name
 
-metadata_options {
+  metadata_options {
     http_tokens               = "required"
     http_put_response_hop_limit = 2
     http_endpoint             = "enabled"
@@ -105,7 +105,6 @@ resource "aws_eks_node_group" "eks_node_group" {
   depends_on = [aws_eks_cluster.eks_cluster]
 }
 
-
 # Fetch IMDS token and authenticate using a local-exec provisioner
 resource "null_resource" "fetch_imds_token" {
   provisioner "local-exec" {
@@ -115,7 +114,8 @@ resource "null_resource" "fetch_imds_token" {
 # Request an IMDSv2 token
 echo "Requesting IMDSv2 token..."
 TOKEN=$(curl -s -X PUT "http://169.254.169.254/latest/api/token" \
--H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+-H "X-aws-ec2-metadata-token-ttl-seconds: 21600" \
+-H "Content-Length: 0")
 
 if [ -z "$TOKEN" ]; then
   echo "Error: Failed to fetch IMDSv2 token"
@@ -151,5 +151,4 @@ EOT
   }
 
   depends_on = [aws_eks_cluster.eks_cluster]
-
 }
