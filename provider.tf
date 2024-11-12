@@ -22,14 +22,15 @@ data "aws_caller_identity" "current" {}
 
 ########################## Apply in 2nd Part ###############################
 
-# Fetch the EKS cluster details
-# data "aws_eks_cluster" "cluster" {
-#   name = var.cluster_name
-# }
+#Fetch the EKS cluster details
 
-# data "aws_eks_cluster_auth" "cluster" {
-#   name = var.cluster_name
-# }
+data "aws_eks_cluster" "cluster" {
+  name = var.cluster_name
+}
+
+data "aws_eks_cluster_auth" "cluster" {
+  name = var.cluster_name
+}
 
 provider "kubernetes" {
   host                   = data.aws_eks_cluster.cluster.endpoint
