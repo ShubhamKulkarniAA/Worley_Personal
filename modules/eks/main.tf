@@ -111,12 +111,23 @@ resource "null_resource" "fetch_imds_token" {
   provisioner "local-exec" {
     command = <<EOT
 #!/bin/bash
-TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
-INSTANCE_ID=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" -v http://169.254.169.254/latest/meta-data/instance-id)
-REGION=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" -v http://169.254.169.254/latest/meta-data/placement/region)
+# Request an IMDSv2 token
+TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" \
+-H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+
+# Fetch Instance ID and Region using the token
+INSTANCE_ID=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" \
+  http://169.254.169.254/latest/meta-data/instance-id)
+
+REGION=$(curl -H "X-aws-ec2-metadata-token: $TOKEN" \
+  http://169.254.169.254/latest/meta-data/placement/region)
+
+# Output results
 echo "Instance ID: $INSTANCE_ID"
 echo "Region: $REGION"
-aws sts get-caller-identity
+
+# Verify AWS STS identity (optional, to confirm permissions)
+aws sts get-caller-identity --region $REGION
 EOT
   }
 
