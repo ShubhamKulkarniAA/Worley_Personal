@@ -2,10 +2,6 @@ output "vpc_id" {
   value = aws_vpc.vpc.id
 }
 
-output "region" {
-  value = var.region  # Assuming your VPC module accepts a region variable
-}
-
 output "vpc_arn" {
   value = aws_vpc.vpc.arn
 }

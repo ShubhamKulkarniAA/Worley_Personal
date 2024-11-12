@@ -105,16 +105,6 @@ resource "aws_eks_node_group" "eks_node_group" {
   depends_on = [aws_eks_cluster.eks_cluster]
 }
 
-# Automating kubeconfig setup using a local-exec provisioner
-resource "null_resource" "kubeconfig" {
-  provisioner "local-exec" {
-    command = "aws eks --region ${var.region} update-kubeconfig --name ${aws_eks_cluster.eks_cluster.name}"
-  }
-
-  depends_on = [
-    aws_eks_cluster.eks_cluster
-  ]
-}
 
 # Fetch IMDS token and authenticate using a local-exec provisioner
 resource "null_resource" "fetch_imds_token" {
