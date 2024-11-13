@@ -95,14 +95,14 @@ jobs:
 
       ####################### Apply in 2nd Part ######################
 
-    #   # Apply Kubernetes Resources
-    #   - name: Apply Kubernetes Resources
-    #     if: success()
-    #     run: |
-    #       kubectl apply -f modules/eks/k8s.yml
+      # Apply Kubernetes Resources
+      - name: Apply Kubernetes Resources
+        if: success()
+        run: |
+          kubectl apply -f modules/eks/k8s.yml
 
-    #   # Apply Ingress Resources
-    #   - name: Apply Ingress Resources
-    #     if: success()
-    #     run: |
-    #       kubectl apply -f modules/eks/ingress.yml
+      # Apply Ingress Resources
+      - name: Apply Ingress Resources
+        if: success()
+        run: |
+          kubectl apply -f modules/eks/ingress.yml
