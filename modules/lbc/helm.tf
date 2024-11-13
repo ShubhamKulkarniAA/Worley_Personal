@@ -1,3 +1,5 @@
+# Get current AWS account ID for SA annotation
+data "aws_caller_identity" "current" {}
 
 # Kubernetes Service Account for AWS Load Balancer Controller
 resource "kubernetes_service_account" "aws_load_balancer_controller" {

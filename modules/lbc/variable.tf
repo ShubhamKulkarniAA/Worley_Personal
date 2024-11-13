@@ -1,7 +1,15 @@
-# variables.tf
-
 variable "cluster_name" {
-  description = "The name of the EKS cluster"
+  description = "The name of the EKS cluster."
+  type        = string
+}
+
+variable "eks_oidc_provider_url" {
+  description = "The OIDC provider URL for the EKS cluster."
+  type        = string
+}
+
+variable "eks_oidc_provider_arn" {
+  description = "The ARN of the OIDC provider for the EKS cluster."
   type        = string
 }
 
@@ -13,22 +21,4 @@ variable "region" {
 variable "vpc_id" {
   description = "The VPC ID"
   type        = string
-}
-
-variable "oidc_thumbprint" {
-  description = "The thumbprint of the OIDC certificate"
-  type        = string
-  default     = ""  # Empty default to allow dynamic fetching or manual input
-}
-
-variable "aws_account_id" {
-  description = "The AWS account ID where the EKS cluster is located"
-  type        = string
-  default     = ""  # Set to an empty string, it will be populated in the main.tf
-}
-
-variable "eks_oidc_provider_id" {
-  description = "The OIDC provider ID for the EKS cluster"
-  type        = string
-  default     = ""  # Set to an empty string, it will be populated in the main.tf
 }
