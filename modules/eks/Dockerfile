@@ -1,4 +1,3 @@
-
 FROM node:14
 
 WORKDIR /usr/src/app
@@ -6,8 +5,9 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install
 
-COPY . .
+# Copy service.js from the eks module directory
+COPY service.js .
 
 EXPOSE 5000
 
-CMD ["node", "server.js"]
+CMD ["node", "service.js"]

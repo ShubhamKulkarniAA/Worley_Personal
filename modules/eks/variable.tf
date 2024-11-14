@@ -18,6 +18,17 @@ variable "node_role_arn" {
   type        = string
 }
 
+variable "ec2_key_name" {
+  description = "Name of the EC2 key pair"
+  type        = string
+  default     = ""
+}
+
+variable "instance_type" {
+  description = "The EC2 instance type"
+  type        = string
+}
+
 variable "desired_size" {
   description = "The desired number of nodes in the EKS node group"
   type        = number
@@ -36,4 +47,10 @@ variable "min_size" {
 variable "subnet_ids" {
   description = "The IDs of the subnets to use for the EKS cluster and node group"
   type        = list(string)
+}
+
+variable "is_github_actions" {
+  description = "A flag to check if the pipeline is running in GitHub Actions"
+  type        = bool
+  default     = false
 }

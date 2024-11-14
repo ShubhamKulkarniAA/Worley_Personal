@@ -47,24 +47,24 @@ variable "region" {
   type = string
 }
 
-
 # ALB Variables
 variable "public_alb_name" {
   type = string
 }
 
 # ECR Variables
-variable "repository_name" {
-  type = string
+variable "repository_names" {
+  type        = list(string)
+  description = "List of ECR repository names to be created (e.g., UI and API)"
 }
 
 variable "image_tag_mutability" {
-  type = string
+  type    = string
   default = "MUTABLE"
 }
 
 variable "tags" {
-  type = map(string)
+  type    = map(string)
   default = {}
 }
 
@@ -87,4 +87,14 @@ variable "max_size" {
 
 variable "min_size" {
   type = number
+}
+
+variable "instance_type" {
+  description = "The EC2 instance type for EKS worker nodes"
+  type        = string
+}
+
+variable "ec2_key_name" {
+  description = "The name of the EC2 key pair used for SSH access"
+  type        = string
 }
