@@ -5,11 +5,11 @@ data "aws_iam_policy_document" "aws_load_balancer_controller_assume_role_policy"
     effect  = "Allow"
     condition {
       test     = "StringEquals"
-      variable = "${replace(module.eks.oidc_provider_url, "https://", "")}:sub"
-      values   = ["system:serviceaccount:kube-system:aws-load-balancer-controller-${module.eks.cluster_name}"]
+      variable = "${replace(var.oidc_provider_url, "https://", "")}:sub"
+      values   = ["system:serviceaccount:kube-system:aws-load-balancer-controller-${var.cluster_name}"]
     }
     principals {
-      identifiers = [module.eks.oidc_provider_arn]
+      identifiers = [var.oidc_provider_arn]
       type        = "Federated"
     }
   }
@@ -18,11 +18,11 @@ data "aws_iam_policy_document" "aws_load_balancer_controller_assume_role_policy"
 # IAM Role for the Load Balancer Controller
 resource "aws_iam_role" "lbc_role" {
   assume_role_policy = data.aws_iam_policy_document.aws_load_balancer_controller_assume_role_policy.json
-  name               = "aws-load-balancer-controller-${module.eks.cluster_name}"
+  name               = "aws-load-balancer-controller-${var.cluster_name}"
 }
 
 resource "aws_iam_policy" "lbc_custom_policy" {
-  name = "AWSLoadBalancerController-${module.eks.cluster_name}"
+  name = "AWSLoadBalancerController-${var.cluster_name}"
   policy = jsonencode({
     "Version" : "2012-10-17",
     "Statement" : [
