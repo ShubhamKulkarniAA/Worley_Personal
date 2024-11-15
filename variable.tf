@@ -100,12 +100,12 @@ variable "ec2_key_name" {
 }
 
 # LBC Variables
-variable "eks_oidc_provider_url" {
-  description = "The OIDC provider URL for the EKS cluster"
-  type        = string
-}
+# variable "oidc_provider_url" {
+#   description = "The OIDC provider URL for the EKS cluster"
+#   type        = string
+# }
 
-variable "eks_oidc_provider_arn" {
-  description = "The ARN of the OIDC provider for the EKS cluster"
-  type        = string
-}
+# variable "oidc_provider_arn" {
+#   description = "The ARN of the OIDC provider for the EKS cluster"
+#   type        = string
+# }
