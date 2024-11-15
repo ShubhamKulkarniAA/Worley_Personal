@@ -52,5 +52,5 @@ module "lbc" {
 
 resource "aws_iam_role_policy_attachment" "lbc_node_policy" {
   policy_arn = module.lbc.lbc_custom_policy_arn
-  role       = module.eks.node_role_arn
+  role       = module.eks.eks_node_role.name
 }
