@@ -59,25 +59,25 @@ output "lifecycle_policy" {
 }
 
 # EKS Output
-output "eks_cluster_id" {
-  description = "The ID of the EKS cluster"
-  value       = module.eks.eks_cluster_id
-}
+# output "eks_cluster_id" {
+#   description = "The ID of the EKS cluster"
+#   value       = module.eks.eks_cluster_id
+# }
 
-output "eks_cluster_endpoint" {
-  description = "The endpoint of the EKS cluster"
-  value       = module.eks.eks_cluster_endpoint
-}
+# output "eks_cluster_endpoint" {
+#   description = "The endpoint of the EKS cluster"
+#   value       = module.eks.eks_cluster_endpoint
+# }
 
-output "eks_cluster_certificate_authority" {
-  description = "The certificate authority data for the EKS cluster"
-  value       = module.eks.eks_cluster_certificate_authority
-}
+# output "eks_cluster_certificate_authority" {
+#   description = "The certificate authority data for the EKS cluster"
+#   value       = module.eks.eks_cluster_certificate_authority
+# }
 
-output "eks_cluster_role_arn" {
-  value = module.eks.cluster_role_arn
-}
+# output "eks_cluster_role_arn" {
+#   value = module.eks.cluster_role_arn
+# }
 
-output "eks_node_role_arn" {
-  value = module.eks.node_role_arn
-}
+# output "eks_node_role_arn" {
+#   value = module.eks.node_role_arn
+# }
