@@ -14,13 +14,13 @@ module "vpc" {
   availability_zone2       = var.availability_zone2
 }
 
-module "alb" {
-  source          = "./modules/alb"
-  public_alb_name = var.public_alb_name
-  vpc_id          = module.vpc.vpc_id
-  public_subnet1  = module.vpc.public_subnet1_id
-  public_subnet2  = module.vpc.public_subnet2_id
-}
+# module "alb" {
+#   source          = "./modules/alb"
+#   public_alb_name = var.public_alb_name
+#   vpc_id          = module.vpc.vpc_id
+#   public_subnet1  = module.vpc.public_subnet1_id
+#   public_subnet2  = module.vpc.public_subnet2_id
+# }
 
 module "ecr" {
   source               = "./modules/ecr"
