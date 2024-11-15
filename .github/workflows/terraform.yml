@@ -9,77 +9,100 @@ jobs:
   TerraformAWS:
     runs-on: ubuntu-latest
 
+    env:
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      CLUSTER_NAME: Worley-NC-EKS-Cluster
+      REPOSITORY_NAMES: "worley-nc-ui-k8s, worley-nc-api-k8s"
+      TERRAFORM_DIR: "./"
+
     steps:
+      # Checkout code from the repository
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      # Install Terraform
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: "1.5.0"
 
-      - name: Remove Terraform Cache
-        run: rm -rf .terraform
-
+      # Initialize Terraform
       - name: Terraform Init
         run: terraform init -upgrade
-        working-directory: ./ # Point to your main Terraform directory
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ap-south-1
+        working-directory: ${{ env.TERRAFORM_DIR }}
+        if: success()
 
+      # Validate Terraform configuration
       - name: Terraform Validate
         run: terraform validate
-        working-directory: ./ # Point to your main Terraform directory
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ap-south-1
+        working-directory: ${{ env.TERRAFORM_DIR }}
+        if: success()
 
+      # Generate Terraform Plan for remaining resources
       - name: Terraform Plan
-        run: |
-          terraform plan -out=tfplan -input=false || echo "Terraform plan failed; review configuration."
-        working-directory: ./
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ap-south-1
+        run: terraform plan -out=tfplan -input=false
+        working-directory: ${{ env.TERRAFORM_DIR }}
+        if: success()
 
+      # Apply Terraform Plan for remaining resources
       - name: Terraform Apply
-        if: github.event_name == 'push'
-        run: |
-          terraform apply -auto-approve tfplan || echo "Terraform apply failed; review state and plan."
-        working-directory: ./ # Point to your main Terraform directory
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ap-south-1
+        run: terraform apply -auto-approve tfplan
+        working-directory: ${{ env.TERRAFORM_DIR }}
+        if: success()
 
-      - name: Build Docker Image
-        if: github.event_name == 'push'
+      # Update kubeconfig for EKS
+      - name: Update kubeconfig for EKS
+        if: success()
         run: |
-          docker build -t worley-nc-ecr-repo .
-        working-directory: ./modules/eks
+          aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
 
-      - name: Authenticate to ECR
-        if: github.event_name == 'push'
-        run: |
-          aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 484907523966.dkr.ecr.ap-south-1.amazonaws.com
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      ############################ ECR Module ###############################
 
-      - name: Tag Docker Image
-        if: github.event_name == 'push'
-        run: |
-          docker tag worley-nc-ecr-repo:latest 484907523966.dkr.ecr.ap-south-1.amazonaws.com/worley-nc-ecr-repo:latest
-        working-directory: ./
+      # Authenticate to ECR
+    #   - name: Authenticate to ECR
+    #     if: success()
+    #     run: |
+    #       aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin 484907523966.dkr.ecr.ap-south-1.amazonaws.com
 
-      - name: Push Docker Image to ECR
-        if: github.event_name == 'push'
-        run: |
-          docker push 484907523966.dkr.ecr.ap-south-1.amazonaws.com/worley-nc-ecr-repo:latest
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    #   # Build and Push Docker Images for UI and API
+    #   - name: Build and Push Docker Images for UI and API
+    #     if: success()
+    #     run: |
+    #       IFS=',' read -ra REPOSITORY_NAMES <<< "${{ env.REPOSITORY_NAMES }}"
+    #       for repo in "${REPOSITORY_NAMES[@]}"; do
+    #         repo=$(echo $repo | xargs)
+    #         echo "Building and pushing Docker image for $repo repository"
+
+    #         # Build Docker image
+    #         docker build -t "${repo}-ecr-repo" .
+
+    #         # Tag Docker image
+    #         docker tag "${repo}-ecr-repo:latest" "484907523966.dkr.ecr.ap-south-1.amazonaws.com/$repo:latest"
+
+    #         # Push Docker image to ECR
+    #         docker push "484907523966.dkr.ecr.ap-south-1.amazonaws.com/$repo:latest"
+    #       done
+    #     working-directory: ./modules/eks
+    #     shell: /usr/bin/bash -e {0}
+
+    #   ############################ LBC Module ###############################
+
+    #   # Apply ClusterRoleBinding for AWS Load Balancer Controller
+    #   - name: Apply ClusterRoleBinding for AWS Load Balancer Controller
+    #     if: success()
+    #     run: |
+    #       kubectl apply -f modules/lbc/aws-lb-controller-clusterrolebinding.yaml
+
+    #   ####################### Apply in 2nd Part ######################
+
+    #  # Apply Kubernetes Resources
+    #   - name: Apply Kubernetes Resources
+    #     if: success()
+    #     run: |
+    #       kubectl apply -f modules/eks/k8s.yml
+
+    #   # Apply Ingress Resources
+    #   - name: Apply Ingress Resources
+    #     if: success()
+    #     run: |
+    #       kubectl apply -f modules/eks/ingress.yml

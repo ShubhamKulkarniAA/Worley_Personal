@@ -1,84 +1,60 @@
 ---
+# Simple Deployment for a static Hello World page
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend
+  name: hello-world
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: frontend
+      app: hello-world
   template:
     metadata:
       labels:
-        app: frontend
+        app: hello-world
     spec:
       containers:
-        - name: frontend
-          image: nginx:alpine
+        - name: hello-world
+          image: nginx:alpine # Using Nginx to serve static files
           ports:
             - containerPort: 80
-          command: ["/bin/sh", "-c"]
-          args:
-            - echo 'HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nHello World!' | nc -l -p 80
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: backend
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: backend
-  template:
-    metadata:
-      labels:
-        app: backend
-    spec:
-      containers:
-        - name: backend
-          image: 484907523966.dkr.ecr.ap-south-1.amazonaws.com/demo-worley-nc-ui:latest
-          ports:
-            - containerPort: 5000
+          volumeMounts:
+            - name: html-content
+              mountPath: /usr/share/nginx/html
+      volumes:
+        - name: html-content
+          configMap:
+            name: hello-world-html
 
 ---
+# ConfigMap to store the static HTML content
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hello-world-html
+data:
+  index.html: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Hello World</title>
+    </head>
+    <body>
+        <h1>Hello, World!</h1>
+        <p>Welcome to my simple static page served from Kubernetes!</p>
+    </body>
+    </html>
+
+---
+# Service for the Hello World application
 apiVersion: v1
 kind: Service
 metadata:
-  name: backend
+  name: hello-world
 spec:
-  type: ClusterIP
   ports:
-    - port: 5000
-      targetPort: 5000
+    - port: 80
+      targetPort: 80
   selector:
-    app: backend
-
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: frontend-ingress
-  annotations:
-    kubernetes.io/ingress.class: alb
-    alb.ingress.kubernetes.io/scheme: internet-facing
-spec:
-  ingressClassName: alb
-  rules:
-    - http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: frontend
-                port:
-                  number: 80
-          - path: /api/message
-            pathType: Prefix
-            backend:
-              service:
-                name: backend
-                port:
-                  number: 5000
+    app: hello-world

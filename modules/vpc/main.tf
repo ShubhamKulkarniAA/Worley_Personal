@@ -12,6 +12,7 @@ resource "aws_internet_gateway" "internet_gateway" {
   }
 }
 
+# Public Subnet 1
 resource "aws_subnet" "public_subnet1" {
   vpc_id = aws_vpc.vpc.id
   cidr_block = var.public_subnet1_cidr
@@ -19,9 +20,11 @@ resource "aws_subnet" "public_subnet1" {
   map_public_ip_on_launch = true
   tags = {
     Name = "${var.vpc_name}-PublicSubnet1"
+    "kubernetes.io/role/elb" = "1"  # Tag for ALB/NLB discovery
   }
 }
 
+# Public Subnet 2
 resource "aws_subnet" "public_subnet2" {
   vpc_id = aws_vpc.vpc.id
   cidr_block = var.public_subnet2_cidr
@@ -29,9 +32,11 @@ resource "aws_subnet" "public_subnet2" {
   map_public_ip_on_launch = true
   tags = {
     Name = "${var.vpc_name}-PublicSubnet2"
+    "kubernetes.io/role/elb" = "1"  # Tag for ALB/NLB discovery
   }
 }
 
+# Private Subnet 1
 resource "aws_subnet" "private_subnet1" {
   vpc_id = aws_vpc.vpc.id
   cidr_block = var.private_subnet1_cidr
@@ -41,6 +46,7 @@ resource "aws_subnet" "private_subnet1" {
   }
 }
 
+# Private Subnet 2
 resource "aws_subnet" "private_subnet2" {
   vpc_id = aws_vpc.vpc.id
   cidr_block = var.private_subnet2_cidr
@@ -50,6 +56,7 @@ resource "aws_subnet" "private_subnet2" {
   }
 }
 
+# RDS Private Subnet 1
 resource "aws_subnet" "rds_private_subnet1" {
   vpc_id = aws_vpc.vpc.id
   cidr_block = var.private_rds_subnet1_cidr
@@ -59,6 +66,7 @@ resource "aws_subnet" "rds_private_subnet1" {
   }
 }
 
+# RDS Private Subnet 2
 resource "aws_subnet" "rds_private_subnet2" {
   vpc_id = aws_vpc.vpc.id
   cidr_block = var.private_rds_subnet2_cidr

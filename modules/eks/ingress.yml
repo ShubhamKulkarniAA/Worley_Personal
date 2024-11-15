@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata:
+  name: alb
+spec:
+  controller: ingress.k8s.aws/alb
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ui-ingress
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing # Expose ALB publicly
+    alb.ingress.kubernetes.io/target-type: ip # Target type to route to pods
+spec:
+  ingressClassName: alb # Referencing the IngressClass 'alb'
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: hello-world
+                port:
+                  number: 80

@@ -1,7 +1,7 @@
-#VPC Variable
+# VPC Output
 output "vpc_id" {
   description = "The VPC ID"
-  value = module.vpc.vpc_id
+  value       = module.vpc.vpc_id
 }
 
 output "rds_private_subnet1_id" {
@@ -28,8 +28,7 @@ output "private_subnet2_id" {
   value = module.vpc.private_subnet2_id
 }
 
-
-#ALB Variable
+# ALB Output
 output "public_alb_arn" {
   value = module.alb.public_alb_arn
 }
@@ -38,20 +37,28 @@ output "public_alb_tg_arn" {
   value = module.alb.public_alb_tg_arn
 }
 
-
-#ECR Variable
-output "repository_uri" {
-  description = "URI of the ECR repository"
-  value       = module.ecr.repository_uri
+# ECR Outputs
+output "repository_uris" {
+  description = "The repository URLs of the created ECR repositories"
+  value       = module.ecr.repository_urls
 }
 
-output "repository_name" {
-  description = "Name of the ECR repository"
-  value       = module.ecr.repository_name
+output "repository_names" {
+  description = "The names of the created ECR repositories"
+  value       = module.ecr.repository_names
 }
 
+output "repository_arn" {
+  description = "The ARNs of the created ECR repositories"
+  value       = module.ecr.repository_arn
+}
 
-#EKS Variable
+output "lifecycle_policy" {
+  description = "The lifecycle policies applied to the repositories"
+  value       = module.ecr.lifecycle_policy
+}
+
+# EKS Output
 output "eks_cluster_id" {
   description = "The ID of the EKS cluster"
   value       = module.eks.eks_cluster_id
