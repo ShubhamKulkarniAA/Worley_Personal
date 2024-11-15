@@ -1,7 +1,7 @@
 # VPC Variables
 vpc_cidr                 = "10.0.0.0/16"
-vpc_name                 = "Worley-NC"
-internet_gateway_name    = "Worley-NC-IG"
+vpc_name                 = "Worley-NC-VPC"
+internet_gateway_name    = "Worley-NC-IGW"
 public_subnet1_cidr      = "10.0.1.0/24"
 public_subnet2_cidr      = "10.0.2.0/24"
 private_subnet1_cidr     = "10.0.3.0/24"
