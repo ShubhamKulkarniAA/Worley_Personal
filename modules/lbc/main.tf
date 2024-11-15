@@ -43,8 +43,7 @@ resource "aws_iam_policy" "lbc_custom_policy" {
           "elasticloadbalancing:DeleteLoadBalancer",
           "elasticloadbalancing:ModifyTargetGroup",
           "elasticloadbalancing:DeleteTargetGroup",
-          "elasticloadbalancing:DescribeTags",
-          "ec2:DescribeAvailabilityZones"
+          "elasticloadbalancing:DescribeTags"
         ],
         "Resource" : "*"
       },
@@ -58,7 +57,9 @@ resource "aws_iam_policy" "lbc_custom_policy" {
           "ec2:DescribeNetworkInterfaces",
           "ec2:CreateSecurityGroup",
           "ec2:AuthorizeSecurityGroupIngress",
-          "ec2:RevokeSecurityGroupIngress"
+          "ec2:RevokeSecurityGroupIngress",
+          "ec2:DescribeAvailabilityZones",
+          "ec2:CreateTags"
         ],
         "Resource" : "*"
       },

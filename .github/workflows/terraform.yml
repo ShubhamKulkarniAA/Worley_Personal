@@ -59,10 +59,10 @@ jobs:
       ############################ ECR Module ###############################
 
       # Authenticate to ECR
-      - name: Authenticate to ECR
-        if: success()
-        run: |
-          aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin 484907523966.dkr.ecr.ap-south-1.amazonaws.com
+    #   - name: Authenticate to ECR
+    #     if: success()
+    #     run: |
+    #       aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin 484907523966.dkr.ecr.ap-south-1.amazonaws.com
 
     #   # Build and Push Docker Images for UI and API
     #   - name: Build and Push Docker Images for UI and API
