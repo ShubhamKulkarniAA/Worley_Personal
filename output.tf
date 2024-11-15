@@ -1,32 +1,32 @@
 # VPC Output
-output "vpc_id" {
-  description = "The VPC ID"
-  value       = module.vpc.vpc_id
-}
+# output "vpc_id" {
+#   description = "The VPC ID"
+#   value       = module.vpc.vpc_id
+# }
 
-output "rds_private_subnet1_id" {
-  value = module.vpc.rds_private_subnet1_id
-}
+# output "rds_private_subnet1_id" {
+#   value = module.vpc.rds_private_subnet1_id
+# }
 
-output "rds_private_subnet2_id" {
-  value = module.vpc.rds_private_subnet2_id
-}
+# output "rds_private_subnet2_id" {
+#   value = module.vpc.rds_private_subnet2_id
+# }
 
-output "public_subnet1_id" {
-  value = module.vpc.public_subnet1_id
-}
+# output "public_subnet1_id" {
+#   value = module.vpc.public_subnet1_id
+# }
 
-output "public_subnet2_id" {
-  value = module.vpc.public_subnet2_id
-}
+# output "public_subnet2_id" {
+#   value = module.vpc.public_subnet2_id
+# }
 
-output "private_subnet1_id" {
-  value = module.vpc.private_subnet1_id
-}
+# output "private_subnet1_id" {
+#   value = module.vpc.private_subnet1_id
+# }
 
-output "private_subnet2_id" {
-  value = module.vpc.private_subnet2_id
-}
+# output "private_subnet2_id" {
+#   value = module.vpc.private_subnet2_id
+# }
 
 # ALB Output
 # output "public_alb_arn" {
