@@ -85,7 +85,7 @@ jobs:
         working-directory: ./modules/eks
         shell: /usr/bin/bash -e {0}
 
-      ############################ EKS Module ###############################
+      ############################ LBC Module ###############################
 
       # Apply ClusterRoleBinding for AWS Load Balancer Controller
       - name: Apply ClusterRoleBinding for AWS Load Balancer Controller
