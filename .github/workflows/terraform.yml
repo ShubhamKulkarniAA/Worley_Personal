@@ -56,7 +56,7 @@ jobs:
       #   run: |
       #     aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
 
-      ############################ ECR Module ###############################
+      ############################ ECR Module ##############################
 
     #   # Authenticate to ECR
     #   - name: Authenticate to ECR
