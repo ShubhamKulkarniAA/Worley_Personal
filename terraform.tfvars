@@ -13,14 +13,14 @@ availability_zone2       = "ap-south-1b"
 region                   = "ap-south-1"
 
 # ALB Variables
-public_alb_name = "Worley-NC-Public-ALB"
+# public_alb_name = "Worley-NC-Public-ALB"
 
-# ECR Variables
-repository_names     = ["worley-nc-ui-k8s", "worley-nc-api-k8s"]
-image_tag_mutability = "MUTABLE"
-tags = {
-  Environment = "dev"
-}
+# # ECR Variables
+# repository_names     = ["worley-nc-ui-k8s", "worley-nc-api-k8s"]
+# image_tag_mutability = "MUTABLE"
+# tags = {
+#   Environment = "dev"
+# }
 
 # EKS Variables
 # cluster_name    = "Worley-NC-EKS-Cluster"

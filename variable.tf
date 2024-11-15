@@ -48,25 +48,25 @@ variable "region" {
 }
 
 # ALB Variables
-variable "public_alb_name" {
-  type = string
-}
+# variable "public_alb_name" {
+#   type = string
+# }
 
-# ECR Variables
-variable "repository_names" {
-  type        = list(string)
-  description = "List of ECR repository names to be created (e.g., UI and API)"
-}
+# # ECR Variables
+# variable "repository_names" {
+#   type        = list(string)
+#   description = "List of ECR repository names to be created (e.g., UI and API)"
+# }
 
-variable "image_tag_mutability" {
-  type    = string
-  default = "MUTABLE"
-}
+# variable "image_tag_mutability" {
+#   type    = string
+#   default = "MUTABLE"
+# }
 
-variable "tags" {
-  type    = map(string)
-  default = {}
-}
+# variable "tags" {
+#   type    = map(string)
+#   default = {}
+# }
 
 # EKS Variables
 # variable "cluster_name" {

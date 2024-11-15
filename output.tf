@@ -29,34 +29,34 @@ output "private_subnet2_id" {
 }
 
 # ALB Output
-output "public_alb_arn" {
-  value = module.alb.public_alb_arn
-}
+# output "public_alb_arn" {
+#   value = module.alb.public_alb_arn
+# }
 
-output "public_alb_tg_arn" {
-  value = module.alb.public_alb_tg_arn
-}
+# output "public_alb_tg_arn" {
+#   value = module.alb.public_alb_tg_arn
+# }
 
 # ECR Outputs
-output "repository_uris" {
-  description = "The repository URLs of the created ECR repositories"
-  value       = module.ecr.repository_urls
-}
+# output "repository_uris" {
+#   description = "The repository URLs of the created ECR repositories"
+#   value       = module.ecr.repository_urls
+# }
 
-output "repository_names" {
-  description = "The names of the created ECR repositories"
-  value       = module.ecr.repository_names
-}
+# output "repository_names" {
+#   description = "The names of the created ECR repositories"
+#   value       = module.ecr.repository_names
+# }
 
-output "repository_arn" {
-  description = "The ARNs of the created ECR repositories"
-  value       = module.ecr.repository_arn
-}
+# output "repository_arn" {
+#   description = "The ARNs of the created ECR repositories"
+#   value       = module.ecr.repository_arn
+# }
 
-output "lifecycle_policy" {
-  description = "The lifecycle policies applied to the repositories"
-  value       = module.ecr.lifecycle_policy
-}
+# output "lifecycle_policy" {
+#   description = "The lifecycle policies applied to the repositories"
+#   value       = module.ecr.lifecycle_policy
+# }
 
 # EKS Output
 # output "eks_cluster_id" {
