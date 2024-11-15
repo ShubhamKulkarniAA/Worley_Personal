@@ -10,6 +10,7 @@ resource "kubernetes_service_account" "aws_load_balancer_controller" {
   }
 }
 
+# Helm Release for AWS Load Balancer Controller
 resource "helm_release" "aws_load_balancer_controller" {
   name         = "aws-load-balancer-controller"
   namespace    = "kube-system"
