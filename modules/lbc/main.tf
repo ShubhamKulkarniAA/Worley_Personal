@@ -42,7 +42,8 @@ resource "aws_iam_policy" "lbc_custom_policy" {
           "elasticloadbalancing:SetSubnets",
           "elasticloadbalancing:DeleteLoadBalancer",
           "elasticloadbalancing:ModifyTargetGroup",
-          "elasticloadbalancing:DeleteTargetGroup"
+          "elasticloadbalancing:DeleteTargetGroup",
+          "elasticloadbalancing:DescribeTags"
         ],
         "Resource" : "*"
       },
