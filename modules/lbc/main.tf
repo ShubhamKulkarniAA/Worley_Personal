@@ -74,19 +74,12 @@ resource "aws_iam_policy" "lbc_custom_policy" {
 }
 
 # IAM Role Policy Attachment for the Load Balancer Controller
-resource "aws_iam_role_policy_attachment" "lbc_role_policy_attachment" {
+resource "aws_iam_role_policy_attachment" "lbc_custom_policy_attachment" {
   role       = aws_iam_role.lbc_role.name
   policy_arn = aws_iam_policy.lbc_custom_policy.arn
 }
 
-# Kubernetes Service Account for the Load Balancer Controller
-resource "kubernetes_service_account" "aws_load_balancer_controller" {
-  metadata {
-    name      = "aws-load-balancer-controller"
-    namespace = "kube-system"
-    annotations = {
-      "eks.amazonaws.com/role-arn" = aws_iam_role.lbc_role.arn
-      "meta.helm.sh/release-name"  = "aws-load-balancer-controller"
-    }
-  }
+# Data source for EKS OIDC provider certificate thumbprint
+data "tls_certificate" "eks_cluster" {
+  url = var.oidc_provider_url
 }
