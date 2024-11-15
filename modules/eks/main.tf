@@ -24,7 +24,7 @@ resource "aws_iam_role_policy_attachment" "eks_cluster_policy" {
 
 # IAM Role for EKS Node
 resource "aws_iam_role" "eks_node_role" {
-  name = "eks-node-role"
+  name = "eks-node-role" # Ensure the role name follows valid IAM naming conventions
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -105,10 +105,12 @@ resource "aws_eks_node_group" "eks_node_group" {
   depends_on = [aws_eks_cluster.eks_cluster]
 }
 
+# Retrieve the OIDC thumbprint for IAM OIDC Provider setup
 data "tls_certificate" "eks_cluster" {
   url = aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
 }
 
+# IAM OIDC Provider for EKS
 resource "aws_iam_openid_connect_provider" "eks_oidc_provider" {
   client_id_list  = ["sts.amazonaws.com"]
   thumbprint_list = [data.tls_certificate.eks_cluster.certificates[0].sha1_fingerprint]
