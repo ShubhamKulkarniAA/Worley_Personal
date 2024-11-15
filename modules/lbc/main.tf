@@ -1,4 +1,4 @@
-# IAM Policy Document for Load Balancer Controller assume role policy
+# Data source for IAM Policy Document: Assume Role Policy
 data "aws_iam_policy_document" "aws_load_balancer_controller_assume_role_policy" {
   statement {
     actions = ["sts:AssumeRoleWithWebIdentity"]
@@ -15,12 +15,13 @@ data "aws_iam_policy_document" "aws_load_balancer_controller_assume_role_policy"
   }
 }
 
-# IAM Role for the Load Balancer Controller
+# IAM Role for the AWS Load Balancer Controller
 resource "aws_iam_role" "lbc_role" {
   assume_role_policy = data.aws_iam_policy_document.aws_load_balancer_controller_assume_role_policy.json
   name               = "aws-load-balancer-controller-${var.cluster_name}"
 }
 
+# IAM Policy for the Load Balancer Controller
 resource "aws_iam_policy" "lbc_custom_policy" {
   name = "AWSLoadBalancerController-${var.cluster_name}"
   policy = jsonencode(
@@ -64,8 +65,8 @@ resource "aws_iam_policy" "lbc_custom_policy" {
             "elasticloadbalancing:DescribeTargetGroups",
             "elasticloadbalancing:DescribeTargetGroupAttributes",
             "elasticloadbalancing:DescribeTargetHealth",
-            "elasticloadbalancing:DescribeTags",
-            "elasticloadbalancing:AddTags"
+            "elasticloadbalancing:DescribeTags",      # Describe ELB tags
+            "elasticloadbalancing:AddTags"           # Add ELB tags
           ],
           "Resource" : "*"
         },
@@ -247,7 +248,7 @@ resource "aws_iam_policy" "lbc_custom_policy" {
   )
 }
 
-# IAM Role Policy Attachment for the Load Balancer Controller
+# Attach the custom policy to the IAM role
 resource "aws_iam_role_policy_attachment" "lbc_custom_policy_attachment" {
   role       = aws_iam_role.lbc_role.name
   policy_arn = aws_iam_policy.lbc_custom_policy.arn
