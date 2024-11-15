@@ -43,7 +43,8 @@ resource "aws_iam_policy" "lbc_custom_policy" {
           "elasticloadbalancing:DeleteLoadBalancer",
           "elasticloadbalancing:ModifyTargetGroup",
           "elasticloadbalancing:DeleteTargetGroup",
-          "elasticloadbalancing:DescribeTags"
+          "elasticloadbalancing:DescribeTags",
+          "ec2:DescribeAvailabilityZones"
         ],
         "Resource" : "*"
       },
