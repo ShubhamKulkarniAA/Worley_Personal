@@ -18,12 +18,12 @@ data "aws_iam_policy_document" "aws_load_balancer_controller_assume_role_policy"
 # IAM Role for the AWS Load Balancer Controller
 resource "aws_iam_role" "lbc_role" {
   assume_role_policy = data.aws_iam_policy_document.aws_load_balancer_controller_assume_role_policy.json
-  name               = "aws-load-balancer-controller-${var.cluster_name}"
+  name               = "AWSLoadBalancerControllerRole"
 }
 
 # IAM Policy for the Load Balancer Controller
 resource "aws_iam_policy" "lbc_custom_policy" {
-  name = "AWSLoadBalancerController-${var.cluster_name}"
+  name = "AWSLoadBalancerControllerCustomPolicy"
   policy = jsonencode(
     {
       "Version" : "2012-10-17",
@@ -65,8 +65,8 @@ resource "aws_iam_policy" "lbc_custom_policy" {
             "elasticloadbalancing:DescribeTargetGroups",
             "elasticloadbalancing:DescribeTargetGroupAttributes",
             "elasticloadbalancing:DescribeTargetHealth",
-            "elasticloadbalancing:DescribeTags",      # Describe ELB tags
-            "elasticloadbalancing:AddTags"           # Add ELB tags
+            "elasticloadbalancing:DescribeTags", # Describe ELB tags
+            "elasticloadbalancing:AddTags"       # Add ELB tags
           ],
           "Resource" : "*"
         },
