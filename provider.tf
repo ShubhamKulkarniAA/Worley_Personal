@@ -23,10 +23,10 @@ provider "kubernetes" {
   token                  = data.aws_eks_cluster_auth.cluster.token
 }
 
-####################### Apply in 2nd Part ######################
+data "aws_eks_cluster" "cluster" { name = module.eks.cluster_name }
+data "aws_eks_cluster_auth" "cluster" { name = module.eks.cluster_name }
 
-# data "aws_eks_cluster" "cluster" { name = module.eks.cluster_name }
-# data "aws_eks_cluster_auth" "cluster" { name = module.eks.cluster_name }
+####################### Apply in 2nd Part ######################
 
 # provider "helm" {
 #   kubernetes {
