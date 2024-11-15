@@ -3,18 +3,8 @@ variable "cluster_name" {
   type        = string
 }
 
-variable "cluster_role_arn" {
-  description = "The ARN of the IAM role to use for the EKS cluster"
-  type        = string
-}
-
 variable "node_group_name" {
   description = "The name of the EKS node group"
-  type        = string
-}
-
-variable "node_role_arn" {
-  description = "The ARN of the IAM role to use for the EKS node group"
   type        = string
 }
 
@@ -47,10 +37,4 @@ variable "min_size" {
 variable "subnet_ids" {
   description = "The IDs of the subnets to use for the EKS cluster and node group"
   type        = list(string)
-}
-
-variable "is_github_actions" {
-  description = "A flag to check if the pipeline is running in GitHub Actions"
-  type        = bool
-  default     = false
 }

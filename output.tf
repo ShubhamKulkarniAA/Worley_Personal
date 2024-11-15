@@ -1,7 +1,7 @@
 # VPC Output
 output "vpc_id" {
   description = "The VPC ID"
-  value = module.vpc.vpc_id
+  value       = module.vpc.vpc_id
 }
 
 output "rds_private_subnet1_id" {
@@ -40,22 +40,22 @@ output "public_alb_tg_arn" {
 # ECR Outputs
 output "repository_uris" {
   description = "The repository URLs of the created ECR repositories"
-  value = module.ecr.repository_urls
+  value       = module.ecr.repository_urls
 }
 
 output "repository_names" {
   description = "The names of the created ECR repositories"
-  value = module.ecr.repository_names
+  value       = module.ecr.repository_names
 }
 
 output "repository_arn" {
   description = "The ARNs of the created ECR repositories"
-  value = module.ecr.repository_arn
+  value       = module.ecr.repository_arn
 }
 
 output "lifecycle_policy" {
   description = "The lifecycle policies applied to the repositories"
-  value = module.ecr.lifecycle_policy
+  value       = module.ecr.lifecycle_policy
 }
 
 # EKS Output
