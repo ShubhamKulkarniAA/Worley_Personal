@@ -22,7 +22,7 @@ resource "aws_iam_role" "lbc_role" {
 }
 
 resource "aws_iam_policy" "lbc_custom_policy" {
-  name = "AWSLoadBalancerController-${module.eks.cluster_name}"
+  name = "AWSLoadBalancerController-${var.cluster_name}"
   policy = jsonencode(
     {
       "Version" : "2012-10-17",
