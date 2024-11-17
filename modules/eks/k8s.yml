@@ -1,5 +1,3 @@
----
-# Simple Deployment for a static Hello World page
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -16,16 +14,9 @@ spec:
     spec:
       containers:
         - name: hello-world
-          image: nginx:alpine # Using Nginx to serve static files
+          image: nginx:alpine
           ports:
             - containerPort: 80
-          volumeMounts:
-            - name: html-content
-              mountPath: /usr/share/nginx/html
-      volumes:
-        - name: html-content
-          configMap:
-            name: hello-world-html
 
 ---
 # ConfigMap to store the static HTML content
