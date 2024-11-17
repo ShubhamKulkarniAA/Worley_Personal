@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: ui-k8s-nginx
-          image: nginx:latest
+          image: 484907523966.dkr.ecr.ap-south-1.amazonaws.com/worley-nc-ui-k8s:latest
           ports:
             - containerPort: 80
           resources:
