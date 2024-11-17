@@ -3,18 +3,19 @@ variable "cluster_name" {
   type        = string
 }
 
-variable "cluster_role_arn" {
-  description = "The ARN of the IAM role to use for the EKS cluster"
-  type        = string
-}
-
 variable "node_group_name" {
   description = "The name of the EKS node group"
   type        = string
 }
 
-variable "node_role_arn" {
-  description = "The ARN of the IAM role to use for the EKS node group"
+variable "ec2_key_name" {
+  description = "Name of the EC2 key pair"
+  type        = string
+  default     = ""
+}
+
+variable "instance_type" {
+  description = "The EC2 instance type"
   type        = string
 }
 

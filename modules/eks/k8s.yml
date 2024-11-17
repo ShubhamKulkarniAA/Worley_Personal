@@ -2,83 +2,39 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend
+  name: ui-k8s-deployment
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: frontend
+      app: ui-k8s
   template:
     metadata:
       labels:
-        app: frontend
+        app: ui-k8s
     spec:
       containers:
-        - name: frontend
-          image: nginx:alpine
+        - name: ui-k8s-nginx
+          image: 484907523966.dkr.ecr.ap-south-1.amazonaws.com/worley-nc-ui-k8s:latest
           ports:
             - containerPort: 80
-          command: ["/bin/sh", "-c"]
-          args:
-            - echo 'HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\n\r\nHello World!' | nc -l -p 80
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: backend
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: backend
-  template:
-    metadata:
-      labels:
-        app: backend
-    spec:
-      containers:
-        - name: backend
-          image: 484907523966.dkr.ecr.ap-south-1.amazonaws.com/demo-worley-nc-ui:latest
-          ports:
-            - containerPort: 5000
-
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: backend
+  name: ui-k8s-service
 spec:
-  type: ClusterIP
-  ports:
-    - port: 5000
-      targetPort: 5000
   selector:
-    app: backend
-
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: frontend-ingress
-  annotations:
-    kubernetes.io/ingress.class: alb
-    alb.ingress.kubernetes.io/scheme: internet-facing
-spec:
-  ingressClassName: alb
-  rules:
-    - http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: frontend
-                port:
-                  number: 80
-          - path: /api/message
-            pathType: Prefix
-            backend:
-              service:
-                name: backend
-                port:
-                  number: 5000
+    app: ui-k8s
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: LoadBalancer
