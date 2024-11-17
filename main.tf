@@ -41,16 +41,16 @@ module "eks" {
   subnet_ids      = [module.vpc.public_subnet1_id, module.vpc.public_subnet2_id]
 }
 ###################################### Apply in 2nd Part ###########################################
-# module "lbc" {
-#   source            = "./modules/lbc"
-#   region            = var.region
-#   cluster_name      = module.eks.cluster_name
-#   vpc_id            = module.vpc.vpc_id
-#   oidc_provider_url = module.eks.oidc_provider_url
-#   oidc_provider_arn = module.eks.oidc_provider_arn
-# }
+module "lbc" {
+  source            = "./modules/lbc"
+  region            = var.region
+  cluster_name      = module.eks.cluster_name
+  vpc_id            = module.vpc.vpc_id
+  oidc_provider_url = module.eks.oidc_provider_url
+  oidc_provider_arn = module.eks.oidc_provider_arn
+}
 
-# resource "aws_iam_role_policy_attachment" "lbc_node_policy" {
-#   policy_arn = module.lbc.lbc_custom_policy_arn
-#   role       = module.eks.eks_node_role
-# }
+resource "aws_iam_role_policy_attachment" "lbc_node_policy" {
+  policy_arn = module.lbc.lbc_custom_policy_arn
+  role       = module.eks.eks_node_role
+}
