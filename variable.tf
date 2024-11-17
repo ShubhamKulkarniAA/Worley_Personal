@@ -48,9 +48,9 @@ variable "region" {
 }
 
 # ALB Variables
-variable "public_alb_name" {
-  type = string
-}
+# variable "public_alb_name" {
+#   type = string
+# }
 
 # ECR Variables
 variable "repository_names" {
