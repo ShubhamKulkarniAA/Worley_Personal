@@ -1,13 +1,7 @@
-FROM node:14
+FROM nginx:latest
 
-WORKDIR /usr/src/app
+COPY index.html /usr/share/nginx/html/index.html
 
-COPY package*.json ./
-RUN npm install
+EXPOSE 80
 
-# Copy service.js from the eks module directory
-COPY service.js .
-
-EXPOSE 5000
-
-CMD ["node", "service.js"]
+CMD ["nginx", "-g", "daemon off;"]
