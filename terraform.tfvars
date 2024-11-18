@@ -16,17 +16,17 @@ region                   = "ap-south-1"
 # public_alb_name = "Worley-NC-Public-ALB"
 
 # ECR Variables
-repository_names     = ["worley-nc-ui-k8s", "worley-nc-api-k8s"]
-image_tag_mutability = "MUTABLE"
-tags = {
-  Environment = "dev"
-}
+# repository_names     = ["worley-nc-ui-k8s", "worley-nc-api-k8s"]
+# image_tag_mutability = "MUTABLE"
+# tags = {
+#   Environment = "dev"
+# }
 
-# EKS Variables
-cluster_name    = "Worley-NC-EKS-Cluster"
-node_group_name = "Worley-NC-EKS-Node-Group"
-desired_size    = 1
-max_size        = 1
-min_size        = 1
-instance_type   = "t3.medium"
-ec2_key_name    = "EKS"
+# # EKS Variables
+# cluster_name    = "Worley-NC-EKS-Cluster"
+# node_group_name = "Worley-NC-EKS-Node-Group"
+# desired_size    = 1
+# max_size        = 1
+# min_size        = 1
+# instance_type   = "t3.medium"
+# ec2_key_name    = "EKS"

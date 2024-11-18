@@ -3,7 +3,7 @@ name: Terraform AWS Deployment
 on:
   push:
     branches:
-      - amey
+      - main
 
 jobs:
   TerraformAWS:
@@ -38,71 +38,71 @@ jobs:
         working-directory: ${{ env.TERRAFORM_DIR }}
         if: success()
 
-      # Generate Terraform Plan for remaining resources
+      # Generate Terraform Plan
       - name: Terraform Plan
         run: terraform plan -out=tfplan -input=false
         working-directory: ${{ env.TERRAFORM_DIR }}
         if: success()
 
-      # Apply Terraform Plan for remaining resources
+      # Apply Terraform Plan
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
         working-directory: ${{ env.TERRAFORM_DIR }}
         if: success()
 
       # Update kubeconfig for EKS
-      - name: Update kubeconfig for EKS
-        if: success()
-        run: |
-          aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
+      # - name: Update kubeconfig for EKS
+      #   if: success()
+      #   run: |
+      #     aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
 
-      ############################ ECR Module ###############################
+      # ############################ ECR Module ###############################
 
-      # Authenticate to ECR
-      - name: Authenticate to ECR
-        if: success()
-        run: |
-          aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin 484907523966.dkr.ecr.ap-south-1.amazonaws.com
+      # # Authenticate to ECR
+      # - name: Authenticate to ECR
+      #   if: success()
+      #   run: |
+      #     aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin 484907523966.dkr.ecr.ap-south-1.amazonaws.com
 
-      # Build and Push Docker Images for UI and API
-      - name: Build and Push Docker Images for UI and API
-        if: success()
-        run: |
-          IFS=',' read -ra REPOSITORY_NAMES <<< "${{ env.REPOSITORY_NAMES }}"
-          for repo in "${REPOSITORY_NAMES[@]}"; do
-            repo=$(echo $repo | xargs)
-            echo "Building and pushing Docker image for $repo repository"
+      # # Build and Push Docker Images for UI and API
+      # - name: Build and Push Docker Images for UI and API
+      #   if: success()
+      #   run: |
+      #     IFS=',' read -ra REPOSITORY_NAMES <<< "${{ env.REPOSITORY_NAMES }}"
+      #     for repo in "${REPOSITORY_NAMES[@]}"; do
+      #       repo=$(echo $repo | xargs)
+      #       echo "Building and pushing Docker image for $repo repository"
 
-            # Build Docker image
-            docker build -t "${repo}-ecr-repo" .
+      #       # Build Docker image
+      #       docker build -t "${repo}-ecr-repo" .
 
-            # Tag Docker image
-            docker tag "${repo}-ecr-repo:latest" "484907523966.dkr.ecr.ap-south-1.amazonaws.com/$repo:latest"
+      #       # Tag Docker image
+      #       docker tag "${repo}-ecr-repo:latest" "484907523966.dkr.ecr.ap-south-1.amazonaws.com/$repo:latest"
 
-            # Push Docker image to ECR
-            docker push "484907523966.dkr.ecr.ap-south-1.amazonaws.com/$repo:latest"
-          done
-        working-directory: ./modules/eks
-        shell: /usr/bin/bash -e {0}
+      #       # Push Docker image to ECR
+      #       docker push "484907523966.dkr.ecr.ap-south-1.amazonaws.com/$repo:latest"
+      #     done
+      #   working-directory: ./modules/eks
+      #   shell: /usr/bin/bash -e {0}
 
-      ############################ LBC Module ###############################
+      # ############################ LBC Module ###############################
 
       # Apply ClusterRoleBinding for AWS Load Balancer Controller
       - name: Apply ClusterRoleBinding for AWS Load Balancer Controller
         if: success()
         run: |
-           kubectl apply -f modules/lbc/aws-lb-controller-clusterrolebinding.yaml
+          kubectl apply -f modules/lbc/aws-lb-controller-clusterrolebinding.yaml
 
       ####################### Apply in 2nd Part ######################
 
-     # Apply Kubernetes Resources
+      # Apply Kubernetes Resources
       - name: Apply Kubernetes Resources
         if: success()
         run: |
           kubectl apply -f modules/eks/k8s.yml
 
-      # Apply Ingress Resources
-      - name: Apply Ingress Resources
-        if: success()
-        run: |
-          kubectl apply -f modules/eks/ingress.yml
+    #   # Apply Ingress Resources
+    #   - name: Apply Ingress Resources
+    #     if: success()
+    #     run: |
+    #       kubectl apply -f modules/eks/ingress.yml
