@@ -38,46 +38,46 @@ output "private_subnet2_id" {
 # }
 
 # ECR Outputs
-output "repository_uris" {
-  description = "The repository URLs of the created ECR repositories"
-  value       = module.ecr.repository_urls
-}
+# output "repository_uris" {
+#   description = "The repository URLs of the created ECR repositories"
+#   value       = module.ecr.repository_urls
+# }
 
-output "repository_names" {
-  description = "The names of the created ECR repositories"
-  value       = module.ecr.repository_names
-}
+# output "repository_names" {
+#   description = "The names of the created ECR repositories"
+#   value       = module.ecr.repository_names
+# }
 
-output "repository_arn" {
-  description = "The ARNs of the created ECR repositories"
-  value       = module.ecr.repository_arn
-}
+# output "repository_arn" {
+#   description = "The ARNs of the created ECR repositories"
+#   value       = module.ecr.repository_arn
+# }
 
-output "lifecycle_policy" {
-  description = "The lifecycle policies applied to the repositories"
-  value       = module.ecr.lifecycle_policy
-}
+# output "lifecycle_policy" {
+#   description = "The lifecycle policies applied to the repositories"
+#   value       = module.ecr.lifecycle_policy
+# }
 
-# EKS Output
-output "eks_cluster_id" {
-  description = "The ID of the EKS cluster"
-  value       = module.eks.eks_cluster_id
-}
+# # EKS Output
+# output "eks_cluster_id" {
+#   description = "The ID of the EKS cluster"
+#   value       = module.eks.eks_cluster_id
+# }
 
-output "eks_cluster_endpoint" {
-  description = "The endpoint of the EKS cluster"
-  value       = module.eks.eks_cluster_endpoint
-}
+# output "eks_cluster_endpoint" {
+#   description = "The endpoint of the EKS cluster"
+#   value       = module.eks.eks_cluster_endpoint
+# }
 
-output "eks_cluster_certificate_authority" {
-  description = "The certificate authority data for the EKS cluster"
-  value       = module.eks.eks_cluster_certificate_authority
-}
+# output "eks_cluster_certificate_authority" {
+#   description = "The certificate authority data for the EKS cluster"
+#   value       = module.eks.eks_cluster_certificate_authority
+# }
 
-output "eks_cluster_role_arn" {
-  value = module.eks.cluster_role_arn
-}
+# output "eks_cluster_role_arn" {
+#   value = module.eks.cluster_role_arn
+# }
 
-output "eks_node_role_arn" {
-  value = module.eks.node_role_arn
-}
+# output "eks_node_role_arn" {
+#   value = module.eks.node_role_arn
+# }
