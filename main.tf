@@ -40,7 +40,9 @@ module "eks" {
   instance_type   = var.instance_type
   subnet_ids      = [module.vpc.public_subnet1_id, module.vpc.public_subnet2_id]
 }
-###################################### Apply in 2nd Part ###########################################
+
+############################ Apply in 2nd Part #################################
+
 module "lbc" {
   source            = "./modules/lbc"
   region            = var.region

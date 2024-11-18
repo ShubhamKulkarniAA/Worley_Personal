@@ -17,7 +17,7 @@ provider "aws" {
   region = var.region
 }
 
-####################### Apply in 2nd Part ######################
+####################### Apply in 2nd Part #########################
 
 provider "kubernetes" {
   host                   = data.aws_eks_cluster.cluster.endpoint

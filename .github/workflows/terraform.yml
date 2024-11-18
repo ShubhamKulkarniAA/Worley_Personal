@@ -3,7 +3,7 @@ name: Terraform AWS Deployment
 on:
   push:
     branches:
-      - amey
+      - main
 
 jobs:
   TerraformAWS:
@@ -38,13 +38,13 @@ jobs:
         working-directory: ${{ env.TERRAFORM_DIR }}
         if: success()
 
-      # Generate Terraform Plan for remaining resources
+      # Generate Terraform Plan
       - name: Terraform Plan
         run: terraform plan -out=tfplan -input=false
         working-directory: ${{ env.TERRAFORM_DIR }}
         if: success()
 
-      # Apply Terraform Plan for remaining resources
+      # Apply Terraform Plan
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
         working-directory: ${{ env.TERRAFORM_DIR }}
@@ -91,11 +91,11 @@ jobs:
       - name: Apply ClusterRoleBinding for AWS Load Balancer Controller
         if: success()
         run: |
-           kubectl apply -f modules/lbc/aws-lb-controller-clusterrolebinding.yaml
+          kubectl apply -f modules/lbc/aws-lb-controller-clusterrolebinding.yaml
 
       ####################### Apply in 2nd Part ######################
 
-     # Apply Kubernetes Resources
+      # Apply Kubernetes Resources
       - name: Apply Kubernetes Resources
         if: success()
         run: |

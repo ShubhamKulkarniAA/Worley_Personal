@@ -18,7 +18,7 @@ resource "helm_release" "aws_load_balancer_controller" {
   repository   = "https://aws.github.io/eks-charts"
   force_update = true # Ensures that Helm forces an update if the version changes
 
-  # Set Helm chart values directly using the `set` argument
+
   set {
     name  = "replicaCount"
     value = "1"
