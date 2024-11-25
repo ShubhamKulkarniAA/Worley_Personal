@@ -28,16 +28,6 @@ output "private_subnet2_id" {
   value = module.vpc.private_subnet2_id
 }
 
-# ALB Output
-# output "public_alb_arn" {
-#   value = module.alb.public_alb_arn
-# }
-
-# output "public_alb_tg_arn" {
-#   value = module.alb.public_alb_tg_arn
-# }
-
-
 #ECR Outputs
 output "repository_uris" {
   description = "The repository URLs of the created ECR repositories"
