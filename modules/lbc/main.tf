@@ -238,7 +238,8 @@ resource "aws_iam_policy" "lbc_custom_policy" {
             "elasticloadbalancing:ModifyListener",
             "elasticloadbalancing:AddListenerCertificates",
             "elasticloadbalancing:RemoveListenerCertificates",
-            "elasticloadbalancing:ModifyRule"
+            "elasticloadbalancing:ModifyRule",
+            "elasticloadbalancing:DescribeListenerAttributes"
           ],
           "Resource" : "*"
         }
