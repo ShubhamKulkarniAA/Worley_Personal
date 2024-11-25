@@ -5,7 +5,6 @@ resource "kubernetes_service_account" "aws_load_balancer_controller" {
     namespace = "kube-system"
     annotations = {
       "eks.amazonaws.com/role-arn" = aws_iam_role.lbc_role.arn
-      "meta.helm.sh/release-name"  = "aws-load-balancer-controller"
     }
   }
 }
@@ -16,21 +15,21 @@ resource "helm_release" "aws_load_balancer_controller" {
   namespace    = "kube-system"
   chart        = "aws-load-balancer-controller"
   repository   = "https://aws.github.io/eks-charts"
-  force_update = true # Ensures that Helm forces an update if the version changes
+  force_update = true
 
   set {
     name  = "replicaCount"
-    value = "1" # Set the number of replicas for the controller
+    value = "1"
   }
 
   set {
     name  = "clusterName"
-    value = var.cluster_name # Make sure var.cluster_name is set
+    value = var.cluster_name
   }
 
   set {
     name  = "region"
-    value = var.region # Set your AWS region
+    value = var.region
   }
 
   set {
@@ -45,7 +44,7 @@ resource "helm_release" "aws_load_balancer_controller" {
 
   set {
     name  = "vpcId"
-    value = var.vpc_id # Make sure var.vpc_id is set
+    value = var.vpc_id
   }
 
   set {
@@ -55,13 +54,13 @@ resource "helm_release" "aws_load_balancer_controller" {
 
   set {
     name  = "controller.ingressClass"
-    value = "alb" # Set ingress class to alb, adjust as per your needs
+    value = "alb"
   }
 
   replace = true # Forces Helm to replace existing resources
 
   depends_on = [
-    aws_iam_role_policy_attachment.lbc_custom_policy_attachment, # Ensure IAM role policies are attached first
-    kubernetes_service_account.aws_load_balancer_controller      # Ensure the service account is created first
+    aws_iam_role_policy_attachment.lbc_custom_policy_attachment,
+    kubernetes_service_account.aws_load_balancer_controller
   ]
 }
