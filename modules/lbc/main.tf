@@ -1,3 +1,4 @@
+# Assume role policy for the AWS Load Balancer Controller
 data "aws_iam_policy_document" "aws_load_balancer_controller_assume_role_policy" {
   statement {
     actions = ["sts:AssumeRoleWithWebIdentity"]
@@ -253,7 +254,27 @@ resource "aws_iam_role_policy_attachment" "lbc_custom_policy_attachment" {
   policy_arn = aws_iam_policy.lbc_custom_policy.arn
 }
 
-# Data source for EKS OIDC provider certificate thumbprint
-data "tls_certificate" "eks_cluster" {
-  url = var.oidc_provider_url
+# IAM Policy for the EKS Node Role (worker nodes)
+resource "aws_iam_policy" "eks_node_role_policy" {
+  name = "EKSNodeRolePolicy"
+  policy = jsonencode(
+    {
+      "Version" : "2012-10-17",
+      "Statement" : [
+        {
+          "Effect" : "Allow",
+          "Action" : [
+            "elasticloadbalancing:DescribeListenerAttributes"
+          ],
+          "Resource" : "*"
+        }
+      ]
+    }
+  )
+}
+
+# Attach the policy to the EKS Node Role (replace with your actual role name)
+resource "aws_iam_role_policy_attachment" "eks_node_role_policy_attachment" {
+  role       = "EKSNodeRole" # Replace with your actual EKS node role
+  policy_arn = aws_iam_policy.eks_node_role_policy.arn
 }
