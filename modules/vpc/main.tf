@@ -14,52 +14,54 @@ resource "aws_internet_gateway" "internet_gateway" {
 
 # Public Subnet 1
 resource "aws_subnet" "public_subnet1" {
-  vpc_id = aws_vpc.vpc.id
-  cidr_block = var.public_subnet1_cidr
-  availability_zone = var.availability_zone1
+  vpc_id                  = aws_vpc.vpc.id
+  cidr_block              = var.public_subnet1_cidr
+  availability_zone       = var.availability_zone1
   map_public_ip_on_launch = true
   tags = {
-    Name = "${var.vpc_name}-PublicSubnet1"
-    "kubernetes.io/role/elb" = "1"  # Tag for ALB/NLB discovery
+    Name                     = "${var.vpc_name}-PublicSubnet1"
+    "kubernetes.io/role/elb" = "1" # Tag for ALB/NLB discovery
   }
 }
 
 # Public Subnet 2
 resource "aws_subnet" "public_subnet2" {
-  vpc_id = aws_vpc.vpc.id
-  cidr_block = var.public_subnet2_cidr
-  availability_zone = var.availability_zone2
+  vpc_id                  = aws_vpc.vpc.id
+  cidr_block              = var.public_subnet2_cidr
+  availability_zone       = var.availability_zone2
   map_public_ip_on_launch = true
   tags = {
-    Name = "${var.vpc_name}-PublicSubnet2"
-    "kubernetes.io/role/elb" = "1"  # Tag for ALB/NLB discovery
+    Name                     = "${var.vpc_name}-PublicSubnet2"
+    "kubernetes.io/role/elb" = "1" # Tag for ALB/NLB discovery
   }
 }
 
 # Private Subnet 1
 resource "aws_subnet" "private_subnet1" {
-  vpc_id = aws_vpc.vpc.id
-  cidr_block = var.private_subnet1_cidr
+  vpc_id            = aws_vpc.vpc.id
+  cidr_block        = var.private_subnet1_cidr
   availability_zone = var.availability_zone1
   tags = {
-    Name = "${var.vpc_name}-PrivateSubnet1"
+    Name                              = "${var.vpc_name}-PrivateSubnet1"
+    "kubernetes.io/role/internal-elb" = "1" # Tag for ALB/NLB discovery
   }
 }
 
 # Private Subnet 2
 resource "aws_subnet" "private_subnet2" {
-  vpc_id = aws_vpc.vpc.id
-  cidr_block = var.private_subnet2_cidr
+  vpc_id            = aws_vpc.vpc.id
+  cidr_block        = var.private_subnet2_cidr
   availability_zone = var.availability_zone2
   tags = {
-    Name = "${var.vpc_name}-PrivateSubnet2"
+    Name                              = "${var.vpc_name}-PrivateSubnet2"
+    "kubernetes.io/role/internal-elb" = "1" # Tag for ALB/NLB discovery
   }
 }
 
 # RDS Private Subnet 1
 resource "aws_subnet" "rds_private_subnet1" {
-  vpc_id = aws_vpc.vpc.id
-  cidr_block = var.private_rds_subnet1_cidr
+  vpc_id            = aws_vpc.vpc.id
+  cidr_block        = var.private_rds_subnet1_cidr
   availability_zone = var.availability_zone1
   tags = {
     Name = "${var.vpc_name}-RDS-PrivateSubnet1"
@@ -68,8 +70,8 @@ resource "aws_subnet" "rds_private_subnet1" {
 
 # RDS Private Subnet 2
 resource "aws_subnet" "rds_private_subnet2" {
-  vpc_id = aws_vpc.vpc.id
-  cidr_block = var.private_rds_subnet2_cidr
+  vpc_id            = aws_vpc.vpc.id
+  cidr_block        = var.private_rds_subnet2_cidr
   availability_zone = var.availability_zone2
   tags = {
     Name = "${var.vpc_name}-RDS-PrivateSubnet2"
@@ -84,18 +86,18 @@ resource "aws_route_table" "public_route_table" {
 }
 
 resource "aws_route" "public_route" {
-  route_table_id = aws_route_table.public_route_table.id
+  route_table_id         = aws_route_table.public_route_table.id
   destination_cidr_block = "0.0.0.0/0"
-  gateway_id = aws_internet_gateway.internet_gateway.id
+  gateway_id             = aws_internet_gateway.internet_gateway.id
 }
 
 resource "aws_route_table_association" "public_subnet1_route_table_association" {
-  subnet_id = aws_subnet.public_subnet1.id
+  subnet_id      = aws_subnet.public_subnet1.id
   route_table_id = aws_route_table.public_route_table.id
 }
 
 resource "aws_route_table_association" "public_subnet2_route_table_association" {
-  subnet_id = aws_subnet.public_subnet2.id
+  subnet_id      = aws_subnet.public_subnet2.id
   route_table_id = aws_route_table.public_route_table.id
 }
 
@@ -107,11 +109,11 @@ resource "aws_route_table" "private_route_table" {
 }
 
 resource "aws_route_table_association" "private_subnet1_route_table_association" {
-  subnet_id = aws_subnet.private_subnet1.id
+  subnet_id      = aws_subnet.private_subnet1.id
   route_table_id = aws_route_table.private_route_table.id
 }
 
 resource "aws_route_table_association" "private_subnet2_route_table_association" {
-  subnet_id = aws_subnet.private_subnet2.id
+  subnet_id      = aws_subnet.private_subnet2.id
   route_table_id = aws_route_table.private_route_table.id
 }
