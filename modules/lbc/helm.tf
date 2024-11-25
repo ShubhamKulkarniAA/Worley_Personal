@@ -5,6 +5,7 @@ resource "kubernetes_service_account" "aws_load_balancer_controller" {
     namespace = "kube-system"
     annotations = {
       "eks.amazonaws.com/role-arn" = aws_iam_role.lbc_role.arn
+      "meta.helm.sh/release-name"  = "aws-load-balancer-controller"
     }
   }
 }
@@ -15,7 +16,8 @@ resource "helm_release" "aws_load_balancer_controller" {
   namespace    = "kube-system"
   chart        = "aws-load-balancer-controller"
   repository   = "https://aws.github.io/eks-charts"
-  force_update = true
+  force_update = true # Ensures that Helm forces an update if the version changes
+
 
   set {
     name  = "replicaCount"
@@ -34,12 +36,7 @@ resource "helm_release" "aws_load_balancer_controller" {
 
   set {
     name  = "serviceAccount.create"
-    value = "false" # Service account is already created manually
-  }
-
-  set {
-    name  = "serviceAccount.name"
-    value = kubernetes_service_account.aws_load_balancer_controller.metadata[0].name # Reference the service account
+    value = "false" # Service account is already created in the above resource
   }
 
   set {
@@ -49,15 +46,10 @@ resource "helm_release" "aws_load_balancer_controller" {
 
   set {
     name  = "webhookBindPort"
-    value = "9443" # Default webhook port
+    value = "9443" # Default port for the webhook
   }
 
-  set {
-    name  = "controller.ingressClass"
-    value = "alb"
-  }
-
-  replace = true # Forces Helm to replace existing resources
+  replace = true # Force Helm to replace existing resources
 
   depends_on = [
     aws_iam_role_policy_attachment.lbc_custom_policy_attachment,
