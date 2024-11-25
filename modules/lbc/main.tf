@@ -1,3 +1,4 @@
+# Define the AssumeRole policy for the AWS Load Balancer Controller
 data "aws_iam_policy_document" "aws_load_balancer_controller_assume_role_policy" {
   statement {
     actions = ["sts:AssumeRoleWithWebIdentity"]
@@ -20,7 +21,7 @@ resource "aws_iam_role" "lbc_role" {
   name               = "AWSLoadBalancerControllerRole"
 }
 
-# IAM Policy for the Load Balancer Controller
+# IAM Policy for the Load Balancer Controller with the required permissions
 resource "aws_iam_policy" "lbc_custom_policy" {
   name = "AWSLoadBalancerControllerCustomPolicy"
   policy = jsonencode(

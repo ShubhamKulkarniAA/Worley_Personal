@@ -34,8 +34,6 @@ module "eks" {
   depends_on      = [module.vpc]
 }
 
-############################ Apply in 2nd Part #################################
-
 module "lbc" {
   source            = "./modules/lbc"
   region            = var.region
