@@ -26,11 +26,13 @@ provider "kubernetes" {
 }
 
 data "aws_eks_cluster" "cluster" {
-  name = module.eks.cluster_name
+  name       = module.eks.cluster_name
+  depends_on = [module.eks] # Explicit dependency on the EKS module
 }
 
 data "aws_eks_cluster_auth" "cluster" {
-  name = module.eks.cluster_name
+  name       = module.eks.cluster_name
+  depends_on = [module.eks] # Explicit dependency on the EKS module
 }
 
 provider "helm" {
