@@ -31,6 +31,7 @@ module "eks" {
   ec2_key_name    = var.ec2_key_name
   instance_type   = var.instance_type
   subnet_ids      = [module.vpc.public_subnet1_id, module.vpc.public_subnet2_id]
+  depends_on      = [module.vpc]
 }
 
 ############################ Apply in 2nd Part #################################
