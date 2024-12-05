@@ -7,4 +7,3 @@ variable "cluster_name" {
 variable "eks_cluster_endpoint" {
   type = string
 }
-
