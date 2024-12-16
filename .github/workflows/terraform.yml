@@ -1,4 +1,4 @@
-name: Terraform CI/CD
+name: Terraform AWS Deployment
 
 on:
   push:
@@ -6,37 +6,45 @@ on:
       - amey
 
 jobs:
-  terraform:
+  TerraformAWS:
     runs-on: ubuntu-latest
 
+    env:
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      REPOSITORY_NAMES: "worley-nc-ui-k8s, worley-nc-api-k8s"
+      TERRAFORM_DIR: "./"
+
     steps:
-      # Checkout the repository
-      - name: Checkout repository
+      # Checkout code from the repository
+      - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Set up Terraform
+      # Install Terraform
+      - name: Install Terraform
         uses: hashicorp/setup-terraform@v2
-
-      # Set AWS credentials as environment variables
-      - name: Set AWS Credentials
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
-        run: echo "AWS credentials are set"
 
       # Initialize Terraform
       - name: Terraform Init
-        run: terraform init
+        run: terraform init -upgrade
+        working-directory: ${{ env.TERRAFORM_DIR }}
+        if: success()
 
       # Validate Terraform configuration
       - name: Terraform Validate
         run: terraform validate
+        working-directory: ${{ env.TERRAFORM_DIR }}
+        if: success()
 
       # Plan Terraform execution
       - name: Terraform Plan
-        run: terraform plan -out=tfplan
+        run: terraform plan -out=tfplan -input=false
+        working-directory: ${{ env.TERRAFORM_DIR }}
+        if: success()
 
       # Apply Terraform configuration
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
+        working-directory: ${{ env.TERRAFORM_DIR }}
+        if: success()
