@@ -33,9 +33,9 @@ module "eks" {
 
 module "lbc" {
   source       = "./modules/lbc"
-  cluster_name = module.eks.cluster_name
+  cluster_name = module.eks.cluster_id
   region       = var.region
-  eks_oidc_id  = module.eks.cluster_oidc_provider
+  eks_oidc_id  = module.eks.cluster_oidc_issuer_url
   vpc_id       = module.vpc.vpc_id
 }
 
