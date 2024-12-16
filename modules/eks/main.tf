@@ -1,11 +1,11 @@
 module "eks" {
   source       = "terraform-aws-modules/eks/aws"
   cluster_name = var.cluster_name
-  subnets      = var.subnets
   vpc_id       = var.vpc_id
+  subnet_ids   = var.subnets # This should be subnet_ids, not subnets
 
-  # Defining node groups correctly
-  node_groups = {
+  # Define node_groups correctly
+  eks_managed_node_groups = {
     eks_nodes = {
       desired_capacity = var.desired_capacity
       max_size         = var.max_size
@@ -15,5 +15,6 @@ module "eks" {
     }
   }
 
-  cluster_oidc_enabled = true
+  enable_irsa = true
+
 }
