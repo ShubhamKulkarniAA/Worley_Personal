@@ -3,22 +3,18 @@ variable "cluster_name" {
   type        = string
 }
 
-variable "oidc_provider_url" {
-  description = "The OIDC provider URL for the EKS cluster."
-  type        = string
-}
-
-variable "oidc_provider_arn" {
-  description = "The ARN of the OIDC provider for the EKS cluster."
-  type        = string
-}
-
 variable "region" {
-  description = "The AWS region"
+  description = "The AWS region where the EKS cluster is deployed."
   type        = string
 }
 
 variable "vpc_id" {
-  description = "The VPC ID"
+  description = "The ID of the VPC where the load balancer will be created."
+  type        = string
+}
+
+
+variable "eks_oidc_id" {
+  description = "The OIDC ID for the EKS cluster."
   type        = string
 }

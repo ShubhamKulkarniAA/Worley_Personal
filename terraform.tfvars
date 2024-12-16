@@ -12,7 +12,7 @@ availability_zone1       = "ap-south-1a"
 availability_zone2       = "ap-south-1b"
 region                   = "ap-south-1"
 
-#ECR Variables
+# ECR Variables
 repository_names     = ["worley-nc-ui-k8s", "worley-nc-api-k8s"]
 image_tag_mutability = "MUTABLE"
 tags = {
@@ -20,10 +20,9 @@ tags = {
 }
 
 # EKS Variables
-cluster_name    = "Worley-NC-EKS-Cluster"
-node_group_name = "Worley-NC-EKS-Node-Group"
-desired_size    = 1
-max_size        = 1
-min_size        = 1
-instance_type   = "t3.medium"
-ec2_key_name    = "EKS"
+cluster_name     = "eks-cluster"
+node_group_name  = "eks-node-group"
+desired_capacity = 1
+max_size         = 1
+min_size         = 1
+instance_type    = "t3.medium"

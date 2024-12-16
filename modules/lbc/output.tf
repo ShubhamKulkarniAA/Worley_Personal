@@ -1,23 +1,14 @@
-output "aws_lbc_iam_role" {
-  value = aws_iam_role.lbc_role.arn
+output "aws_lb_controller_service_account" {
+  description = "The service account for the AWS Load Balancer Controller."
+  value       = kubernetes_service_account.aws_lb_controller_sa.metadata[0].name
 }
 
-output "aws_lbc_policy_arn" {
-  value = aws_iam_policy.lbc_custom_policy.arn
+output "aws_lb_controller_role" {
+  description = "The IAM role used by the AWS Load Balancer Controller."
+  value       = aws_iam_role.aws_lb_controller_role.name
 }
 
-output "helm_release_version" {
-  value = helm_release.aws_load_balancer_controller.version
-}
-
-output "lbc_role_arn" {
-  value = aws_iam_role.lbc_role.arn
-}
-
-output "oidc_thumbprint" {
-  value = data.tls_certificate.eks_cluster.certificates[0].sha1_fingerprint
-}
-
-output "lbc_custom_policy_arn" {
-  value = aws_iam_policy.lbc_custom_policy.arn
+output "aws_lb_controller_policy" {
+  description = "The IAM policy for the AWS Load Balancer Controller."
+  value       = aws_iam_policy.aws_lb_controller_policy.arn
 }
