@@ -4,20 +4,16 @@ module "eks" {
   subnets      = var.subnets
   vpc_id       = var.vpc_id
 
+  # Defining node groups correctly
   node_groups = {
     eks_nodes = {
       desired_capacity = var.desired_capacity
       max_size         = var.max_size
       min_size         = var.min_size
       instance_type    = var.instance_type
-      node_group_name  = var.node_group_name
+      name             = var.node_group_name
     }
   }
 
-  # Enable OIDC provider for EKS (optional, useful for service accounts)
   cluster_oidc_enabled = true
-
-  lifecycle {
-    create_before_destroy = true
-  }
 }

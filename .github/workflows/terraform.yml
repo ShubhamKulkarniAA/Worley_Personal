@@ -1,106 +1,42 @@
-name: Terraform AWS Deployment
+name: Terraform CI/CD
 
 on:
   push:
     branches:
-      - amey
+      - main
 
 jobs:
-  TerraformAWS:
+  terraform:
     runs-on: ubuntu-latest
 
-    env:
-      AWS_REGION: ${{ secrets.AWS_REGION }}
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      CLUSTER_NAME: Worley-NC-EKS-Cluster
-      REPOSITORY_NAMES: "worley-nc-ui-k8s, worley-nc-api-k8s"
-      TERRAFORM_DIR: "./"
-
     steps:
-      # Checkout code from the repository
-      - name: Checkout Code
+      # Checkout the repository
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Install Terraform
-      - name: Install Terraform
+      - name: Set up Terraform
         uses: hashicorp/setup-terraform@v2
+
+      # Set AWS credentials as environment variables
+      - name: Set AWS Credentials
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+        run: echo "AWS credentials are set"
 
       # Initialize Terraform
       - name: Terraform Init
-        run: terraform init -upgrade
-        working-directory: ${{ env.TERRAFORM_DIR }}
-        if: success()
+        run: terraform init
 
       # Validate Terraform configuration
       - name: Terraform Validate
         run: terraform validate
-        working-directory: ${{ env.TERRAFORM_DIR }}
-        if: success()
 
-      # Generate Terraform Plan
+      # Plan Terraform execution
       - name: Terraform Plan
-        run: terraform plan -out=tfplan -input=false
-        working-directory: ${{ env.TERRAFORM_DIR }}
-        if: success()
+        run: terraform plan -out=tfplan
 
-      # Apply Terraform Plan
+      # Apply Terraform configuration
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
-        working-directory: ${{ env.TERRAFORM_DIR }}
-        if: success()
-
-      # Update kubeconfig for EKS
-      - name: Update kubeconfig for EKS
-        if: success()
-        run: |
-          aws eks update-kubeconfig --name ${{ env.CLUSTER_NAME }} --region ${{ env.AWS_REGION }}
-
-      ############################ ECR Module ###############################
-
-      # Authenticate to ECR
-      - name: Authenticate to ECR
-        if: success()
-        run: |
-          aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin 484907523966.dkr.ecr.ap-south-1.amazonaws.com
-
-      # Build and Push Docker Images for UI and API
-      - name: Build and Push Docker Images for UI and API
-        if: success()
-        run: |
-          IFS=',' read -ra REPOSITORY_NAMES <<< "${{ env.REPOSITORY_NAMES }}"
-          for repo in "${REPOSITORY_NAMES[@]}"; do
-            repo=$(echo $repo | xargs)
-            echo "Building and pushing Docker image for $repo repository"
-
-            # Build Docker image
-            docker build -t "${repo}-ecr-repo" .
-
-            # Tag Docker image
-            docker tag "${repo}-ecr-repo:latest" "484907523966.dkr.ecr.ap-south-1.amazonaws.com/$repo:latest"
-
-            # Push Docker image to ECR
-            docker push "484907523966.dkr.ecr.ap-south-1.amazonaws.com/$repo:latest"
-          done
-        working-directory: ./modules/eks
-        shell: /usr/bin/bash -e {0}
-
-      ############################ LBC Module ###############################
-
-      # Apply ClusterRoleBinding for AWS Load Balancer Controller
-      - name: Apply ClusterRoleBinding for AWS Load Balancer Controller
-        if: success()
-        run: |
-          kubectl apply -f modules/lbc/aws-lb-controller-clusterrolebinding.yaml
-
-      # Apply Kubernetes Resources
-      - name: Apply Kubernetes Resources
-        if: success()
-        run: |
-          kubectl apply -f modules/eks/k8s.yml
-
-      # Apply Ingress Resources
-      - name: Apply Ingress Resources
-        if: success()
-        run: |
-          kubectl apply -f modules/eks/ingress.yml
