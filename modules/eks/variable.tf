@@ -3,23 +3,22 @@ variable "cluster_name" {
   type        = string
 }
 
+variable "subnet_ids" {
+  description = "The IDs of the subnets to use for the EKS cluster"
+  type        = list(string)
+}
+
+variable "vpc_id" {
+  description = "The VPC ID for the EKS cluster"
+  type        = string
+}
+
 variable "node_group_name" {
   description = "The name of the EKS node group"
   type        = string
 }
 
-variable "ec2_key_name" {
-  description = "Name of the EC2 key pair"
-  type        = string
-  default     = ""
-}
-
-variable "instance_type" {
-  description = "The EC2 instance type"
-  type        = string
-}
-
-variable "desired_size" {
+variable "desired_capacity" {
   description = "The desired number of nodes in the EKS node group"
   type        = number
 }
@@ -34,7 +33,19 @@ variable "min_size" {
   type        = number
 }
 
-variable "subnet_ids" {
-  description = "The IDs of the subnets to use for the EKS cluster and node group"
-  type        = list(string)
+variable "instance_type" {
+  description = "The EC2 instance type for EKS nodes"
+  type        = string
+}
+
+variable "cluster_version" {
+  description = "The version of the EKS cluster"
+  type        = string
+  default     = "1.31"
+}
+
+variable "enable_irsa" {
+  description = "Enable IAM Roles for Service Accounts (IRSA)"
+  type        = bool
+  default     = true
 }

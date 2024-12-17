@@ -16,7 +16,7 @@ region                   = "ap-south-1"
 repository_names     = ["demo-ui-k8s", "demo-api-k8s"]
 image_tag_mutability = "MUTABLE"
 tags = {
-  Environment = "dev"
+  Environment = "development"
 }
 
 # EKS Variables

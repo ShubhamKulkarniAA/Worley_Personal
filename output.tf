@@ -28,7 +28,7 @@ output "private_subnet2_id" {
   value = module.vpc.private_subnet2_id
 }
 
-#ECR Outputs
+# ECR Outputs
 output "repository_uris" {
   description = "The repository URLs of the created ECR repositories"
   value       = module.ecr.repository_urls
@@ -49,26 +49,39 @@ output "lifecycle_policy" {
   value       = module.ecr.lifecycle_policy
 }
 
-# EKS Output
-output "eks_cluster_id" {
-  description = "The ID of the EKS cluster"
-  value       = module.eks.eks_cluster_id
+# EKS Outputs
+output "eks_cluster_name" {
+  description = "The name of the EKS cluster."
+  value       = module.eks.cluster_id
 }
 
 output "eks_cluster_endpoint" {
-  description = "The endpoint of the EKS cluster"
-  value       = module.eks.eks_cluster_endpoint
+  description = "The endpoint URL of the EKS cluster."
+  value       = module.eks.cluster_endpoint
 }
 
-output "eks_cluster_certificate_authority" {
-  description = "The certificate authority data for the EKS cluster"
-  value       = module.eks.eks_cluster_certificate_authority
+output "eks_cluster_oidc_provider" {
+  description = "The OIDC provider URL of the EKS cluster."
+  value       = module.eks.cluster_oidc_issuer_url
 }
 
-output "eks_cluster_role_arn" {
-  value = module.eks.cluster_role_arn
+output "eks_cluster_certificate_authority_data" {
+  description = "The certificate authority data for the EKS cluster."
+  value       = module.eks.cluster_certificate_authority_data
 }
 
-output "eks_node_role_arn" {
-  value = module.eks.node_role_arn
+# LBC Outputs
+output "aws_lb_controller_service_account" {
+  description = "The service account for the AWS Load Balancer Controller."
+  value       = module.lbc.aws_lb_controller_service_account
+}
+
+output "aws_lb_controller_role" {
+  description = "The IAM role used by the AWS Load Balancer Controller."
+  value       = module.lbc.aws_lb_controller_role
+}
+
+output "aws_lb_controller_policy" {
+  description = "The IAM policy for the AWS Load Balancer Controller."
+  value       = module.lbc.aws_lb_controller_policy
 }
