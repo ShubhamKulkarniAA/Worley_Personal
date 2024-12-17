@@ -10,7 +10,7 @@ output "eks_cluster_endpoint" {
 
 output "eks_cluster_oidc_provider" {
   description = "The OIDC provider URL of the EKS cluster."
-  value       = module.eks.cluster_identity.0.oidc.0.issuer
+  value       = module.eks.cluster_oidc_issuer_url
 }
 
 output "eks_cluster_certificate_authority_data" {
