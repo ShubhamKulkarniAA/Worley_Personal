@@ -52,7 +52,7 @@ output "lifecycle_policy" {
 # EKS Outputs
 output "eks_cluster_name" {
   description = "The name of the EKS cluster."
-  value       = module.eks.cluster_name
+  value       = module.eks.cluster_id
 }
 
 output "eks_cluster_endpoint" {
@@ -62,13 +62,14 @@ output "eks_cluster_endpoint" {
 
 output "eks_cluster_oidc_provider" {
   description = "The OIDC provider URL of the EKS cluster."
-  value       = module.eks.cluster_oidc_issuer_url
+  value       = module.eks.cluster_identity.0.oidc.0.issuer
 }
 
 output "eks_cluster_certificate_authority_data" {
   description = "The certificate authority data for the EKS cluster."
   value       = module.eks.cluster_certificate_authority_data
 }
+
 
 
 # LBC Outputs
