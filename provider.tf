@@ -1,48 +1,27 @@
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
-    }
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = "~> 2.0"
-    }
-    helm = {
-      source  = "hashicorp/helm"
-      version = "~> 2.0"
-    }
-  }
-
-  backend "s3" {
-    bucket = "worley-nc-test-bucket"
-    key    = "terraform.tfstate"
-    region = "ap-south-1"
-  }
-}
-
-# Authentication for the Kubernetes provider
-data "aws_eks_cluster_auth" "cluster" {
-  name = module.eks.cluster_name
-}
-
-# AWS provider configuration
 provider "aws" {
-  region = var.region
+  region = "ap-south-1"
 }
 
-# Kubernetes provider configuration
+
+# Fetch the AWS account ID using data source
+data "aws_caller_identity" "current" {}
+
+
+# Fetch the EKS cluster details
+
 provider "kubernetes" {
-  host                   = module.eks.cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+  host                   = data.aws_eks_cluster.cluster.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority[0].data)
   token                  = data.aws_eks_cluster_auth.cluster.token
 }
 
-# Helm provider configuration
+data "aws_eks_cluster" "cluster" { name = module.eks.cluster_name }
+data "aws_eks_cluster_auth" "cluster" { name = module.eks.cluster_name }
+
 provider "helm" {
   kubernetes {
-    host                   = module.eks.cluster_endpoint
-    cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+    host                   = data.aws_eks_cluster.cluster.endpoint
+    cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority[0].data)
     token                  = data.aws_eks_cluster_auth.cluster.token
   }
 }
