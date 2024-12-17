@@ -16,9 +16,13 @@ terraform {
 
   backend "s3" {
     bucket = "worley-nc-test-bucket"
-    key    = "worley-nc-test-bucket/terraform.tfstate"
+    key    = "terraform.tfstate"
     region = "ap-south-1"
   }
+}
+
+data "aws_eks_cluster_auth" "cluster" {
+  name = module.eks.cluster_name
 }
 
 provider "aws" {
@@ -37,8 +41,4 @@ provider "helm" {
     cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
     token                  = data.aws_eks_cluster_auth.cluster.token
   }
-}
-
-data "aws_eks_cluster_auth" "cluster" {
-  name = module.eks.cluster_name
 }

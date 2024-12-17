@@ -2,7 +2,7 @@ module "eks" {
   source       = "terraform-aws-modules/eks/aws"
   cluster_name = var.cluster_name
   version      = "~> 20.0"
-  subnet_ids   = var.subnets
+  subnet_ids   = var.subnet_ids
   vpc_id       = var.vpc_id
 
   # Defining node groups correctly

@@ -99,8 +99,3 @@ variable "eks_oidc_id" {
   description = "The OIDC ID for the EKS cluster."
   type        = string
 }
-
-variable "vpc_id" {
-  description = "The VPC ID where the load balancer will be created."
-  type        = string
-}

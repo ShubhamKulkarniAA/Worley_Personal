@@ -8,7 +8,7 @@ variable "node_group_name" {
   type        = string
 }
 
-variable "subnets" {
+variable "subnet_ids" {
   description = "The subnets in which the EKS cluster will be created."
   type        = list(string)
 }

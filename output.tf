@@ -65,6 +65,12 @@ output "eks_cluster_oidc_provider" {
   value       = module.eks.cluster_oidc_issuer_url
 }
 
+output "eks_cluster_certificate_authority_data" {
+  description = "The certificate authority data for the EKS cluster."
+  value       = module.eks.cluster_certificate_authority_data
+}
+
+
 # LBC Outputs
 output "aws_lb_controller_service_account" {
   description = "The service account for the AWS Load Balancer Controller."

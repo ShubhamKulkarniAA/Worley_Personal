@@ -1,14 +1,14 @@
-output "aws_lb_controller_service_account" {
-  description = "The service account for the AWS Load Balancer Controller."
-  value       = kubernetes_service_account.aws_lb_controller_sa.metadata[0].name
+output "eks_cluster_name" {
+  description = "The name of the EKS cluster."
+  value       = module.eks.eks_cluster_id
 }
 
-output "aws_lb_controller_role" {
-  description = "The IAM role used by the AWS Load Balancer Controller."
-  value       = aws_iam_role.aws_lb_controller_role.name
+output "eks_cluster_endpoint" {
+  description = "The endpoint URL of the EKS cluster."
+  value       = module.eks.eks_cluster_endpoint
 }
 
-output "aws_lb_controller_policy" {
-  description = "The IAM policy for the AWS Load Balancer Controller."
-  value       = aws_iam_policy.aws_lb_controller_policy.arn
+output "eks_cluster_oidc_provider" {
+  description = "The OIDC provider URL of the EKS cluster."
+  value       = module.eks.eks_cluster_identity.0.oidc.0.issuer
 }

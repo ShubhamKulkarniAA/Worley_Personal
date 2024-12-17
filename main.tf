@@ -18,7 +18,7 @@ module "eks" {
   source          = "./modules/eks"
   cluster_name    = var.cluster_name
   node_group_name = var.node_group_name
-  subnets = [
+  subnet_ids = [
     module.vpc.public_subnet1_id,
     module.vpc.public_subnet2_id,
     module.vpc.private_subnet1_id,
