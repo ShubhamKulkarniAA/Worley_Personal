@@ -1,5 +1,5 @@
 module "vpc" {
-  source                   = "../../modules/vpc"
+  source                   = "./modules/vpc"
   region                   = var.region
   vpc_cidr                 = var.vpc_cidr
   vpc_name                 = var.vpc_name
@@ -15,7 +15,7 @@ module "vpc" {
 }
 
 module "eks" {
-  source          = "../../modules/eks"
+  source          = "./modules/eks"
   cluster_name    = var.cluster_name
   node_group_name = var.node_group_name
   subnet_ids = [
@@ -32,7 +32,7 @@ module "eks" {
 }
 
 module "lbc" {
-  source              = "../../modules/lbc"
+  source              = "./modules/lbc"
   cluster_name        = module.eks.cluster_name
   region              = var.region
   eks_oidc_issuer_url = module.eks.cluster_oidc_issuer_url
@@ -40,7 +40,7 @@ module "lbc" {
 }
 
 module "ecr" {
-  source               = "../../modules/ecr"
+  source               = "./modules/ecr"
   repository_names     = var.repository_names
   image_tag_mutability = var.image_tag_mutability
   tags                 = var.tags
