@@ -32,11 +32,11 @@ module "eks" {
 }
 
 module "lbc" {
-  source       = "./modules/lbc"
-  cluster_name = module.eks.cluster_name
-  region       = var.region
-  eks_oidc_id  = module.eks.cluster_oidc_issuer_url
-  vpc_id       = module.vpc.vpc_id
+  source              = "./modules/lbc"
+  cluster_name        = module.eks.cluster_name
+  region              = var.region
+  eks_oidc_issuer_url = module.eks.cluster_oidc_issuer_url
+  vpc_id              = module.vpc.vpc_id
 }
 
 module "ecr" {

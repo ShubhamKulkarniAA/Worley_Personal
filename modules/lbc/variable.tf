@@ -1,20 +1,18 @@
 variable "cluster_name" {
-  description = "The name of the EKS cluster."
+  description = "The name of the EKS cluster"
   type        = string
 }
 
 variable "region" {
-  description = "The AWS region where the EKS cluster is deployed."
-  type        = string
+  type = string
 }
 
 variable "vpc_id" {
-  description = "The ID of the VPC where the load balancer will be created."
+  description = "The VPC ID where the ALB will be created"
   type        = string
 }
 
-
-variable "eks_oidc_id" {
-  description = "The OIDC ID for the EKS cluster."
+variable "eks_oidc_issuer_url" {
+  description = "The OIDC issuer URL for the EKS cluster"
   type        = string
 }

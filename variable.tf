@@ -90,12 +90,6 @@ variable "min_size" {
 }
 
 variable "instance_type" {
-  description = "The EC2 instance type for the EKS node group."
-  type        = string
-}
-
-# LBC Variables
-variable "eks_oidc_id" {
-  description = "The OIDC ID for the EKS cluster."
+  description = "The instance type for the EKS worker nodes."
   type        = string
 }

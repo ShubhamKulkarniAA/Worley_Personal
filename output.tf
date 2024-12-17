@@ -70,8 +70,6 @@ output "eks_cluster_certificate_authority_data" {
   value       = module.eks.cluster_certificate_authority_data
 }
 
-
-
 # LBC Outputs
 output "aws_lb_controller_service_account" {
   description = "The service account for the AWS Load Balancer Controller."
