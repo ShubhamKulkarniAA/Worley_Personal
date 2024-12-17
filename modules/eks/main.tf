@@ -1,6 +1,7 @@
 module "eks" {
   source       = "terraform-aws-modules/eks/aws"
   cluster_name = var.cluster_name
+  version      = "~> 20.0"
   subnet_ids   = var.subnets
   vpc_id       = var.vpc_id
 
@@ -17,4 +18,8 @@ module "eks" {
   }
 
   enable_irsa = true
+
+  tags = {
+    cluster = "Prod EKS Cluster"
+  }
 }
