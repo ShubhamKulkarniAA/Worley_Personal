@@ -15,13 +15,8 @@ terraform {
   }
 
   backend "s3" {
-    bucket = "my-tfstate-bucket-name"
+    bucket = "my-tfstate-bucket-eks"
     key    = "terraform.tfstate"
     region = "ap-south-1"
   }
-}
-
-resource "aws_s3_bucket" "tfstate_bucket" {
-  bucket = "my-tfstate-bucket-name"
-  region = "ap-south-1"
 }
