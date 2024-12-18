@@ -65,31 +65,31 @@ variable "tags" {
 
 # EKS Variables
 variable "cluster_name" {
-  description = "The name of the EKS cluster."
-  type        = string
+  type = string
 }
 
 variable "node_group_name" {
-  description = "The name of the EKS node group."
-  type        = string
+  type = string
 }
 
-variable "desired_capacity" {
-  description = "The desired number of nodes in the EKS node group."
-  type        = number
+variable "desired_size" {
+  type = number
 }
 
 variable "max_size" {
-  description = "The maximum number of nodes in the EKS node group."
-  type        = number
+  type = number
 }
 
 variable "min_size" {
-  description = "The minimum number of nodes in the EKS node group."
-  type        = number
+  type = number
 }
 
 variable "instance_type" {
-  description = "The instance type for the EKS worker nodes."
+  description = "The EC2 instance type for EKS worker nodes"
+  type        = string
+}
+
+variable "ec2_key_name" {
+  description = "The name of the EC2 key pair used for SSH access"
   type        = string
 }

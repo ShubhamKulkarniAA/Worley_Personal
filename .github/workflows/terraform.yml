@@ -13,7 +13,6 @@ jobs:
       AWS_REGION: ${{ secrets.AWS_REGION }}
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      REPOSITORY_NAMES: "worley-nc-ui-k8s, worley-nc-api-k8s"
       TERRAFORM_DIR: "./"
 
     steps:

@@ -1,18 +1,24 @@
 variable "cluster_name" {
-  description = "The name of the EKS cluster"
+  description = "The name of the EKS cluster."
+  type        = string
+}
+
+variable "oidc_provider_url" {
+  description = "The OIDC provider URL for the EKS cluster."
+  type        = string
+}
+
+variable "oidc_provider_arn" {
+  description = "The ARN of the OIDC provider for the EKS cluster."
   type        = string
 }
 
 variable "region" {
-  type = string
-}
-
-variable "vpc_id" {
-  description = "The VPC ID where the ALB will be created"
+  description = "The AWS region"
   type        = string
 }
 
-variable "eks_oidc_issuer_url" {
-  description = "The OIDC issuer URL for the EKS cluster"
+variable "vpc_id" {
+  description = "The VPC ID"
   type        = string
 }
