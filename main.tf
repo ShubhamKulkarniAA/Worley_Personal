@@ -23,14 +23,6 @@ module "eks" {
   depends_on      = [module.vpc]
 }
 
-data "aws_eks_cluster" "cluster" {
-  name = module.eks.cluster_id
-}
-
-data "aws_eks_cluster_auth" "auth" {
-  name = module.eks.cluster_id
-}
-
 module "lbc" {
   source                             = "./modules/lbc"
   cluster_name                       = module.eks.cluster_name
