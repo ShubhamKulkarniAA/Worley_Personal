@@ -4,11 +4,11 @@ data "aws_iam_policy_document" "aws_load_balancer_controller_assume_role_policy"
     effect  = "Allow"
     condition {
       test     = "StringEquals"
-      variable = "${replace(data.aws_eks_cluster.cluster.identity[0].oidc[0].issuer, "https://", "")}:sub"
+      variable = "${replace(module.eks.cluster_oidc_provider_url, "https://", "")}:sub"
       values   = ["system:serviceaccount:kube-system:aws-load-balancer-controller-${var.cluster_name}"]
     }
     principals {
-      identifiers = [var.oidc_provider_arn]
+      identifiers = [module.eks.cluster_oidc_provider_arn]
       type        = "Federated"
     }
   }
@@ -42,6 +42,7 @@ resource "helm_release" "aws_load_balancer_controller" {
   namespace  = kubernetes_namespace.aws_load_balancer_controller.metadata[0].name
   repository = "https://aws.github.io/eks-charts"
   chart      = "aws-load-balancer-controller"
+  version    = "1.4.5"
 
   set {
     name  = "clusterName"

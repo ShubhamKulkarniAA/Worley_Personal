@@ -1,29 +1,29 @@
 output "cluster_id" {
   description = "EKS cluster ID"
-  value       = aws_eks_cluster.eks.id
+  value       = module.eks.cluster_id
 }
 
 output "cluster_endpoint" {
   description = "EKS cluster endpoint"
-  value       = aws_eks_cluster.eks.endpoint
+  value       = module.eks.cluster_endpoint
 }
 
-output "oidc_provider_url" {
-  description = "The OIDC provider URL for the EKS cluster"
-  value       = aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
+output "cluster_oidc_provider_arn" {
+  description = "EKS OIDC provider ARN"
+  value       = module.eks.oidc_provider_arn
 }
 
-output "oidc_provider_arn" {
-  description = "The ARN of the OIDC provider for the EKS cluster"
-  value       = aws_iam_openid_connect_provider.eks_oidc_provider.arn
+output "cluster_oidc_provider_url" {
+  description = "EKS OIDC provider URL"
+  value       = module.eks.oidc_provider_url
 }
 
 output "cluster_certificate_authority_data" {
   description = "EKS cluster certificate authority data"
-  value       = aws_eks_cluster.eks.certificate_authority[0].data
+  value       = module.eks.cluster_certificate_authority_data
 }
 
 output "cluster_name" {
   description = "EKS cluster name"
-  value       = aws_eks_cluster.eks.name
+  value       = var.cluster_name
 }
