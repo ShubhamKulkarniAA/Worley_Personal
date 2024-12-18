@@ -1,4 +1,9 @@
-output "aws_load_balancer_controller_role_arn" {
-  description = "ARN of the IAM role for AWS Load Balancer Controller."
-  value       = aws_iam_role.aws_load_balancer_controller.arn
+output "lbc_role_arn" {
+  description = "The ARN of the IAM Role for AWS Load Balancer Controller"
+  value       = aws_iam_role.lbc_role.arn
+}
+
+output "lbc_policy_arn" {
+  description = "The ARN of the IAM Policy for AWS Load Balancer Controller"
+  value       = aws_iam_policy.aws_load_balancer_controller.arn
 }
