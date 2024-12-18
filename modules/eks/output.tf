@@ -18,7 +18,8 @@ output "oidc_provider_arn" {
   value       = module.eks.oidc_provider_arn
 }
 
+# Construct the OIDC provider URL manually if it's not directly available
 output "oidc_provider_url" {
   description = "The URL of the OIDC provider for the EKS cluster"
-  value       = module.eks.oidc_provider_url
+  value       = "https://oidc.eks.${var.region}.amazonaws.com/id/${module.eks.cluster_id}"
 }

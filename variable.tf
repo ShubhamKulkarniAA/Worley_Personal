@@ -1,64 +1,71 @@
 # VPC Variables
 variable "vpc_cidr" {
-  type = string
+  description = "CIDR block for the VPC"
+  type        = string
 }
 
 variable "vpc_name" {
-  type = string
+  description = "Name of the VPC"
+  type        = string
 }
 
 variable "internet_gateway_name" {
-  type = string
+  description = "Name of the internet gateway"
+  type        = string
 }
 
 variable "public_subnet1_cidr" {
-  type = string
+  description = "CIDR block for the first public subnet"
+  type        = string
 }
 
 variable "public_subnet2_cidr" {
-  type = string
+  description = "CIDR block for the second public subnet"
+  type        = string
 }
 
 variable "private_subnet1_cidr" {
-  type = string
+  description = "CIDR block for the first private subnet"
+  type        = string
 }
 
 variable "private_subnet2_cidr" {
-  type = string
+  description = "CIDR block for the second private subnet"
+  type        = string
 }
 
 variable "private_rds_subnet1_cidr" {
-  type = string
+  description = "CIDR block for the first private RDS subnet"
+  type        = string
 }
 
 variable "private_rds_subnet2_cidr" {
-  type = string
+  description = "CIDR block for the second private RDS subnet"
+  type        = string
 }
 
 variable "availability_zone1" {
-  type = string
+  description = "Availability zone 1"
+  type        = string
 }
 
 variable "availability_zone2" {
-  type = string
+  description = "Availability zone 2"
+  type        = string
 }
 
 variable "region" {
-  type = string
+  description = "AWS region for resources"
+  type        = string
 }
 
 # EKS Variables
 variable "cluster_name" {
+  description = "Name of the EKS cluster"
   type        = string
-  description = "Name for the EKS cluster"
 }
 
 variable "cluster_version" {
+  description = "Version of the EKS cluster"
   type        = string
-  description = "Kubernetes version for the EKS cluster"
-}
-
-variable "subnet_ids" {
-  type        = list(string)
-  description = "A list of subnet IDs for the EKS cluster"
 }
