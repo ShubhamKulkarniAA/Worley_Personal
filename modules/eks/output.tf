@@ -14,9 +14,11 @@ output "cluster_arn" {
 }
 
 output "oidc_provider_arn" {
-  value = aws_iam_openid_connect_provider.eks_oidc.arn
+  description = "The ARN of the OIDC provider for the EKS cluster"
+  value       = module.eks.oidc_provider_arn
 }
 
 output "oidc_provider_url" {
-  value = aws_iam_openid_connect_provider.eks_oidc.url
+  description = "The URL of the OIDC provider for the EKS cluster"
+  value       = module.eks.oidc_provider_url
 }
