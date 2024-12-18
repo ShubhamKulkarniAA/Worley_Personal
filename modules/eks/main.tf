@@ -6,13 +6,8 @@ module "eks" {
   cluster_version = var.cluster_version
 
   # Using the VPC module's outputs for subnet and VPC references
-  subnet_ids = [
-    module.vpc.public_subnet1_id,
-    module.vpc.public_subnet2_id,
-    module.vpc.private_subnet1_id,
-    module.vpc.private_subnet2_id
-  ]
-  vpc_id = module.vpc.vpc_id
+  subnet_ids = var.subnet_ids
+  vpc_id     = var.vpc_id
 
   create_iam_role = true
   enable_irsa     = true
@@ -30,8 +25,8 @@ module "eks" {
 
       # Restrict worker nodes to private subnets
       subnet_ids = [
-        module.vpc.private_subnet1_id,
-        module.vpc.private_subnet2_id
+        var.private_subnet1_id,
+        var.private_subnet2_id
       ]
     }
   }
