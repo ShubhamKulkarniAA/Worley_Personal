@@ -15,9 +15,10 @@ module "eks" {
 resource "aws_eks_node_group" "default" {
   cluster_name    = module.eks.cluster_name
   node_group_name = var.node_group_name
-  node_role_arn   = module.eks.node_iam_role_arn
-  subnet_ids      = var.subnet_ids
-  instance_types  = [var.instance_type]
+  node_role_arn   = module.eks.node_role_arn
+
+  subnet_ids     = var.subnet_ids
+  instance_types = [var.instance_type]
   remote_access {
     ec2_ssh_key = var.ec2_key_name
   }
