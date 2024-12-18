@@ -26,8 +26,8 @@ module "eks" {
 module "lbc" {
   source                             = "./modules/lbc"
   cluster_name                       = module.eks.cluster_name
-  oidc_provider_arn                  = module.eks.cluster_oidc_provider_arn
-  oidc_provider_url                  = data.aws_eks_cluster.cluster.identity[0].oidc[0].issuer
+  oidc_provider_url                  = module.eks.oidc_provider_url
+  oidc_provider_arn                  = module.eks.oidc_provider_arn
   cluster_endpoint                   = data.aws_eks_cluster.cluster.endpoint
   cluster_certificate_authority_data = data.aws_eks_cluster.cluster.certificate_authority[0].data
   depends_on                         = [module.eks]

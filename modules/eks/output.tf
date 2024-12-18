@@ -8,14 +8,14 @@ output "cluster_endpoint" {
   value       = aws_eks_cluster.eks.endpoint
 }
 
-output "cluster_oidc_provider_arn" {
-  description = "EKS OIDC provider ARN"
-  value       = aws_eks_cluster.eks.identity[0].oidc[0].issuer
+output "oidc_provider_url" {
+  description = "The OIDC provider URL for the EKS cluster"
+  value       = aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
 }
 
-output "cluster_oidc_provider_url" {
-  description = "EKS OIDC provider URL"
-  value       = aws_eks_cluster.eks.identity[0].oidc[0].issuer_url
+output "oidc_provider_arn" {
+  description = "The ARN of the OIDC provider for the EKS cluster"
+  value       = aws_iam_openid_connect_provider.eks_oidc_provider.arn
 }
 
 output "cluster_certificate_authority_data" {
