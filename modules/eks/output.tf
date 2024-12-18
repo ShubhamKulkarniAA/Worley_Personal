@@ -13,13 +13,17 @@ output "cluster_arn" {
   value       = module.eks.cluster_arn
 }
 
-output "oidc_provider_arn" {
-  description = "The ARN of the OIDC provider for the EKS cluster"
-  value       = module.eks.oidc_provider_arn
+# If oidc_provider_arn is not directly available from the module, use the data source
+data "aws_iam_openid_connect_provider" "eks_oidc" {
+  url = "https://oidc.eks.${var.region}.amazonaws.com/id/${module.eks.cluster_id}"
 }
 
-# Construct the OIDC provider URL manually if it's not directly available
+output "oidc_provider_arn" {
+  description = "The ARN of the OIDC provider for the EKS cluster"
+  value       = data.aws_iam_openid_connect_provider.eks_oidc.arn
+}
+
 output "oidc_provider_url" {
   description = "The URL of the OIDC provider for the EKS cluster"
-  value       = "https://oidc.eks.${var.region}.amazonaws.com/id/${module.eks.cluster_id}"
+  value       = data.aws_iam_openid_connect_provider.eks_oidc.url
 }
