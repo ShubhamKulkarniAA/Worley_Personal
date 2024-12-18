@@ -8,12 +8,12 @@ resource "aws_iam_role" "lbc_role" {
       {
         "Effect" : "Allow",
         "Principal" : {
-          "Federated" : module.eks.oidc_provider_arn
+          "Federated" : var.oidc_provider_arn
         },
         "Action" : "sts:AssumeRoleWithWebIdentity",
         "Condition" : {
           "StringEquals" : {
-            "${replace(module.eks.oidc_provider, "https://", "")}:sub" : "system:serviceaccount:kube-system:aws-load-balancer-controller"
+            "${replace(var.oidc_provider_url, "https://", "")}:sub" : "system:serviceaccount:kube-system:aws-load-balancer-controller"
           }
         }
       }
