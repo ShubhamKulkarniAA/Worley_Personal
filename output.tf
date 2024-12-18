@@ -28,27 +28,6 @@ output "private_subnet2_id" {
   value = module.vpc.private_subnet2_id
 }
 
-#ECR Outputs
-# output "repository_uris" {
-#   description = "The repository URLs of the created ECR repositories"
-#   value       = module.ecr.repository_urls
-# }
-
-# output "repository_names" {
-#   description = "The names of the created ECR repositories"
-#   value       = module.ecr.repository_names
-# }
-
-# output "repository_arn" {
-#   description = "The ARNs of the created ECR repositories"
-#   value       = module.ecr.repository_arn
-# }
-
-# output "lifecycle_policy" {
-#   description = "The lifecycle policies applied to the repositories"
-#   value       = module.ecr.lifecycle_policy
-# }
-
 # EKS Output
 output "cluster_id" {
   description = "EKS cluster ID."
@@ -61,5 +40,11 @@ output "cluster_endpoint" {
 }
 
 output "oidc_provider_arn" {
-  value = module.eks.oidc_provider_arn
+  description = "OIDC provider ARN for the EKS cluster."
+  value       = module.eks.cluster_oidc_provider_arn
+}
+
+output "oidc_provider_url" {
+  description = "OIDC provider URL for the EKS cluster."
+  value       = module.eks.cluster_oidc_provider_url
 }
