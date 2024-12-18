@@ -20,6 +20,7 @@ module "eks" {
   cluster_name    = var.cluster_name
   cluster_version = var.cluster_version
   subnet_ids      = [module.vpc.public_subnet1_id, module.vpc.public_subnet2_id]
+  depends_on      = [module.vpc]
 }
 
 module "lbc" {
