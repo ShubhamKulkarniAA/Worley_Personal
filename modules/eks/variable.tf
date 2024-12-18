@@ -1,10 +1,14 @@
-variable "cluster_name" { type = string }
-variable "cluster_version" { type = string }
-variable "vpc_id" { type = string }
-variable "subnet_ids" { type = list(string) }
-variable "node_group_name" { type = string }
-variable "instance_type" { type = string }
-variable "ec2_key_name" { type = string }
-variable "desired_size" { type = number }
-variable "max_size" { type = number }
-variable "min_size" { type = number }
+variable "cluster_name" {
+  type        = string
+  description = "Name for the EKS cluster"
+}
+
+variable "cluster_version" {
+  type        = string
+  description = "Kubernetes version for the EKS cluster"
+}
+
+variable "subnet_ids" {
+  type        = list(string)
+  description = "A list of subnet IDs for the EKS cluster"
+}

@@ -22,9 +22,3 @@ region                   = "ap-south-1"
 # EKS Variables
 cluster_name    = "my-eks-cluster"
 cluster_version = "1.31"
-node_group_name = "my-node-group"
-instance_type   = "t3.medium"
-ec2_key_name    = "EKS"
-desired_size    = 1
-max_size        = 1
-min_size        = 1

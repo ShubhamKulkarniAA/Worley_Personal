@@ -1,31 +1,23 @@
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 19.0"
+  version = "~> 20.8.4"
 
-  cluster_name                    = var.cluster_name
-  cluster_version                 = var.cluster_version
-  cluster_endpoint_private_access = true
-  cluster_endpoint_public_access  = false
-
-  vpc_id          = var.vpc_id
+  cluster_name    = var.cluster_name
+  cluster_version = var.cluster_version
+  vpc_id          = module.vpc.vpc_id
   subnet_ids      = var.subnet_ids
   create_iam_role = true
-}
 
-resource "aws_eks_node_group" "default" {
-  cluster_name    = module.eks.cluster_name
-  node_group_name = var.node_group_name
-  node_role_arn   = module.eks.node_role_arn
+  eks_managed_node_group_defaults = {
+    ami_type       = "AL2_x86_64"
+    instance_types = ["t3.medium"]
+  }
 
-  subnet_ids     = var.subnet_ids
-  instance_types = [var.instance_type]
-  remote_access {
-    ec2_ssh_key = var.ec2_key_name
+  eks_managed_node_groups = {
+    default = {
+      min_size     = 1
+      max_size     = 1
+      desired_size = 1
+    }
   }
-  scaling_config {
-    desired_size = var.desired_size
-    max_size     = var.max_size
-    min_size     = var.min_size
-  }
-  depends_on = [module.eks]
 }

@@ -19,14 +19,7 @@ module "eks" {
 
   cluster_name    = var.cluster_name
   cluster_version = var.cluster_version
-  vpc_id          = module.vpc.vpc_id
   subnet_ids      = [module.vpc.public_subnet1_id, module.vpc.public_subnet2_id]
-  node_group_name = var.node_group_name
-  instance_type   = var.instance_type
-  ec2_key_name    = var.ec2_key_name
-  desired_size    = var.desired_size
-  max_size        = var.max_size
-  min_size        = var.min_size
 }
 
 module "lbc" {
