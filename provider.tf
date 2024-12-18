@@ -15,6 +15,16 @@ provider "aws" {
   region = "ap-south-1"
 }
 
+# Declare the EKS Cluster data source
+data "aws_eks_cluster" "cluster" {
+  name = var.cluster_name
+}
+
+# Declare the EKS Cluster authentication data source
+data "aws_eks_cluster_auth" "cluster" {
+  name = var.cluster_name
+}
+
 provider "helm" {
   kubernetes {
     host                   = data.aws_eks_cluster.cluster.endpoint
