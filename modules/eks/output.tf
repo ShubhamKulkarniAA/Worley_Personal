@@ -13,11 +13,6 @@ output "cluster_oidc_provider_arn" {
   value       = module.eks.oidc_provider_arn
 }
 
-output "cluster_oidc_provider_url" {
-  description = "EKS OIDC provider URL"
-  value       = module.eks.oidc_provider_url
-}
-
 output "cluster_name" {
   description = "EKS cluster name"
   value       = var.cluster_name
