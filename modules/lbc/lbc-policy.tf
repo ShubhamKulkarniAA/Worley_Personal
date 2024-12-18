@@ -88,15 +88,3 @@ resource "aws_iam_policy" "lbc_custom_policy" {
     }
   )
 }
-
-# IAM Role for the AWS Load Balancer Controller
-resource "aws_iam_role" "lbc_role" {
-  name               = "AWSLoadBalancerControllerRole"
-  assume_role_policy = data.aws_iam_policy_document.aws_load_balancer_controller_assume_role_policy.json
-}
-
-# Attach the custom IAM policy to the IAM role
-resource "aws_iam_role_policy_attachment" "lbc_custom_policy_attachment" {
-  role       = aws_iam_role.lbc_role.name
-  policy_arn = aws_iam_policy.lbc_custom_policy.arn
-}

@@ -1,7 +1,13 @@
+# IAM Role for the AWS Load Balancer Controller
+resource "aws_iam_role" "lbc_role" {
+  name               = "AWSLoadBalancerControllerRole"
+  assume_role_policy = data.aws_iam_policy_document.aws_load_balancer_controller_assume_role_policy.json
+}
+
 # Reference the policy and IAM role from lbc-policy.tf
 
 module "load_balancer_controller" {
-  source = "./lbc/lbc-policy.tf" # Path to the lbc-policy.tf file
+  source = "./modules/lbc/lbc-policy.tf" # Path to the lbc-policy.tf file
 }
 
 # Attach the IAM policy to the IAM role
