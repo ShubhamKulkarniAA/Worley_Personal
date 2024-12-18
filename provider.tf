@@ -15,20 +15,15 @@ provider "aws" {
   region = "ap-south-1"
 }
 
-# Declare the EKS Cluster data source
-data "aws_eks_cluster" "cluster" {
-  name = var.cluster_name
-}
-
-# Declare the EKS Cluster authentication data source
-data "aws_eks_cluster_auth" "cluster" {
-  name = var.cluster_name
-}
-
+# Helm provider for installing Loadbalancer controller.
 provider "helm" {
   kubernetes {
-    host                   = data.aws_eks_cluster.cluster.endpoint
-    cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority[0].data)
-    token                  = data.aws_eks_cluster_auth.cluster.token
+    host                   = module.eks.cluster_endpoint
+    cluster_ca_certificate = base64decode(module.eks.cluster_certificate_authority_data)
+    exec {
+      api_version = "client.authentication.k8s.io/v1beta1"
+      args        = ["eks", "get-token", "--profile", "labs", "--cluster-name", module.eks.cluster_name]
+      command     = "aws"
+    }
   }
 }
