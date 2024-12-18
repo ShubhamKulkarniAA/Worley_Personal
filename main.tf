@@ -23,12 +23,20 @@ module "eks" {
   depends_on      = [module.vpc]
 }
 
+data "aws_eks_cluster" "cluster" {
+  name = module.eks.cluster_id
+}
+
+data "aws_eks_cluster_auth" "auth" {
+  name = module.eks.cluster_id
+}
+
 module "lbc" {
   source                             = "./modules/lbc"
   cluster_name                       = module.eks.cluster_name
   oidc_provider_arn                  = module.eks.cluster_oidc_provider_arn
-  oidc_provider_url                  = module.eks.cluster_oidc_provider_url
-  cluster_endpoint                   = module.eks.cluster_endpoint
-  cluster_certificate_authority_data = module.eks.cluster_certificate_authority_data
+  oidc_provider_url                  = data.aws_eks_cluster.cluster.identity[0].oidc[0].issuer
+  cluster_endpoint                   = data.aws_eks_cluster.cluster.endpoint
+  cluster_certificate_authority_data = data.aws_eks_cluster.cluster.certificate_authority[0].data
   depends_on                         = [module.eks]
 }

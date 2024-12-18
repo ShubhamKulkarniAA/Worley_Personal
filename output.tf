@@ -30,19 +30,21 @@ output "private_subnet2_id" {
 
 # EKS Output
 output "cluster_id" {
-  description = "EKS cluster ID."
+  description = "EKS cluster ID"
   value       = module.eks.cluster_id
 }
 
 output "cluster_endpoint" {
-  description = "Endpoint for EKS control plane."
+  description = "EKS cluster endpoint"
   value       = module.eks.cluster_endpoint
 }
 
-output "oidc_provider_arn" {
-  value = module.eks.cluster_oidc_provider_arn
+output "cluster_oidc_provider_arn" {
+  description = "EKS OIDC provider ARN"
+  value       = module.eks.oidc_provider_arn
 }
 
-output "oidc_provider_url" {
-  value = module.eks.cluster_oidc_provider_url
+output "cluster_name" {
+  description = "EKS cluster name"
+  value       = var.cluster_name
 }
