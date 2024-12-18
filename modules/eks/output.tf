@@ -9,5 +9,16 @@ output "cluster_endpoint" {
 }
 
 output "oidc_provider_arn" {
-  value = module.eks.oidc_provider_arn
+  description = "OIDC provider ARN for EKS."
+  value       = module.eks.oidc_provider_arn
+}
+
+output "oidc_provider_url" {
+  description = "OIDC provider URL for EKS."
+  value       = module.eks.oidc_provider_url
+}
+
+output "cluster_name" {
+  description = "EKS Cluster Name."
+  value       = module.eks.cluster_name
 }

@@ -21,11 +21,11 @@ resource "aws_iam_role" "aws_load_balancer_controller" {
         Action = "sts:AssumeRoleWithWebIdentity",
         Effect = "Allow",
         Principal = {
-          Federated = module.eks.cluster_oidc_provider_arn
+          Federated = var.oidc_provider_arn
         },
         Condition = {
           StringEquals = {
-            "${replace(module.eks.cluster_endpoint, "https://", "")}:sub" : "system:serviceaccount:kube-system:aws-load-balancer-controller"
+            "${replace(var.oidc_provider_url, "https://", "")}:sub" : "system:serviceaccount:kube-system:aws-load-balancer-controller"
           }
         }
       }
@@ -46,7 +46,7 @@ resource "helm_release" "aws_load_balancer_controller" {
 
   set {
     name  = "clusterName"
-    value = module.eks.cluster_name
+    value = var.cluster_name
   }
   set {
     name  = "serviceAccount.create"
