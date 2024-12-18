@@ -24,9 +24,11 @@ module "eks" {
 }
 
 module "lbc" {
-  source            = "./modules/lbc"
-  cluster_name      = module.eks.cluster_name
-  oidc_provider_arn = module.eks.cluster_oidc_provider_arn
-  oidc_provider_url = module.eks.cluster_oidc_provider_url
-  depends_on        = [module.eks]
+  source                             = "./modules/lbc"
+  cluster_name                       = module.eks.cluster_name
+  oidc_provider_arn                  = module.eks.cluster_oidc_provider_arn
+  oidc_provider_url                  = module.eks.cluster_oidc_provider_url
+  cluster_endpoint                   = module.eks.cluster_endpoint
+  cluster_certificate_authority_data = module.eks.cluster_certificate_authority_data
+  depends_on                         = [module.eks]
 }
