@@ -25,7 +25,7 @@ resource "aws_iam_role" "aws_load_balancer_controller" {
         },
         Condition = {
           StringEquals = {
-            "${replace(module.eks.cluster_oidc_provider_url, "https://", "")}:sub" : "system:serviceaccount:kube-system:aws-load-balancer-controller"
+            "${replace(module.eks.cluster_endpoint, "https://", "")}:sub" : "system:serviceaccount:kube-system:aws-load-balancer-controller"
           }
         }
       }
