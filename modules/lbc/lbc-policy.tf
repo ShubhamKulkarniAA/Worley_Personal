@@ -1,4 +1,3 @@
-# Data source to define the assume role policy document for the AWS Load Balancer Controller
 data "aws_iam_policy_document" "aws_load_balancer_controller_assume_role_policy" {
   statement {
     actions = ["sts:AssumeRoleWithWebIdentity"]
@@ -15,10 +14,15 @@ data "aws_iam_policy_document" "aws_load_balancer_controller_assume_role_policy"
   }
 }
 
-# IAM Policy for the AWS Load Balancer Controller
+# IAM Role for the AWS Load Balancer Controller
+resource "aws_iam_role" "lbc_role" {
+  assume_role_policy = data.aws_iam_policy_document.aws_load_balancer_controller_assume_role_policy.json
+  name               = "AWSLoadBalancerControllerRole"
+}
+
+# IAM Policy for the Load Balancer Controller
 resource "aws_iam_policy" "lbc_custom_policy" {
-  name        = "AWSLoadBalancerControllerCustomPolicy"
-  description = "Custom policy for AWS Load Balancer Controller"
+  name = "AWSLoadBalancerControllerCustomPolicy"
   policy = jsonencode(
     {
       "Version" : "2012-10-17",
@@ -60,10 +64,145 @@ resource "aws_iam_policy" "lbc_custom_policy" {
             "elasticloadbalancing:DescribeTargetGroups",
             "elasticloadbalancing:DescribeTargetGroupAttributes",
             "elasticloadbalancing:DescribeTargetHealth",
-            "elasticloadbalancing:DescribeTags",
-            "elasticloadbalancing:AddTags"
+            "elasticloadbalancing:DescribeTags", # Describe ELB tags
+            "elasticloadbalancing:AddTags"       # Add ELB tags
           ],
           "Resource" : "*"
+        },
+        {
+          "Effect" : "Allow",
+          "Action" : [
+            "cognito-idp:DescribeUserPoolClient",
+            "acm:ListCertificates",
+            "acm:DescribeCertificate",
+            "iam:ListServerCertificates",
+            "iam:GetServerCertificate",
+            "waf-regional:GetWebACL",
+            "waf-regional:GetWebACLForResource",
+            "waf-regional:AssociateWebACL",
+            "waf-regional:DisassociateWebACL",
+            "wafv2:GetWebACL",
+            "wafv2:GetWebACLForResource",
+            "wafv2:AssociateWebACL",
+            "wafv2:DisassociateWebACL",
+            "shield:GetSubscriptionState",
+            "shield:DescribeProtection",
+            "shield:CreateProtection",
+            "shield:DeleteProtection"
+          ],
+          "Resource" : "*"
+        },
+        {
+          "Effect" : "Allow",
+          "Action" : [
+            "ec2:AuthorizeSecurityGroupIngress",
+            "ec2:RevokeSecurityGroupIngress"
+          ],
+          "Resource" : "*"
+        },
+        {
+          "Effect" : "Allow",
+          "Action" : [
+            "ec2:CreateSecurityGroup"
+          ],
+          "Resource" : "*"
+        },
+        {
+          "Effect" : "Allow",
+          "Action" : [
+            "ec2:CreateTags"
+          ],
+          "Resource" : "arn:aws:ec2:*:*:security-group/*",
+          "Condition" : {
+            "StringEquals" : {
+              "ec2:CreateAction" : "CreateSecurityGroup"
+            },
+            "Null" : {
+              "aws:RequestTag/elbv2.k8s.aws/cluster" : "false"
+            }
+          }
+        },
+        {
+          "Effect" : "Allow",
+          "Action" : [
+            "ec2:CreateTags",
+            "ec2:DeleteTags"
+          ],
+          "Resource" : "arn:aws:ec2:*:*:security-group/*",
+          "Condition" : {
+            "Null" : {
+              "aws:RequestTag/elbv2.k8s.aws/cluster" : "true",
+              "aws:ResourceTag/elbv2.k8s.aws/cluster" : "false"
+            }
+          }
+        },
+        {
+          "Effect" : "Allow",
+          "Action" : [
+            "ec2:AuthorizeSecurityGroupIngress",
+            "ec2:RevokeSecurityGroupIngress",
+            "ec2:DeleteSecurityGroup"
+          ],
+          "Resource" : "*",
+          "Condition" : {
+            "Null" : {
+              "aws:ResourceTag/elbv2.k8s.aws/cluster" : "false"
+            }
+          }
+        },
+        {
+          "Effect" : "Allow",
+          "Action" : [
+            "elasticloadbalancing:CreateLoadBalancer",
+            "elasticloadbalancing:CreateTargetGroup"
+          ],
+          "Resource" : "*",
+          "Condition" : {
+            "Null" : {
+              "aws:RequestTag/elbv2.k8s.aws/cluster" : "false"
+            }
+          }
+        },
+        {
+          "Effect" : "Allow",
+          "Action" : [
+            "elasticloadbalancing:CreateListener",
+            "elasticloadbalancing:DeleteListener",
+            "elasticloadbalancing:CreateRule",
+            "elasticloadbalancing:DeleteRule"
+          ],
+          "Resource" : "*"
+        },
+        {
+          "Effect" : "Allow",
+          "Action" : [
+            "elasticloadbalancing:AddTags",
+            "elasticloadbalancing:RemoveTags"
+          ],
+          "Resource" : [
+            "arn:aws:elasticloadbalancing:*:*:targetgroup/*/*",
+            "arn:aws:elasticloadbalancing:*:*:loadbalancer/net/*/*",
+            "arn:aws:elasticloadbalancing:*:*:loadbalancer/app/*/*"
+          ],
+          "Condition" : {
+            "Null" : {
+              "aws:RequestTag/elbv2.k8s.aws/cluster" : "true",
+              "aws:ResourceTag/elbv2.k8s.aws/cluster" : "false"
+            }
+          }
+        },
+        {
+          "Effect" : "Allow",
+          "Action" : [
+            "elasticloadbalancing:AddTags",
+            "elasticloadbalancing:RemoveTags"
+          ],
+          "Resource" : [
+            "arn:aws:elasticloadbalancing:*:*:listener/net/*/*/*",
+            "arn:aws:elasticloadbalancing:*:*:listener/app/*/*/*",
+            "arn:aws:elasticloadbalancing:*:*:listener-rule/net/*/*/*",
+            "arn:aws:elasticloadbalancing:*:*:listener-rule/app/*/*/*"
+          ]
         },
         {
           "Effect" : "Allow",
@@ -83,8 +222,38 @@ resource "aws_iam_policy" "lbc_custom_policy" {
               "aws:ResourceTag/elbv2.k8s.aws/cluster" : "false"
             }
           }
+        },
+        {
+          "Effect" : "Allow",
+          "Action" : [
+            "elasticloadbalancing:RegisterTargets",
+            "elasticloadbalancing:DeregisterTargets"
+          ],
+          "Resource" : "arn:aws:elasticloadbalancing:*:*:targetgroup/*/*"
+        },
+        {
+          "Effect" : "Allow",
+          "Action" : [
+            "elasticloadbalancing:SetWebAcl",
+            "elasticloadbalancing:ModifyListener",
+            "elasticloadbalancing:AddListenerCertificates",
+            "elasticloadbalancing:RemoveListenerCertificates",
+            "elasticloadbalancing:ModifyRule"
+          ],
+          "Resource" : "*"
         }
       ]
     }
   )
+}
+
+# Attach the custom policy to the IAM role
+resource "aws_iam_role_policy_attachment" "lbc_custom_policy_attachment" {
+  role       = aws_iam_role.lbc_role.name
+  policy_arn = aws_iam_policy.lbc_custom_policy.arn
+}
+
+# Data source for EKS OIDC provider certificate thumbprint
+data "tls_certificate" "eks_cluster" {
+  url = var.oidc_provider_url
 }

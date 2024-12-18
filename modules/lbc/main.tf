@@ -1,21 +1,3 @@
-# IAM Role for the AWS Load Balancer Controller
-resource "aws_iam_role" "lbc_role" {
-  name               = "AWSLoadBalancerControllerRole"
-  assume_role_policy = data.aws_iam_policy_document.aws_load_balancer_controller_assume_role_policy.json
-}
-
-# Reference the policy and IAM role from lbc-policy.tf
-
-module "load_balancer_controller" {
-  source = "./modules/lbc/lbc-policy.tf" # Path to the lbc-policy.tf file
-}
-
-# Attach the IAM policy to the IAM role
-resource "aws_iam_role_policy_attachment" "lbc_custom_policy_attachment" {
-  role       = module.load_balancer_controller.aws_iam_role.lbc_role.name
-  policy_arn = module.load_balancer_controller.aws_iam_policy.lbc_custom_policy.arn
-}
-
 # Kubernetes Service Account for the Load Balancer Controller
 resource "kubernetes_service_account" "aws_load_balancer_controller" {
   metadata {
