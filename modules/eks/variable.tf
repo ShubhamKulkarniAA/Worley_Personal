@@ -9,6 +9,6 @@ variable "cluster_version" {
 }
 
 variable "subnet_ids" {
+  description = "The IDs of the subnets to use for the EKS cluster and node group"
   type        = list(string)
-  description = "A list of subnet IDs for the EKS cluster"
 }

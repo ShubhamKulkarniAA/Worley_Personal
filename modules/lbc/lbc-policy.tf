@@ -1,106 +1,105 @@
-data "aws_iam_policy_document" "aws_load_balancer_controller_policy_document" {
-  statement {
-    actions = [
-      "acm:DescribeCertificate",
-      "acm:ListCertificates",
-      "acm:GetCertificate",
+resource "aws_iam_policy" "aws_load_balancer_controller_policy" {
+  name        = "AWSLoadBalancerControllerIAMPolicy"
+  path        = "/"
+  description = "IAM policy for AWS Load Balancer Controller"
+  policy      = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "iam:CreateServiceLinkedRole",
+                "ec2:DescribeAccountAttributes",
+                "ec2:DescribeAddresses",
+                "ec2:DescribeAvailabilityZones",
+                "ec2:DescribeInternetGateways",
+                "ec2:DescribeVpcs",
+                "ec2:DescribeSubnets",
+                "ec2:DescribeSecurityGroups",
+                "ec2:DescribeInstances",
+                "ec2:DescribeNetworkInterfaces",
+                "ec2:DescribeTags",
+                "ec2:GetCoipPoolUsage",
+                "ec2:DescribeCoipPools",
+                "elasticloadbalancing:DescribeLoadBalancers",
+                "elasticloadbalancing:DescribeLoadBalancerAttributes",
+                "elasticloadbalancing:DescribeListeners",
+                "elasticloadbalancing:DescribeListenerCertificates",
+                "elasticloadbalancing:DescribeSSLPolicies",
+                "elasticloadbalancing:DescribeRules",
+                "elasticloadbalancing:DescribeTargetGroups",
+                "elasticloadbalancing:DescribeTargetGroupAttributes",
+                "elasticloadbalancing:DescribeTargetHealth",
+                "elasticloadbalancing:DescribeTags"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "cognito-idp:DescribeUserPoolClient",
+                "acm:ListCertificates",
+                "acm:DescribeCertificate",
+                "iam:ListServerCertificates",
+                "iam:GetServerCertificate",
+                "waf-regional:GetWebACL",
+                "waf-regional:GetWebACLForResource",
+                "waf-regional:AssociateWebACL",
+                "waf-regional:DisassociateWebACL",
+                "wafv2:GetWebACL",
+                "wafv2:GetWebACLForResource",
+                "wafv2:AssociateWebACL",
+                "wafv2:DisassociateWebACL",
+                "shield:GetSubscriptionState",
+                "shield:DescribeProtection",
+                "shield:CreateProtection",
+                "shield:DeleteProtection",
+                "shield:DescribeSubscription",
+                "shield:ListProtections"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ec2:AuthorizeSecurityGroupIngress",
+                "ec2:RevokeSecurityGroupIngress"
+            ],
+            "Resource": "*"
+        }
     ]
-    resources = ["*"]
+}
+EOF
+}
+
+resource "aws_iam_role" "aws_load_balancer_controller_role" {
+  name = "aws-load-balancer-controller-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Principal = {
+          Service = "eks.amazonaws.com"
+        },
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "aws_load_balancer_controller_attachment" {
+  role       = aws_iam_role.aws_load_balancer_controller_role.name
+  policy_arn = aws_iam_policy.aws_load_balancer_controller_policy.arn
+}
+
+resource "kubernetes_service_account" "aws_load_balancer_controller" {
+  metadata {
+    name      = "aws-load-balancer-controller"
+    namespace = "kube-system"
   }
 
-  statement {
-    actions = [
-      "ec2:AuthorizeSecurityGroupIngress",
-      "ec2:CreateSecurityGroup",
-      "ec2:CreateTags",
-      "ec2:DeleteSecurityGroup",
-      "ec2:DescribeAccountAttributes",
-      "ec2:DescribeAddresses",
-      "ec2:DescribeInstances",
-      "ec2:DescribeInternetGateways",
-      "ec2:DescribeListeners",
-      "ec2:DescribeLoadBalancers",
-      "ec2:DescribeLoadBalancerAttributes",
-      "ec2:DescribeLoadBalancerPolicies",
-      "ec2:DescribeLoadBalancerTargetGroups",
-      "ec2:DescribeLoadBalancerTargetGroupAttributes",
-      "ec2:DescribeNetworkInterfaces",
-      "ec2:DescribeSecurityGroups",
-      "ec2:DescribeSubnets",
-      "ec2:DescribeTags",
-      "ec2:DeleteTags",
-      "ec2:ModifyListener",
-      "ec2:ModifyLoadBalancerAttributes",
-      "ec2:ModifyLoadBalancerTargetGroupAttributes",
-      "ec2:RegisterTargets",
-      "ec2:DeregisterTargets",
-      "ec2:RevokeSecurityGroupIngress",
-    ]
-    resources = ["*"]
-  }
-
-  statement {
-    actions = [
-      "elasticloadbalancing:AddListenerCertificates",
-      "elasticloadbalancing:AddTags",
-      "elasticloadbalancing:CreateListener",
-      "elasticloadbalancing:CreateLoadBalancer",
-      "elasticloadbalancing:CreateLoadBalancerPolicy",
-      "elasticloadbalancing:CreateLoadBalancerListeners",
-      "elasticloadbalancing:CreateLoadBalancerTargetGroup",
-      "elasticloadbalancing:DeleteListener",
-      "elasticloadbalancing:DeleteLoadBalancer",
-      "elasticloadbalancing:DeleteLoadBalancerPolicy",
-      "elasticloadbalancing:DeleteLoadBalancerTargetGroup",
-      "elasticloadbalancing:DeregisterInstancesFromLoadBalancer",
-      "elasticloadbalancing:DescribeInstanceHealth",
-      "elasticloadbalancing:DescribeListeners",
-      "elasticloadbalancing:DescribeLoadBalancers",
-      "elasticloadbalancing:DescribeLoadBalancerAttributes",
-      "elasticloadbalancing:DescribeLoadBalancerPolicies",
-      "elasticloadbalancing:DescribeLoadBalancerTargetGroups",
-      "elasticloadbalancing:DescribeLoadBalancerTargetGroupAttributes",
-      "elasticloadbalancing:DetachLoadBalancerFromSubnets",
-      "elasticloadbalancing:DisableAvailabilityZonesForLoadBalancer",
-      "elasticloadbalancing:EnableAvailabilityZonesForLoadBalancer",
-      "elasticloadbalancing:ModifyListener",
-      "elasticloadbalancing:ModifyLoadBalancerAttributes",
-      "elasticloadbalancing:ModifyLoadBalancerTargetGroup",
-      "elasticloadbalancing:RegisterInstancesWithLoadBalancer",
-      "elasticloadbalancing:RegisterTargets",
-      "elasticloadbalancing:RemoveListenerCertificates",
-      "elasticloadbalancing:SetLoadBalancerPoliciesForListener",
-      "elasticloadbalancing:SetLoadBalancerPoliciesOfListener",
-      "elasticloadbalancing:SetLoadBalancerPoliciesForBackendServer",
-      "elasticloadbalancing:SetLoadBalancerPoliciesForLoadBalancer",
-      "elasticloadbalancing:AddTags",
-      "elasticloadbalancing:RemoveTags",
-    ]
-    resources = ["*"]
-  }
-
-  statement {
-    actions = [
-      "iam:CreateServiceLinkedRole",
-      "iam:GetServerCertificate",
-      "iam:GetServerCertificates",
-      "iam:ListServerCertificates",
-    ]
-    resources = ["*"]
-  }
-
-  statement {
-    actions = [
-      "route53:ChangeResourceRecordSets",
-      "route53:CreateHealthCheck",
-      "route53:DeleteHealthCheck",
-      "route53:GetHealthCheck",
-      "route53:GetHealthCheckStatus",
-      "route53:ListHealthChecks",
-      "route53:ListHostedZones",
-      "route53:ListResourceRecordSets",
-      "route53:UpdateHealthCheck",
-    ]
-    resources = ["*"]
-  }
+  automount_service_account_token = true
 }

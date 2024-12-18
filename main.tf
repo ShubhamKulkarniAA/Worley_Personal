@@ -19,16 +19,16 @@ module "eks" {
 
   cluster_name    = var.cluster_name
   cluster_version = var.cluster_version
-  subnet_ids      = [module.vpc.public_subnet1_id, module.vpc.public_subnet2_id]
+  subnet_ids      = [module.vpc.public_subnet1_id, module.vpc.public_subnet2_id, module.vpc.private_subnet1_id, module.vpc.private_subnet2_id]
   depends_on      = [module.vpc]
 }
 
 module "lbc" {
-  source                             = "./modules/lbc"
-  cluster_name                       = module.eks.cluster_name
-  oidc_provider_arn                  = module.eks.cluster_oidc_provider_arn
-  oidc_provider_url                  = module.eks.cluster_oidc_provider_url
-  cluster_endpoint                   = module.eks.cluster_endpoint
-  cluster_certificate_authority_data = module.eks.cluster_certificate_authority_data
-  depends_on                         = [module.eks]
+  source            = "./modules/lbc"
+  cluster_name      = module.eks.cluster_name
+  region            = var.region
+  oidc_provider_arn = module.eks.cluster_oidc_provider_arn
+  oidc_provider_url = module.eks.cluster_oidc_provider_url
+  cluster_endpoint  = module.eks.cluster_endpoint
+  depends_on        = [module.eks]
 }
