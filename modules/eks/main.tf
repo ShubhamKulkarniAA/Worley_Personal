@@ -6,11 +6,11 @@ module "eks" {
 
   cluster_endpoint_public_access = true
   enable_irsa                    = true
-  vpc_id                         = module.vpc.vpc_id
+  vpc_id                         = var.vpc_id
   subnet_ids                     = var.subnet_ids
 
   eks_managed_node_groups = {
-    eks_nodegroup_1 = {
+    eks_nodegroup = {
       min_size       = 1
       max_size       = 1
       desired_size   = 1

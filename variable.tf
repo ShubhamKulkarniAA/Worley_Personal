@@ -63,3 +63,9 @@ variable "region" {
 variable "cluster_name" {
   type = string
 }
+
+variable "cluster_version" {
+  description = "Cluster version"
+  type        = string
+  default     = ""
+}

@@ -1,33 +1,31 @@
-# Create necessary IAM policy and role for Loadbalancer controller app.
+# Create necessary IAM policy and role for Load Balancer Controller app.
+
+# IAM Policy Document for the Load Balancer Controller Role
 data "aws_iam_policy_document" "aws_load_balancer_controller_assume_role_policy" {
   statement {
-    actions = ["sts:AssumeRoleWithWebIdentity"]
-    effect  = "Allow"
-
+    effect = "Allow"
+    actions = [
+      "sts:AssumeRoleWithWebIdentity",
+    ]
+    principals {
+      type        = "Federated"
+      identifiers = [module.eks.oidc_provider_arn]
+    }
     condition {
       test     = "StringEquals"
       variable = "${replace(module.eks.oidc_provider, "https://", "")}:sub"
-      values   = ["system:serviceaccount:kube-system:aws-load-balancer-controller-${module.eks.cluster_name}"]
-    }
-
-    principals {
-      identifiers = [module.eks.oidc_provider_arn]
-      type        = "Federated"
+      values   = ["system:serviceaccount:kube-system:aws-load-balancer-controller"]
     }
   }
 }
 
+# IAM Role for Load Balancer Controller
 resource "aws_iam_role" "aws_load_balancer_controller" {
-  assume_role_policy = data.aws_iam_policy_document.aws_load_balancer_controller_assume_role_policy.json
   name               = "aws-load-balancer-controller-role"
+  assume_role_policy = data.aws_iam_policy_document.aws_load_balancer_controller_assume_role_policy.json
 }
 
-resource "aws_iam_role_policy_attachment" "aws_load_balancer_controller_attach" {
-  role       = aws_iam_role.aws_load_balancer_controller.name
-  policy_arn = aws_iam_policy.aws_load_balancer_controller.arn
-}
-
-#tfsec:ignore:aws-iam-no-policy-wildcards
+# IAM Policy for Load Balancer Controller Permissions
 resource "aws_iam_policy" "aws_load_balancer_controller" {
   name = "AWSLoadBalancerControllerPolicy"
   policy = jsonencode(
@@ -252,4 +250,10 @@ resource "aws_iam_policy" "aws_load_balancer_controller" {
       ]
     }
   )
+}
+
+# Attach Policy to Role
+resource "aws_iam_role_policy_attachment" "aws_load_balancer_controller_attach" {
+  role       = aws_iam_role.aws_load_balancer_controller.name
+  policy_arn = aws_iam_policy.aws_load_balancer_controller.arn
 }
