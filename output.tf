@@ -1,4 +1,4 @@
-# VPC Output
+# VPC Outputs
 output "vpc_id" {
   description = "The VPC ID"
   value       = module.vpc.vpc_id
@@ -28,7 +28,7 @@ output "private_subnet2_id" {
   value = module.vpc.private_subnet2_id
 }
 
-# EKS Output
+# EKS Outputs
 output "eks_cluster_id" {
   description = "The ID of the EKS cluster"
   value       = module.eks.eks_cluster_id
