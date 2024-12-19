@@ -11,19 +11,23 @@ terraform {
   }
 }
 
-# Provider for Kubernetes
-provider "kubernetes" {
-  host                   = module.eks.eks_cluster_endpoint
-  cluster_ca_certificate = base64decode(module.eks.eks_cluster_certificate_authority)
-  token                  = data.aws_eks_cluster_auth.cluster.token
+# Data source for EKS cluster authentication
+data "aws_eks_cluster" "cluster" {
+  name = module.eks.cluster_name
 }
 
-# Data source for EKS cluster authentication
 data "aws_eks_cluster_auth" "cluster" {
   name = module.eks.cluster_name
 }
 
-#Provider for Helm
+# Provider for Kubernetes
+provider "kubernetes" {
+  host                   = data.aws_eks_cluster.cluster.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.cluster_ca_certificate)
+  token                  = data.aws_eks_cluster_auth.cluster.token
+}
+
+# Provider for Helm
 provider "helm" {
   kubernetes {
     host                   = data.aws_eks_cluster.cluster.endpoint
