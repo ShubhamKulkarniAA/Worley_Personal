@@ -16,6 +16,14 @@ jobs:
       TERRAFORM_DIR: "./"
 
     steps:
+      # Checkout code from the repository
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Install Terraform
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v2
+
       - name: Initialize Terraform
         run: terraform init
         working-directory: ${{ env.TERRAFORM_DIR }}

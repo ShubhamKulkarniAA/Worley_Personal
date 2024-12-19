@@ -12,11 +12,11 @@ availability_zone1       = "ap-south-1a"
 availability_zone2       = "ap-south-1b"
 region                   = "ap-south-1"
 
-# # EKS Variables
-# cluster_name    = "EKS-Cluster"
-# node_group_name = "EKS-Node-Group"
-# desired_size    = 1
-# max_size        = 1
-# min_size        = 1
-# instance_type   = "t3.medium"
-# ec2_key_name    = "EKS"
+# EKS Variables
+cluster_name    = "EKS-Cluster"
+node_group_name = "EKS-Node-Group"
+desired_size    = 1
+max_size        = 1
+min_size        = 1
+instance_type   = "t3.medium"
+ec2_key_name    = "EKS"
