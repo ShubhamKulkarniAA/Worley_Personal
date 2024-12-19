@@ -13,11 +13,11 @@ terraform {
 
 # Data source for EKS cluster authentication
 data "aws_eks_cluster" "cluster" {
-  name = module.eks.cluster_name
+  name = aws_eks_cluster.eks_cluster.name
 }
 
 data "aws_eks_cluster_auth" "cluster" {
-  name = module.eks.cluster_name
+  name = aws_eks_cluster.eks_cluster.name
 }
 
 # Provider for Kubernetes
