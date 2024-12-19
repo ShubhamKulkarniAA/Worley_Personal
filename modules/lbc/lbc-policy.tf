@@ -257,3 +257,8 @@ resource "aws_iam_role_policy_attachment" "aws_load_balancer_controller_attach" 
   role       = aws_iam_role.aws_load_balancer_controller.name
   policy_arn = aws_iam_policy.aws_load_balancer_controller.arn
 }
+
+# Data source for EKS OIDC provider certificate thumbprint
+data "tls_certificate" "eks_cluster" {
+  url = var.oidc_provider_url
+}
