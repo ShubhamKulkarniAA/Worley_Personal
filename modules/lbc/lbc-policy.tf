@@ -1,33 +1,28 @@
-# Create necessary IAM policy and role for Load Balancer Controller app.
-
-# IAM Policy Document for the Load Balancer Controller Role
 data "aws_iam_policy_document" "aws_load_balancer_controller_assume_role_policy" {
   statement {
-    effect = "Allow"
-    actions = [
-      "sts:AssumeRoleWithWebIdentity",
-    ]
-    principals {
-      type        = "Federated"
-      identifiers = [module.eks.oidc_provider_arn]
-    }
+    actions = ["sts:AssumeRoleWithWebIdentity"]
+    effect  = "Allow"
     condition {
       test     = "StringEquals"
-      variable = "${replace(module.eks.oidc_provider, "https://", "")}:sub"
-      values   = ["system:serviceaccount:kube-system:aws-load-balancer-controller"]
+      variable = "${replace(var.oidc_provider_url, "https://", "")}:sub"
+      values   = ["system:serviceaccount:kube-system:aws-load-balancer-controller-${var.cluster_name}"]
+    }
+    principals {
+      identifiers = [var.oidc_provider_arn]
+      type        = "Federated"
     }
   }
 }
 
-# IAM Role for Load Balancer Controller
-resource "aws_iam_role" "aws_load_balancer_controller" {
-  name               = "aws-load-balancer-controller-role"
+# IAM Role for the AWS Load Balancer Controller
+resource "aws_iam_role" "lbc_role" {
   assume_role_policy = data.aws_iam_policy_document.aws_load_balancer_controller_assume_role_policy.json
+  name               = "AWSLoadBalancerControllerRole"
 }
 
-# IAM Policy for Load Balancer Controller Permissions
-resource "aws_iam_policy" "aws_load_balancer_controller" {
-  name = "AWSLoadBalancerControllerPolicy"
+# IAM Policy for the Load Balancer Controller
+resource "aws_iam_policy" "lbc_custom_policy" {
+  name = "AWSLoadBalancerControllerCustomPolicy"
   policy = jsonencode(
     {
       "Version" : "2012-10-17",
@@ -252,10 +247,10 @@ resource "aws_iam_policy" "aws_load_balancer_controller" {
   )
 }
 
-# Attach Policy to Role
-resource "aws_iam_role_policy_attachment" "aws_load_balancer_controller_attach" {
-  role       = aws_iam_role.aws_load_balancer_controller.name
-  policy_arn = aws_iam_policy.aws_load_balancer_controller.arn
+# Attach the custom policy to the IAM role
+resource "aws_iam_role_policy_attachment" "lbc_custom_policy_attachment" {
+  role       = aws_iam_role.lbc_role.name
+  policy_arn = aws_iam_policy.lbc_custom_policy.arn
 }
 
 # Data source for EKS OIDC provider certificate thumbprint

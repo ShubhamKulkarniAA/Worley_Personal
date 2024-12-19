@@ -13,5 +13,10 @@ availability_zone2       = "ap-south-1b"
 region                   = "ap-south-1"
 
 # EKS Variables
-cluster_name    = "EKS-Cluster"
-cluster_version = "1.31"
+cluster_name    = "Worley-NC-EKS-Cluster"
+node_group_name = "Worley-NC-EKS-Node-Group"
+desired_size    = 1
+max_size        = 1
+min_size        = 1
+instance_type   = "t3.medium"
+ec2_key_name    = "EKS"
