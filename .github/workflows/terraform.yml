@@ -24,29 +24,26 @@ jobs:
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v2
 
-      - name: Initialize Terraform
-        run: terraform init
-        working-directory: ${{ env.TERRAFORM_DIR }}
-
-      - name: Terraform Destroy (if successful init)
-        run: terraform destroy
+      # Initialize Terraform
+      - name: Terraform Init
+        run: terraform init -upgrade
         working-directory: ${{ env.TERRAFORM_DIR }}
         if: success()
 
-    #   # Validate Terraform configuration
-    #   - name: Terraform Validate
-    #     run: terraform validate
-    #     working-directory: ${{ env.TERRAFORM_DIR }}
-    #     if: success()
+      # Validate Terraform configuration
+      - name: Terraform Validate
+        run: terraform validate
+        working-directory: ${{ env.TERRAFORM_DIR }}
+        if: success()
 
-    #   # Plan Terraform execution
-    #   - name: Terraform Plan
-    #     run: terraform plan -out=tfplan -input=false
-    #     working-directory: ${{ env.TERRAFORM_DIR }}
-    #     if: success()
+      # Plan Terraform execution
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan -input=false
+        working-directory: ${{ env.TERRAFORM_DIR }}
+        if: success()
 
-    #   # Apply Terraform configuration
-    #   - name: Terraform Apply
-    #     run: terraform apply -auto-approve tfplan
-    #     working-directory: ${{ env.TERRAFORM_DIR }}
-    #     if: success()
+      # Apply Terraform configuration
+      - name: Terraform Apply
+        run: terraform apply -auto-approve tfplan
+        working-directory: ${{ env.TERRAFORM_DIR }}
+        if: success()

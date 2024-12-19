@@ -1,28 +1,35 @@
+# Create necessary IAM policy and role for Loadbalancer controller app.
 data "aws_iam_policy_document" "aws_load_balancer_controller_assume_role_policy" {
   statement {
     actions = ["sts:AssumeRoleWithWebIdentity"]
     effect  = "Allow"
+
     condition {
       test     = "StringEquals"
-      variable = "${replace(var.oidc_provider_url, "https://", "")}:sub"
-      values   = ["system:serviceaccount:kube-system:aws-load-balancer-controller-${var.cluster_name}"]
+      variable = "${replace(module.eks.oidc_provider, "https://", "")}:sub"
+      values   = ["system:serviceaccount:kube-system:aws-load-balancer-controller-${module.eks.cluster_name}"]
     }
+
     principals {
-      identifiers = [var.oidc_provider_arn]
+      identifiers = [module.eks.oidc_provider_arn]
       type        = "Federated"
     }
   }
 }
 
-# IAM Role for the AWS Load Balancer Controller
-resource "aws_iam_role" "lbc_role" {
+resource "aws_iam_role" "aws_load_balancer_controller" {
   assume_role_policy = data.aws_iam_policy_document.aws_load_balancer_controller_assume_role_policy.json
-  name               = "AWSLoadBalancerControllerRole"
+  name               = "aws-load-balancer-controller-role"
 }
 
-# IAM Policy for the Load Balancer Controller
-resource "aws_iam_policy" "lbc_custom_policy" {
-  name = "AWSLoadBalancerControllerCustomPolicy"
+resource "aws_iam_role_policy_attachment" "aws_load_balancer_controller_attach" {
+  role       = aws_iam_role.aws_load_balancer_controller.name
+  policy_arn = aws_iam_policy.aws_load_balancer_controller.arn
+}
+
+#tfsec:ignore:aws-iam-no-policy-wildcards
+resource "aws_iam_policy" "aws_load_balancer_controller" {
+  name = "AWSLoadBalancerControllerPolicy"
   policy = jsonencode(
     {
       "Version" : "2012-10-17",
@@ -64,8 +71,8 @@ resource "aws_iam_policy" "lbc_custom_policy" {
             "elasticloadbalancing:DescribeTargetGroups",
             "elasticloadbalancing:DescribeTargetGroupAttributes",
             "elasticloadbalancing:DescribeTargetHealth",
-            "elasticloadbalancing:DescribeTags", # Describe ELB tags
-            "elasticloadbalancing:AddTags"       # Add ELB tags
+            "elasticloadbalancing:DescribeTags",
+            "elasticloadbalancing:AddTags"
           ],
           "Resource" : "*"
         },
@@ -245,15 +252,4 @@ resource "aws_iam_policy" "lbc_custom_policy" {
       ]
     }
   )
-}
-
-# Attach the custom policy to the IAM role
-resource "aws_iam_role_policy_attachment" "lbc_custom_policy_attachment" {
-  role       = aws_iam_role.lbc_role.name
-  policy_arn = aws_iam_policy.lbc_custom_policy.arn
-}
-
-# Data source for EKS OIDC provider certificate thumbprint
-data "tls_certificate" "eks_cluster" {
-  url = var.oidc_provider_url
 }

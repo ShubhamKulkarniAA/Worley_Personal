@@ -63,29 +63,3 @@ variable "region" {
 variable "cluster_name" {
   type = string
 }
-
-variable "node_group_name" {
-  type = string
-}
-
-variable "desired_size" {
-  type = number
-}
-
-variable "max_size" {
-  type = number
-}
-
-variable "min_size" {
-  type = number
-}
-
-variable "instance_type" {
-  description = "The EC2 instance type for EKS worker nodes"
-  type        = string
-}
-
-variable "ec2_key_name" {
-  description = "The name of the EC2 key pair used for SSH access"
-  type        = string
-}
