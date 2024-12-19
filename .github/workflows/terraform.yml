@@ -16,16 +16,11 @@ jobs:
       TERRAFORM_DIR: "./"
 
     steps:
-      # Checkout code from the repository
-      - name: Checkout Code
-        uses: actions/checkout@v3
+      - name: Initialize Terraform
+        run: terraform init
+        working-directory: ${{ env.TERRAFORM_DIR }}
 
-      # Install Terraform
-      - name: Install Terraform
-        uses: hashicorp/setup-terraform@v2
-
-      # Initialize Terraform
-      - name: Terraform Destroy
+      - name: Terraform Destroy (if successful init)
         run: terraform destroy
         working-directory: ${{ env.TERRAFORM_DIR }}
         if: success()
