@@ -104,6 +104,11 @@ resource "aws_eks_node_group" "eks_node_group" {
   depends_on = [aws_eks_cluster.eks_cluster]
 }
 
+resource "aws_eks_cluster_auth" "cluster_auth" {
+  name = aws_eks_cluster.eks_cluster.name
+}
+
+# Fetch the OIDC certificate using TLS to get the thumbprint
 data "tls_certificate" "eks_cluster" {
   url = aws_eks_cluster.eks_cluster.identity[0].oidc[0].issuer
 }
